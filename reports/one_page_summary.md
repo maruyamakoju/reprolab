@@ -43,6 +43,14 @@ crystal stability on the WBM test set (~257k structures).
   rate 25× the independence prediction), while ORB v2 contributes 1,886 unique
   true-positive discoveries vs ~350–390 each for the rest — a quantified case that
   training-data diversity, not just leaderboard rank, drives discovery value.
+- **Ground-truth audit: the benchmark's e_above_hull column is not
+  pymatgen-version-independent.** Recomputing it from the published structure
+  entries + MP2020 corrections + the published 2023 phase diagram reproduces 497/500
+  subset values to ≤0.001 meV/atom under pymatgen 2026, but 3/500 shift by
+  119–217 meV/atom and 2 stability labels flip — traced to MP2020 anion-correction
+  assignment (oxidation-state guessing heuristics) drifting across pymatgen
+  versions. ~0.5% label ambiguity is material when adjacent leaderboard models are
+  separated by ΔF1 ≈ 0.001–0.003.
 
 ## Reproducibility findings
 
