@@ -31,8 +31,18 @@ crystal stability on the WBM test set (~257k structures).
 - **Layer B: regenerated CHGNet formation energies match the published predictions
   with median |Δ| = 0.03 meV/atom** (p95 = 0.07, max = 1.08; threshold was 10),
   across a 2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29).
-- **100% stability-classification agreement, zero flips**; 500/500 structures
-  relaxed with 0 failures in 9.3 minutes on one RTX 4090.
+  100% stability-classification agreement, zero flips; 500/500 structures relaxed
+  with 0 failures in 9.3 minutes on one RTX 4090.
+- **Layer C (statistical audit): the leaderboard reports no uncertainty.** A paired
+  bootstrap (exact joint-category design, B=2000, n=215,488) gives 95% CIs of
+  ±0.003–0.004 F1 for the four audited models — their own ranking is solid and
+  threshold-robust (±100 meV/atom sweep) — but **43 of 59 adjacent pairs on the full
+  60-model leaderboard are separated by less than one CI width**, so the published
+  ordering at the top is unlikely to be statistically resolvable. The three
+  MPtrj-trained models share failure modes (error correlation r ≈ 0.76; joint-miss
+  rate 25× the independence prediction), while ORB v2 contributes 1,886 unique
+  true-positive discoveries vs ~350–390 each for the rest — a quantified case that
+  training-data diversity, not just leaderboard rank, drives discovery value.
 
 ## Reproducibility findings
 

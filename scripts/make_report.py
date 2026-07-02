@@ -46,6 +46,8 @@ def main() -> None:
         section("2. Reproduction plan", PAPER / "reproduction_plan.md"),
         section("3. Environment", PAPER / "environment.md"),
         *metric_sections,
+        section("4b. Layer C — statistical audit of the leaderboard",
+                PAPER / "layer_c_statistical_audit.md"),
         section("5. Failure notes", PAPER / "failure_notes.md"),
         section("6. Run log (tail)", PAPER / "run_log.md", tail=80),
     ]

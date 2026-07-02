@@ -16,6 +16,18 @@ The regenerated formation energies match the published predictions with
 **median |Δe_form| = 0.03 meV/atom** (p95 = 0.07, max = 1.08 meV/atom, pre-registered
 threshold: ≤10), **100% stability-classification agreement, and zero flips**.
 
+**Layer C:** Statistical audit of the leaderboard itself (uncertainty is not reported
+upstream). Paired bootstrap (B=2000, exact 32-joint-category multinomial design) puts
+**95% CIs of ±0.003–0.004 F1** on the four audited models — their ranking is
+statistically solid (P(flip) < 1/2000 for every pair) and survives a ±100 meV/atom
+stability-threshold sweep. But applying the measured CI width to the full 60-model
+leaderboard, **43 of 59 adjacent pairs are separated by less than one CI width** —
+the published ordering at the top is unlikely to be statistically resolvable.
+Error analysis: the three MPtrj-trained models share failure modes (pairwise error
+correlation r ≈ 0.76; all-four-models-miss rate is **25× the independence
+prediction**), while ORB v2 (extra training data) contributes 1,886 unique
+true-positive discoveries vs ~350–390 for each of the others.
+
 ## Why this matters
 
 This audit checks not just whether leaderboard numbers are internally consistent, but
@@ -145,6 +157,10 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] External-path self-audit: a fresh clone of this public repo, following the
       steps above verbatim (fresh venv + upstream clone + Figshare download),
       reproduces CHGNet Layer A exactly — 22/22 checks, 0 mismatches (run_log.md)
+- [x] **Layer C — statistical audit** (`layer_c_statistical_audit.md`): bootstrap CIs
+      + ranking significance, threshold sensitivity ±100 meV, cross-model error
+      correlation / joint-blind-spot quantification, leaderboard-resolution analysis
+      (43/59 adjacent pairs closer than one CI width)
 - [ ] Next: Layer B for a second model (ORB / MACE), or Paper-002 — pending external
       feedback
 
