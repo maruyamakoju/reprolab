@@ -1,22 +1,39 @@
 # ReproLab: Matbench Discovery Reproducibility Audit
 
-This repository independently audits **Layer A** of the Matbench Discovery leaderboard:
-recomputing published stability metrics from released prediction CSVs and the bundled
-WBM ground truth.
+ReproLab is an independent reproducibility audit of the Matbench Discovery leaderboard.
 
-Current result:
+## Main result
 
-- **Layer A: 4/4 released models (CHGNet, SevenNet-0, MACE-MP-0, ORB v2) reproduce
-  official YAML leaderboard metrics exactly** across both audited subsets.
-- **Layer B: CHGNet predictions were regenerated on a deterministic 500-structure WBM
-  subset and compared against the published predictions using the same scoring path**
-  — median |Δe_form| = 0.03 meV/atom (pre-registered threshold: ≤10), 100%
-  classification agreement, zero stable/unstable flips.
+**Layer A:** Recomputed released leaderboard metrics for 4 released models
+(CHGNet, SevenNet-0, MACE-MP-0, ORB v2) from the published prediction CSVs and the
+bundled WBM ground truth. **All 4/4 models reproduce the official YAML metrics exactly**
+across both audited subsets — every fraction to 3 decimals and every integer
+confusion-matrix count.
 
-Side findings include Figshare WAF download behavior, PyPI/GitHub layout divergence
-under the same version string, a stale — and upstream-unverified — md5 in the data-file
-registry, dependency-drift breakage (ruamel.yaml 0.19 vs pymatgen), and a transient
-Windows native crash when download and compute run in one process.
+**Layer B:** Regenerated CHGNet predictions from model execution on a deterministic
+500-structure WBM subset (500/500 relaxed, 0 failures, 9.3 min on one RTX 4090).
+The regenerated formation energies match the published predictions with
+**median |Δe_form| = 0.03 meV/atom** (p95 = 0.07, max = 1.08 meV/atom, pre-registered
+threshold: ≤10), **100% stability-classification agreement, and zero flips**.
+
+## Why this matters
+
+This audit checks not just whether leaderboard numbers are internally consistent, but
+whether published predictions can be regenerated from model execution on a traceable
+subset. Every command is logged, every metric traces to specific code and data, and
+comparison thresholds were pre-registered before the GPU runs.
+
+## Reproducibility findings along the way
+
+- Figshare landing URLs (`figshare.com/files/<id>`) are WAF-blocked for naive
+  downloaders; the API endpoint works.
+- The PyPI wheel and GitHub repo ship different module layouts under the same
+  version string (`1.3.1`).
+- The upstream md5 for the WBM initial-structures file is stale (it belongs to an
+  older artifact) — and upstream never verifies it on download.
+- Dependency drift (ruamel.yaml 0.19) breaks pymatgen config loading; pinned `<0.19`.
+
+Details with evidence: `papers/matbench-discovery/failure_notes.md`.
 
 ReproLab's broader goal: independent reproducibility audits of AI-for-science papers
 and benchmarks — *can the code run, are the metrics reproducible, are leaderboard
