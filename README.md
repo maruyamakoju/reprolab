@@ -47,6 +47,9 @@ comparison thresholds were pre-registered before the GPU runs.
 
 - Upstream issue filed with the stale-md5 / unverified-checksum finding:
   [janosh/matbench-discovery#357](https://github.com/janosh/matbench-discovery/issues/357)
+  (response pending; tested patch branch ready on our fork)
+- Upstream issue filed with the ground-truth pymatgen-version-dependence finding:
+  [janosh/matbench-discovery#358](https://github.com/janosh/matbench-discovery/issues/358)
   (response pending)
 
 ## Reproducibility findings along the way
