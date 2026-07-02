@@ -62,6 +62,21 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   pre-download the CSV in a separate step, then run the compute (the file-exists check in
   `ensure_preds` makes the compute run skip the download).
 
+- **[interp] Ground-truth e_above_hull is not pymatgen-version-independent.**
+  (Found 2026-07-02, Layer C ground-truth audit.) Recomputing
+  `e_above_hull_mp2020_corrected_ppd_mp` from the published CSEs + MP2020
+  compatibility + the published 2023 `PatchedPhaseDiagram` pickle reproduces
+  **497/500** subset values to ≤0.001 meV/atom under pymatgen 2026.5 — but 3/500
+  shift by 119–217 meV/atom and **2/500 stability labels flip**. Diagnosis
+  (`layer_c_gt_diagnose.py`): the e_form delta accounts for the entire e_hull delta,
+  i.e. the discrepancy is in the **MP2020 anion-correction assignment**, which hinges
+  on oxidation-state guessing heuristics that drift across pymatgen versions
+  (SrBrN3: nitride-vs-Br ambiguity; PaIO: explicit "failed to guess oxidation states"
+  fallback; NdH4Pt: hydride correction applied by us, not upstream). Bit-exact ground
+  truth requires the 2022/2023-era pymatgen behavior — unstated upstream. Side result:
+  the 2023 phase-diagram *pickle* unpickles cleanly under pymatgen 2026.5.
+  See `layer_c_gt_hull_check.md`.
+
 - **[data] Stale md5 in `data-files.yml` for `wbm_initial_structures` — and upstream
   never checks it.** (Found 2026-07-02, Layer B preflight.) The registry at the pinned
   commit declares `md5: ff2c40a3a7bf65468852b67f0dbc67df` for

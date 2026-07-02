@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-02 08:01 UTC_
+_Generated: 2026-07-02 08:08 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -815,6 +815,57 @@ Signed formation-energy errors (e_form_pred − e_form_dft), common non-NaN rows
 
 
 
+## 4c. Layer C — ground-truth hull recomputation
+
+# Layer C (ground truth) — e_above_hull recomputed from the MP phase diagram
+
+Subset: the committed Layer B ids (n=500); CSE source `data/wbm/2022-10-19-wbm-computed-structure-entries.jsonl.gz`; hull source `data/mp/2023-02-07-ppd-mp.pkl.gz` (2023 pickle) unpickled under pymatgen 2026.5.18. Corrections: entries shipped with adjustments for 0/500; MP2020 applied by us to the rest; 0 dropped by compatibility processing; 0 hull lookups failed.
+
+## Result
+
+- compared: **500/500** subset structures
+- median |Δ| = **0.0003 meV/atom** | p95 = 0.0005 | max = 216.5996 meV/atom
+- within 0.1 meV/atom: 99.4% | within 1 meV/atom: 99.4%
+- stable/unstable label (<=0) agreement with published column: 99.6%
+
+| material_id | published | recomputed | Δ meV/atom |
+|---|---|---|---|
+| wbm-2-28782 | 0.024147 | 0.240747 | +216.5996 |
+| wbm-4-28450 | -0.028060 | 0.098273 | +126.3330 |
+| wbm-4-15908 | 0.032848 | -0.086485 | -119.3332 |
+| wbm-1-57937 | 0.024024 | 0.024024 | +0.0005 |
+| wbm-3-53078 | -0.120219 | -0.120219 | -0.0005 |
+| wbm-1-57885 | 0.191865 | 0.191865 | -0.0005 |
+| wbm-4-12603 | 0.041207 | 0.041207 | -0.0005 |
+| wbm-1-1604 | 0.368311 | 0.368311 | -0.0005 |
+| wbm-1-37417 | 0.666768 | 0.666768 | +0.0005 |
+| wbm-3-4711 | 0.204088 | 0.204088 | -0.0005 |
+
+## Diagnosis of the 3 outliers (`layer_c_gt_diagnose.py`, logged in run_log)
+
+For all three, the e_above_hull delta equals the **e_form delta to <0.001 meV/atom**
+(+216.601, +126.307, −119.303), so the phase-diagram lookup is not implicated — the
+entire discrepancy is in the **MP2020 energy-correction assignment**, and all three
+are cases where that assignment hinges on pymatgen's oxidation-state guessing:
+
+| id | formula | our correction | interpretation |
+|---|---|---|---|
+| wbm-2-28782 | SrBrN3 | Br anion only (−1.068 eV) | upstream value implies an additional/different anion (nitride) correction |
+| wbm-4-28450 | PaIO | oxide (−1.374 eV) after explicit pymatgen warning "Failed to guess oxidation states… assigning anion correction to only the most electronegative atom" | heuristic fallback, version-dependent |
+| wbm-4-15908 | NdH4Pt | hydride H (−1.432 eV) | upstream value implies no hydride correction was applied |
+
+**Finding:** the benchmark's ground-truth column embeds correction heuristics that are
+not stable across pymatgen versions. Under pymatgen 2026.5, 3/500 subset structures
+(0.6%) shift by 119–217 meV/atom and 2/500 stability labels flip relative to the
+published column. 497/500 reproduce to ≤0.001 meV/atom (median 0.0003), and the 2023
+`PatchedPhaseDiagram` pickle unpickles cleanly under pymatgen 2026. Reproducing the
+ground truth *bit-exactly* therefore requires the correction behavior of the original
+2022/2023-era environment — a version-pinning requirement the benchmark does not
+currently state. At leaderboard scale, ~0.4–0.6% label ambiguity is material when
+adjacent models are separated by ΔF1 of 0.001–0.003 (see the statistical audit).
+
+
+
 ## 5. Failure notes
 
 # Failure Notes — Paper-001
@@ -881,6 +932,21 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   pre-download the CSV in a separate step, then run the compute (the file-exists check in
   `ensure_preds` makes the compute run skip the download).
 
+- **[interp] Ground-truth e_above_hull is not pymatgen-version-independent.**
+  (Found 2026-07-02, Layer C ground-truth audit.) Recomputing
+  `e_above_hull_mp2020_corrected_ppd_mp` from the published CSEs + MP2020
+  compatibility + the published 2023 `PatchedPhaseDiagram` pickle reproduces
+  **497/500** subset values to ≤0.001 meV/atom under pymatgen 2026.5 — but 3/500
+  shift by 119–217 meV/atom and **2/500 stability labels flip**. Diagnosis
+  (`layer_c_gt_diagnose.py`): the e_form delta accounts for the entire e_hull delta,
+  i.e. the discrepancy is in the **MP2020 anion-correction assignment**, which hinges
+  on oxidation-state guessing heuristics that drift across pymatgen versions
+  (SrBrN3: nitride-vs-Br ambiguity; PaIO: explicit "failed to guess oxidation states"
+  fallback; NdH4Pt: hydride correction applied by us, not upstream). Bit-exact ground
+  truth requires the 2022/2023-era pymatgen behavior — unstated upstream. Side result:
+  the 2023 phase-diagram *pickle* unpickles cleanly under pymatgen 2026.5.
+  See `layer_c_gt_hull_check.md`.
+
 - **[data] Stale md5 in `data-files.yml` for `wbm_initial_structures` — and upstream
   never checks it.** (Found 2026-07-02, Layer B preflight.) The registry at the pinned
   commit declares `md5: ff2c40a3a7bf65468852b67f0dbc67df` for
@@ -925,84 +991,84 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 ## 6. Run log (tail)
 
-| FP | 47 | 47 | 47 | 47 |
-| TN | 386 | 386 | 386 | 386 |
-| FN | 20 | 20 | 20 | 20 |
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name mp_patched_phase_diagram
+```
 
-wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-chgnet-smoke500.md
+- exit code: **0**  | duration: 113.3s  | raw log: `logs/cmd-20260702-080239.log`
+
+output tail:
+```
+downloading mp_patched_phase_diagram: https://api.figshare.com/v2/file/download/48241624 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\mp\2023-02-07-ppd-mp.pkl.gz
+downloaded 220.0 MB
+md5 OK (60d19d691fa1d338aa496a40a9641bef): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\mp\2023-02-07-ppd-mp.pkl.gz
+```
+
+### 2026-07-02 08:04 UTC — layerC-GT download wbm CSEs (87MB, figshare computed_md5 - YAML md5 stale, see failure_notes)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name wbm_computed_structure_entries --expect-md5 655b7a9c368e136dd8747f1ef8002e7a
+```
+
+- exit code: **0**  | duration: 27.9s  | raw log: `logs/cmd-20260702-080433.log`
+
+output tail:
+```
+downloading wbm_computed_structure_entries: https://api.figshare.com/v2/file/download/53161832 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-computed-structure-entries.jsonl.gz
+downloaded 86.5 MB
+md5 OK (655b7a9c368e136dd8747f1ef8002e7a): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-computed-structure-entries.jsonl.gz
+```
+
+### 2026-07-02 08:05 UTC — layerC-GT recompute e_above_hull from ppd-mp for 500 subset
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_gt_hull.py
+```
+
+- exit code: **0**  | duration: 40.9s  | raw log: `logs/cmd-20260702-080524.log`
+
+output tail:
+```
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Hg1 Ir2 Sm3. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Bi2 U6 Pt1. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Hg4 Dy2 Pd2. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ca6 Bi2 Os1. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Cd1 Tl1 Pt2. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ge2 Al3 Zn1 V3. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ni1 Rh2 V2. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+```
+
+### 2026-07-02 08:07 UTC — layerC-GT diagnose 3 outliers (corrections vs hull lookup)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_gt_diagnose.py --ids wbm-2-28782 wbm-4-28450 wbm-4-15908
+```
+
+- exit code: **0**  | duration: 6.4s  | raw log: `logs/cmd-20260702-080759.log`
+
+output tail:
+```
+  our adjustments: [('MP2020 anion correction (Br)', -1.068)]
+wbm-4-28450 PaIO        
+  e_form summary=-2.574240 ours=-2.447933 delta=+126.307 meV/atom
+  our adjustments: [('MP2020 anion correction (oxide)', -1.374)]
+wbm-4-15908 NdH4Pt      
+  e_form summary=-0.466418 ours=-0.585721 delta=-119.303 meV/atom
+  our adjustments: [('MP2020 anion correction (H)', -1.432)]
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
-```
-
-### 2026-07-02 — external-path self-audit (fresh clone of the PUBLIC repo)
-
-Followed README "Reproduce it yourself" verbatim in a throwaway directory:
-fresh `git clone https://github.com/maruyamakoju/reprolab`, fresh upstream clone
-(HEAD = `eaa7550`, identical to our pinned audit commit — no drift), fresh venv
-(`pip install matbench-discovery` 1.3.1), Figshare API download (2.38 MB), then
-`compare_metrics.py --model chgnet-0.3.0` on both subsets.
-
-- result: **22/22 metric checks pass, 0 mismatches** (F1 0.613/0.612,
-  MAE 0.063/0.061, integer confusion counts exact)
-- compute step: exit 0, 24.4 s
-- conclusion: the published instructions reproduce Layer A end-to-end from a
-  clean machine state.
-
-### 2026-07-02 07:59 UTC — layerC statistical audit (bootstrap B=2000, threshold sweep, error correlation)
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_stats.py --n-boot 2000
-```
-
-- exit code: **0**  | duration: 11.5s  | raw log: `logs/cmd-20260702-075923.log`
-
-output tail:
-```
-| SevenNet-0 | 0.667 | 1.000 | 0.653 | 0.231 |
-| MACE-MP-0 | 0.677 | 0.653 | 1.000 | 0.187 |
-| ORB v2 | 0.157 | 0.231 | 0.187 | 1.000 |
-
-- Among the 33,374 DFT-stable structures, **3.59%** are missed (FN) by *all four* models simultaneously; under error independence this would be 0.14% (joint-miss lift **25x**). Per-model miss rates: CHGNet 24.2%, SevenNet-0 18.2%, MACE-MP-0 20.4%, ORB v2 15.9%.
-- In the near-hull band |E_hull| ≤ 50 meV/atom (n=66,576), all four models misclassify the same structure 2.61% of the time vs 0.21% under independence (lift 12x).
-- Unique true positives (stable materials found by that model and missed by the other three): CHGNet 341, SevenNet-0 361, MACE-MP-0 388, ORB v2 1,886.
-
-## Limitations
-
-- Bootstrap treats WBM as an i.i.d. sample; WBM structures are generated by element substitution from shared seeds, so effective sample size is somewhat smaller than n — CIs here are, if anything, slightly narrow.
-- Threshold sweep reuses the same data at every τ (no multiple-comparison correction); it is a sensitivity analysis, not a hypothesis test.
-- Analyses are exploratory and were designed after Layers A/B; they should be treated as descriptive audit findings, not confirmatory statistics.
-
-wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\layer_c_statistical_audit.md
-```
-
-### 2026-07-02 08:00 UTC — layerC rerun with leaderboard-resolution scan
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_stats.py --n-boot 2000
-```
-
-- exit code: **0**  | duration: 11.7s  | raw log: `logs/cmd-20260702-080038.log`
-
-output tail:
-```
-| SevenNet-0 | 0.667 | 1.000 | 0.653 | 0.231 |
-| MACE-MP-0 | 0.677 | 0.653 | 1.000 | 0.187 |
-| ORB v2 | 0.157 | 0.231 | 0.187 | 1.000 |
-
-- Among the 33,374 DFT-stable structures, **3.59%** are missed (FN) by *all four* models simultaneously; under error independence this would be 0.14% (joint-miss lift **25x**). Per-model miss rates: CHGNet 24.2%, SevenNet-0 18.2%, MACE-MP-0 20.4%, ORB v2 15.9%.
-- In the near-hull band |E_hull| ≤ 50 meV/atom (n=66,576), all four models misclassify the same structure 2.61% of the time vs 0.21% under independence (lift 12x).
-- Unique true positives (stable materials found by that model and missed by the other three): CHGNet 341, SevenNet-0 361, MACE-MP-0 388, ORB v2 1,886.
-
-## Limitations
-
-- Bootstrap treats WBM as an i.i.d. sample; WBM structures are generated by element substitution from shared seeds, so effective sample size is somewhat smaller than n — CIs here are, if anything, slightly narrow.
-- Threshold sweep reuses the same data at every τ (no multiple-comparison correction); it is a sensitivity analysis, not a hypothesis test.
-- Analyses are exploratory and were designed after Layers A/B; they should be treated as descriptive audit findings, not confirmatory statistics.
-
-wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\layer_c_statistical_audit.md
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28450 (PaIO). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
 ```
 

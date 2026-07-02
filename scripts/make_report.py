@@ -48,6 +48,8 @@ def main() -> None:
         *metric_sections,
         section("4b. Layer C — statistical audit of the leaderboard",
                 PAPER / "layer_c_statistical_audit.md"),
+        section("4c. Layer C — ground-truth hull recomputation",
+                PAPER / "layer_c_gt_hull_check.md"),
         section("5. Failure notes", PAPER / "failure_notes.md"),
         section("6. Run log (tail)", PAPER / "run_log.md", tail=80),
     ]

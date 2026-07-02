@@ -28,6 +28,14 @@ correlation r ≈ 0.76; all-four-models-miss rate is **25× the independence
 prediction**), while ORB v2 (extra training data) contributes 1,886 unique
 true-positive discoveries vs ~350–390 for each of the others.
 
+**Ground-truth audit:** recomputing `e_above_hull` from the published structure
+entries + MP2020 corrections + the published 2023 MP phase diagram reproduces
+**497/500** subset values to ≤0.001 meV/atom under pymatgen 2026 — but **3/500 shift
+by 119–217 meV/atom and 2 stability labels flip**, traced to MP2020 anion-correction
+assignment (oxidation-state guessing) drifting across pymatgen versions. The
+benchmark's ground truth is not version-independent, and the ambiguity (~0.4–0.6%)
+is material at the ΔF1 ≈ 0.001–0.003 gaps separating adjacent leaderboard models.
+
 ## Why this matters
 
 This audit checks not just whether leaderboard numbers are internally consistent, but

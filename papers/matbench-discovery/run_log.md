@@ -561,3 +561,87 @@ output tail:
 
 wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\layer_c_statistical_audit.md
 ```
+
+### 2026-07-02 08:02 UTC — layerC-GT download ppd-mp (220MB)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name mp_patched_phase_diagram
+```
+
+- exit code: **0**  | duration: 113.3s  | raw log: `logs/cmd-20260702-080239.log`
+
+output tail:
+```
+downloading mp_patched_phase_diagram: https://api.figshare.com/v2/file/download/48241624 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\mp\2023-02-07-ppd-mp.pkl.gz
+downloaded 220.0 MB
+md5 OK (60d19d691fa1d338aa496a40a9641bef): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\mp\2023-02-07-ppd-mp.pkl.gz
+```
+
+### 2026-07-02 08:04 UTC — layerC-GT download wbm CSEs (87MB, figshare computed_md5 - YAML md5 stale, see failure_notes)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name wbm_computed_structure_entries --expect-md5 655b7a9c368e136dd8747f1ef8002e7a
+```
+
+- exit code: **0**  | duration: 27.9s  | raw log: `logs/cmd-20260702-080433.log`
+
+output tail:
+```
+downloading wbm_computed_structure_entries: https://api.figshare.com/v2/file/download/53161832 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-computed-structure-entries.jsonl.gz
+downloaded 86.5 MB
+md5 OK (655b7a9c368e136dd8747f1ef8002e7a): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-computed-structure-entries.jsonl.gz
+```
+
+### 2026-07-02 08:05 UTC — layerC-GT recompute e_above_hull from ppd-mp for 500 subset
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_gt_hull.py
+```
+
+- exit code: **0**  | duration: 40.9s  | raw log: `logs/cmd-20260702-080524.log`
+
+output tail:
+```
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Hg1 Ir2 Sm3. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Bi2 U6 Pt1. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Hg4 Dy2 Pd2. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ca6 Bi2 Os1. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Cd1 Tl1 Pt2. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ge2 Al3 Zn1 V3. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ni1 Rh2 V2. Using SLSQP to find decomposition
+  decomp = self.get_decomposition(comp)
+```
+
+### 2026-07-02 08:07 UTC — layerC-GT diagnose 3 outliers (corrections vs hull lookup)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_gt_diagnose.py --ids wbm-2-28782 wbm-4-28450 wbm-4-15908
+```
+
+- exit code: **0**  | duration: 6.4s  | raw log: `logs/cmd-20260702-080759.log`
+
+output tail:
+```
+  our adjustments: [('MP2020 anion correction (Br)', -1.068)]
+wbm-4-28450 PaIO        
+  e_form summary=-2.574240 ours=-2.447933 delta=+126.307 meV/atom
+  our adjustments: [('MP2020 anion correction (oxide)', -1.374)]
+wbm-4-15908 NdH4Pt      
+  e_form summary=-0.466418 ours=-0.585721 delta=-119.303 meV/atom
+  our adjustments: [('MP2020 anion correction (H)', -1.432)]
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28450 (PaIO). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+```
