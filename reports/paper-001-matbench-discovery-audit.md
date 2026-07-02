@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-02 04:42 UTC_
+_Generated: 2026-07-02 05:10 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -53,13 +53,37 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
    download+compute path (SevenNet, first attempt); it did not recur once download and
    compute were split (`--download-only`). Recorded as a Windows-environment note.
 
+## Result — Layer B pre-smoke (GPU, prediction regeneration)
+
+Beyond re-scoring published predictions, we regenerated predictions from scratch for
+**CHGNet** on a deterministic 20-structure WBM subset (seed-42 sample of
+`unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
+relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
+formation energy → scored through the *same* Layer A metric path.
+
+- **20/20 relaxed, 0 failures, 20/20 converged** — RTX 4090, mean 1.26 s/structure
+  (median 0.94, max 5.35)
+- **Regenerated e_form matches published values within 0.1 meV/atom on every
+  structure** (max |Δ| = 0.1 meV/atom = the published CSV's rounding precision;
+  median 0.0), despite a 2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29,
+  chgnet package 0.4.2 loading the same 0.3.0 weights, 412,525 params verified)
+- **100% stable/unstable classification agreement**; discovery metrics computed from
+  regenerated and published predictions are identical through both metric
+  implementations
+- GPU run-to-run variance (two independent runs): median 0.000, max 0.232 meV/atom —
+  far below the 10 meV/atom reproduce threshold, so the comparison is interpretable
+- Largest discrepancies (all +/−0.1 meV/atom): wbm-2-29187, wbm-4-16455, wbm-4-32299
+
+**Scaling to the 500-structure smoke run is justified** (estimated ~10–15 min GPU);
+pre-registered thresholds in `layer_b_plan.md` §7 formally apply at n=500.
+
 ## Scope and limits
 
-This is **Layer A** only: it verifies that leaderboard metrics are correctly derived
-from the *published* predictions. It does **not** yet re-generate those predictions.
-**Layer B** — running each model over the WBM initial structures on a GPU and re-scoring
-— is the next step and will test the deeper claim that the predictions themselves
-reproduce.
+Layer A verifies that leaderboard metrics are correctly derived from the *published*
+predictions (4/4 models exact). Layer B so far regenerates predictions for one model on
+20 structures — a vertical-slice wiring proof, not yet a statistical claim. Next steps:
+the 500-structure smoke run, then (optionally) additional models. Full-WBM (257k)
+regeneration is out of scope for v0.x.
 
 
 
@@ -274,9 +298,9 @@ Regenerate CHGNet predictions locally to test the deeper claim:
 
 # Environment
 
-_Captured: 2026-07-02 03:55:09 UTC_
+_Captured: 2026-07-02 05:09:27 UTC_
 
-- **timestamp_utc**: `2026-07-02 03:55:09 UTC`
+- **timestamp_utc**: `2026-07-02 05:09:27 UTC`
 - **platform**: `Windows-10-10.0.26200-SP0`
 - **python_version**: `3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]`
 - **python_executable**: `C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe`
@@ -293,14 +317,18 @@ asttokens==3.0.1
 bibtexparser==1.4.4
 certifi==2026.6.17
 charset-normalizer==3.4.7
+chgnet==0.4.2
 click==8.4.2
 colorama==0.4.6
 comm==0.2.3
 contourpy==1.3.3
 cycler==0.12.1
+Cython==3.2.8
 decorator==5.3.1
 executing==2.2.1
+filelock==3.29.0
 fonttools==4.63.0
+fsspec==2026.4.0
 gitdb==4.0.12
 GitPython==3.1.50
 idna==3.18
@@ -323,6 +351,7 @@ mpmath==1.3.0
 narwhals==2.23.0
 networkx==3.6.1
 numpy==2.4.6
+nvidia-ml-py3==7.352.0
 orjson==3.11.9
 packaging==26.2
 palettable==3.3.3
@@ -346,7 +375,8 @@ pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 PyYAML==6.0.3
 requests==2.34.2
-ruamel.yaml==0.19.1
+ruamel.yaml==0.18.17
+ruamel.yaml.clib==0.2.15
 scikit-learn==1.9.0
 scipy==1.17.1
 seaborn==0.13.2
@@ -358,6 +388,7 @@ stack-data==0.6.3
 sympy==1.14.0
 tabulate==0.10.0
 threadpoolctl==3.6.0
+torch==2.11.0+cu128
 tqdm==4.68.3
 traitlets==5.15.1
 typing-inspection==0.4.2
@@ -369,6 +400,65 @@ wandb==0.28.0
 wcwidth==0.8.2
 widgetsnbextension==4.0.15
 ```
+
+
+
+## 4. Metric check — metric_check-layer-b-chgnet-presmoke
+
+# Metric Check — Layer B pre-smoke: CHGNet regenerated predictions (n=20)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_chgnet_discovery.py` (FIRE, steps<=500, fmax=0.05, relax_cell, FrechetCellFilter). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz` | regenerated: `experiments/layer-b/chgnet/presmoke-run1.jsonl.gz`
+
+
+## Per-structure: regenerated vs published e_form (eV/atom)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | 8 | 33 | y | -1.5250 | -1.5251 | -0.1 | U | U | ✓ |
+| wbm-3-24460 | Er4Fe2In5 | 11 | 66 | y | -0.3176 | -0.3176 | -0.0 | U | U | ✓ |
+| wbm-2-29187 | N6Sr2Zn2 | 10 | 163 | y | -0.3653 | -0.3652 | +0.1 | U | U | ✓ |
+| wbm-3-24851 | Fe2Tb1Yb1 | 4 | 17 | y | 0.3891 | 0.3891 | +0.0 | U | U | ✓ |
+| wbm-1-49596 | Er2S6 | 8 | 31 | y | -1.5463 | -1.5463 | +0.0 | S | S | ✓ |
+| wbm-1-38260 | Ca2Fe2O6 | 10 | 40 | y | -2.0748 | -2.0748 | -0.0 | U | U | ✓ |
+| wbm-3-20857 | Cu2Eu2In2 | 6 | 22 | y | -0.2940 | -0.2940 | -0.0 | U | U | ✓ |
+| wbm-2-36510 | Gd1O7Si2Zr1 | 11 | 30 | y | -3.4816 | -3.4816 | -0.0 | U | U | ✓ |
+| wbm-2-31866 | In2Ni2Zn1 | 5 | 19 | y | -0.1561 | -0.1561 | -0.0 | U | U | ✓ |
+| wbm-5-3711 | Ca1Ho1Pb2 | 4 | 19 | y | -0.5297 | -0.5297 | -0.0 | S | S | ✓ |
+| wbm-4-16455 | Cl4H2Mg2 | 8 | 44 | y | -1.1990 | -1.1989 | +0.1 | U | U | ✓ |
+| wbm-4-4335 | B1Ga2Ir2Lu1 | 6 | 28 | y | -0.6008 | -0.6008 | +0.0 | U | U | ✓ |
+| wbm-3-11637 | C2Ge2La4 | 8 | 40 | y | -0.2782 | -0.2782 | +0.0 | U | U | ✓ |
+| wbm-4-32299 | Au1Os1S2 | 4 | 5 | y | -0.3713 | -0.3712 | +0.1 | U | U | ✓ |
+| wbm-2-24011 | In1Li4O5 | 10 | 31 | y | -1.6828 | -1.6828 | -0.0 | U | U | ✓ |
+| wbm-4-28433 | Ga2Hf6O2 | 10 | 31 | y | -1.1969 | -1.1969 | +0.0 | U | U | ✓ |
+| wbm-5-10472 | In2Pa2Re2 | 6 | 33 | y | -0.0932 | -0.0932 | -0.0 | S | S | ✓ |
+| wbm-2-30414 | Au1Na1 | 2 | 19 | y | -0.3156 | -0.3156 | +0.0 | U | U | ✓ |
+| wbm-2-17117 | Fe6In4Ru2 | 12 | 20 | y | 0.1066 | 0.1066 | +0.0 | U | U | ✓ |
+| wbm-1-39713 | Dy2O6Sn2 | 10 | 117 | y | -2.7777 | -2.7777 | -0.0 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds apply at n=500; this is the wiring/variance run)
+
+- median |Δ| = **0.0 meV/atom** (reproduce threshold: <=10)
+- mean |Δ| = 0.0 | max |Δ| = 0.1 meV/atom
+- within 10 meV/atom: 100%
+- classification agreement: **100%** (threshold: >=95%)
+- run1-vs-run2 |ΔE|/atom: median 0.000 / max 0.232 meV/atom (GPU run-to-run variance bound)
+
+## Discovery metrics on this subset via the Layer A path (n=20 — wiring proof, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 0.400 | 0.400 | 0.400 | 0.400 |
+| Precision | 0.333 | 0.333 | 0.333 | 0.333 |
+| Recall | 0.500 | 0.500 | 0.500 | 0.500 |
+| Accuracy | 0.850 | 0.850 | 0.850 | 0.850 |
+| MAE | 0.082 | 0.082 | 0.082 | 0.082 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 2 | 2 | 2 | 2 |
+| TN | 16 | 16 | 16 | 16 |
+| FN | 1 | 1 | 1 | 1 |
 
 
 
@@ -596,6 +686,29 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   pre-download the CSV in a separate step, then run the compute (the file-exists check in
   `ensure_preds` makes the compute run skip the download).
 
+- **[data] Stale md5 in `data-files.yml` for `wbm_initial_structures` — and upstream
+  never checks it.** (Found 2026-07-02, Layer B preflight.) The registry at the pinned
+  commit declares `md5: ff2c40a3a7bf65468852b67f0dbc67df` for
+  `wbm/2022-10-19-wbm-init-structs.jsonl.gz` (Figshare file `53161835`), but the
+  Figshare API reports `computed_md5: b809f101dd42a745ec2baabe7eb16f11` (size
+  49,537,334 B) for that file id — our download matched Figshare exactly. The declared
+  md5 actually belongs to a *different, older* artifact in the same Figshare article:
+  `2022-10-19-wbm-init-structs.json.bz2` (file id `40344466`). Root cause is upstream:
+  the download path (`remote/fetch.py::download_file`) performs **no md5 verification**,
+  so the stale value can never trip their own pipeline — only independent auditors who
+  trust the YAML. **Mitigation:** `download_datafile.py --expect-md5 <figshare
+  computed_md5>` (override logged in `run_log.md`). Report-worthy: checksum metadata
+  that is published but unverified drifts silently.
+
+- **[env] `ruamel.yaml` 0.19.1 breaks `pymatgen` config loading (via `monty.loadfn`).**
+  (Found 2026-07-02, Layer B scoring.) `import pymatgen.entries.computed_entries`
+  cascades into `pymatgen.io.vasp.sets`, which loads YAML configs through
+  `monty.serialization.loadfn` → ruamel; with ruamel.yaml 0.19.1 + monty 2026.5.18 +
+  pymatgen 2026.5.4 this dies with `AttributeError: 'YAML' object has no attribute
+  'check_token'`. Layer A never imported pymatgen, so the venv looked healthy until
+  Layer B. **Mitigation:** pin `ruamel.yaml<0.19` (installed 0.18.17); import then
+  succeeds. Another instance of silent dependency drift breaking a published pipeline.
+
 - **[env] `run_command.py` needs an absolute path to the child interpreter on Windows.**
   Invoking the wrapper with a *relative* `.venv/Scripts/python.exe` as the wrapped
   command fails before logging (`WinError 2`, `CreateProcess` does not resolve
@@ -617,84 +730,84 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 ## 6. Run log (tail)
 
+CHGNet v0.3.0 initialized with 412,525 parameters
+CHGNet will run on cuda
+versions: chgnet 0.4.2 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: FIRE steps<=500 fmax=0.05 relax_cell=True FrechetCellFilter (ase_filter)
+relaxed 20/20 | failures 0 (0%)
+s/structure: mean 1.26 | median 0.92 | max 5.69
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\chgnet\presmoke-run2.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\chgnet\model\model.py:898: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  volumes = torch.tensor(volumes, dtype=TORCH_DTYPE, device=atomic_numbers.device)
 ```
 
-- exit code: **0**  | duration: 3.9s  | raw log: `logs/cmd-20260702-042656.log`
+### 2026-07-02 05:07 UTC — layerB score pre-smoke vs published (Layer A path)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz experiments/layer-b/chgnet/presmoke-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
+```
+
+- exit code: **1**  | duration: 2.3s  | raw log: `logs/cmd-20260702-050713.log`
 
 output tail:
 ```
-| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
-|---|---|---|---|---|---|
-| F1 | 0.668 | 0.668 | 0.668 | 0.000 | ✓ |
-| Precision | 0.583 | 0.583 | 0.583 | -0.000 | ✓ |
-| Recall | 0.781 | 0.781 | 0.781 | 0.000 | ✓ |
-| Accuracy | 0.867 | 0.867 | 0.867 | 0.000 | ✓ |
-| MAE | 0.055 | 0.055 | 0.055 | 0.000 | ✓ |
-| RMSE | 0.099 | 0.099 | 0.099 | 0.000 | ✓ |
-| R2 | 0.698 | 0.698 | 0.698 | -0.000 | ✓ |
-| TP | 34420.000 | 34420 | 34420 | 0.000 | ✓ |
-| FP | 24576.000 | 24576 | 24576 | 0.000 | ✓ |
-| TN | 188295.000 | 188295 | 188295 | 0.000 | ✓ |
-| FN | 9672.000 | 9672 | 9672 | 0.000 | ✓ |
-
-wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-mace-mp-0.md
+    if self.parser.check_event(AliasEvent):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 141, in check_event
+    self.current_event = self.state()
+                         ^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 639, in parse_block_mapping_value
+    return self.parse_block_node_or_indentless_sequence()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 355, in parse_block_node_or_indentless_sequence
+    return self.parse_node(block=True, indentless_sequence=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 437, in parse_node
+    if self.scanner.check_token(ScalarToken):
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'YAML' object has no attribute 'check_token'
 ```
 
-### 2026-07-02 — Layer A MACE-MP-0 result (manual summary)
-Layer A MACE-MP-0 completed. Prediction CSV downloaded **separately** (via the new
-`--download-only` mode, 2.38 MB) and cached before metric computation — the
-download+compute split avoided the transient native crash seen once for SevenNet; this
-run completed cleanly (exit 0, no crash). Independent re-implementation and upstream
-`stable_metrics` agree with each other and with the official YAML on **every** metric
-for both `unique_prototypes` (F1 0.669, MAE 0.057, TP 26582 / FP 19457 / TN 162657 /
-FN 6792) and `full_test_set` (F1 0.668, MAE 0.055, TP 34420 / FP 24576 / TN 188295 /
-FN 9672).
-
-Notable: MACE's `missing_preds` (38 full / 34 uniq) are **genuine NaNs in the published
-CSV** — the 5 eV/atom outlier filter dropped 0 — whereas CHGNet (2) and SevenNet (3)
-missing came entirely from that filter. The pipeline reproduces the exact confusion
-counts in both regimes, validating the missing/outlier handling.
-
-Result: MATCH. No discrepancies (3/3 models).
-
-### 2026-07-02 04:39 UTC — predownload orb-v2
+### 2026-07-02 05:08 UTC — layerB score pre-smoke vs published (Layer A path), after ruamel pin
 
 ```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/compare_metrics.py --model orb-v2 --download-only
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz experiments/layer-b/chgnet/presmoke-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
 ```
 
-- exit code: **0**  | duration: 6.0s  | raw log: `logs/cmd-20260702-043930.log`
+- exit code: **0**  | duration: 4.0s  | raw log: `logs/cmd-20260702-050849.log`
 
 output tail:
 ```
-downloading predictions: https://api.figshare.com/v2/file/download/52057562 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\orb\orbff-v2\2024-10-11-wbm-IS2RE.csv.gz
-downloaded orb-v2: C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\orb\orbff-v2\2024-10-11-wbm-IS2RE.csv.gz (2.39 MB)
+| Accuracy | 0.850 | 0.850 | 0.850 | 0.850 |
+| MAE | 0.082 | 0.082 | 0.082 | 0.082 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 2 | 2 | 2 | 2 |
+| TN | 16 | 16 | 16 | 16 |
+| FN | 1 | 1 | 1 | 1 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-chgnet-presmoke.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
 ```
 
-### 2026-07-02 04:39 UTC — layerA orb-v2
+### 2026-07-02 05:09 UTC — capture env after layerB installs (torch/chgnet/ruamel pin)
 
 ```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/compare_metrics.py --model orb-v2 --subsets unique_prototypes full_test_set --out papers/matbench-discovery/metric_check-orb-v2.md
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/capture_env.py
 ```
 
-- exit code: **0**  | duration: 4.2s  | raw log: `logs/cmd-20260702-043954.log`
+- exit code: **0**  | duration: 0.5s  | raw log: `logs/cmd-20260702-050927.log`
 
 output tail:
 ```
-| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
-|---|---|---|---|---|---|
-| F1 | 0.858 | 0.858 | 0.858 | -0.000 | ✓ |
-| Precision | 0.906 | 0.906 | 0.906 | -0.000 | ✓ |
-| Recall | 0.815 | 0.815 | 0.815 | -0.000 | ✓ |
-| Accuracy | 0.954 | 0.954 | 0.954 | 0.000 | ✓ |
-| MAE | 0.028 | 0.028 | 0.028 | -0.000 | ✓ |
-| RMSE | 0.078 | 0.078 | 0.078 | 0.000 | ✓ |
-| R2 | 0.814 | 0.814 | 0.814 | 0.000 | ✓ |
-| TP | 35949.000 | 35949 | 35949 | 0.000 | ✓ |
-| FP | 3725.000 | 3725 | 3725 | 0.000 | ✓ |
-| TN | 209146.000 | 209146 | 209146 | 0.000 | ✓ |
-| FN | 8143.000 | 8143 | 8143 | 0.000 | ✓ |
-
-wrote papers\matbench-discovery\metric_check-orb-v2.md
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260702-050928.json
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
 ```
 
