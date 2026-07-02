@@ -1,9 +1,18 @@
-# ReproLab
+# ReproLab: Matbench Discovery Reproducibility Audit
 
-Independent reproducibility audits of AI-for-science papers and benchmarks.
-We answer, for a real published result: *can the code run, are the metrics
-reproducible, are leaderboard values independently verifiable, what compute is
-required, and what fails?*
+This repository independently audits **Layer A** of the Matbench Discovery leaderboard:
+recomputing published stability metrics from released prediction CSVs and the bundled
+WBM ground truth.
+
+**Current result: 4/4 checked models (CHGNet, SevenNet-0, MACE-MP-0, ORB v2) reproduce
+the official YAML metrics exactly across both audited subsets.** Side findings include
+Figshare WAF download behavior, PyPI/GitHub layout divergence under the same version
+string, and a transient Windows native crash when download and compute run in one
+process.
+
+ReproLab's broader goal: independent reproducibility audits of AI-for-science papers
+and benchmarks — *can the code run, are the metrics reproducible, are leaderboard
+values independently verifiable, what compute is required, and what fails?*
 
 ## Paper-001 — Matbench Discovery Audit
 
