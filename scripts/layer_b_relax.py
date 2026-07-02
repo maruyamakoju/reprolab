@@ -9,6 +9,10 @@ Reads initial structures by *streaming* the jsonl.gz (no full-frame load), write
 JSON record per structure (energy, steps, convergence, wall time) to a git-ignored
 experiments/ output. Per-structure try/except mirrors upstream.
 
+Resumable: records are appended to --out as each structure completes (multi-member
+gzip; readable by gzip.open transparently), and ids already present in --out are
+skipped on restart. The end-of-run summary covers the whole file.
+
 Usage (pre-smoke):
     python scripts/layer_b_relax.py --limit 20 --out experiments/layer-b/chgnet/presmoke-run1.jsonl.gz
 """
@@ -74,8 +78,18 @@ def main() -> None:
     if args.limit:
         ids = ids[: args.limit]
 
+    out = ROOT / args.out
+    done: set[str] = set()
+    if out.is_file():  # resume: skip structures already relaxed into this file
+        with gzip.open(out, "rt", encoding="utf-8") as fh:
+            done = {json.loads(line)["material_id"] for line in fh}
+        print(f"resuming: {len(done)} of {len(ids)} ids already in {out.name}")
+    todo = [i for i in ids if i not in done]
+    if not todo:
+        print("nothing to do; all subset ids already relaxed")
+
     t0 = time.time()
-    structures = stream_structures(ROOT / args.repo / INIT_STRUCTS, set(ids))
+    structures = stream_structures(ROOT / args.repo / INIT_STRUCTS, set(todo))
     print(f"loaded {len(structures)} initial structures in {time.time() - t0:.1f}s")
 
     relaxer = StructOptimizer(use_device=args.device)
@@ -83,37 +97,40 @@ def main() -> None:
     filter_kwarg = "ase_filter" if "ase_filter" in inspect.signature(
         relaxer.relax).parameters else "cell_filter"
 
-    records: list[dict] = []
-    failures: list[str] = []
-    for mat_id in ids:  # keep subset order
-        struct = Structure.from_dict(structures[mat_id])
-        t1 = time.time()
-        try:
-            result = relaxer.relax(
-                struct, verbose=False, steps=MAX_STEPS, fmax=FMAX, relax_cell=True,
-                **{filter_kwarg: "FrechetCellFilter"},
-            )
-            traj = result["trajectory"]
-            final_fmax = float(np.linalg.norm(traj.forces[-1], axis=1).max())
-            records.append(dict(
-                material_id=mat_id,
-                chgnet_energy=float(traj.energies[-1]),
-                n_sites=len(struct),
-                n_steps=len(traj.energies),
-                fmax_final=round(final_fmax, 5),
-                converged=bool(final_fmax <= FMAX),
-                seconds=round(time.time() - t1, 2),
-            ))
-        except (ValueError, RuntimeError, OSError, KeyError) as exc:
-            failures.append(mat_id)
-            print(f"FAILED {mat_id}: {exc!r}")
-
-    out = ROOT / args.out
     out.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(out, "wt", encoding="utf-8") as fh:
-        for rec in records:
-            fh.write(json.dumps(rec) + "\n")
+    failures: list[str] = []
+    n_new = 0
+    with gzip.open(out, "at", encoding="utf-8") as fh:
+        for mat_id in todo:  # keep subset order
+            struct = Structure.from_dict(structures[mat_id])
+            t1 = time.time()
+            try:
+                result = relaxer.relax(
+                    struct, verbose=False, steps=MAX_STEPS, fmax=FMAX, relax_cell=True,
+                    **{filter_kwarg: "FrechetCellFilter"},
+                )
+                traj = result["trajectory"]
+                final_fmax = float(np.linalg.norm(traj.forces[-1], axis=1).max())
+                rec = dict(
+                    material_id=mat_id,
+                    chgnet_energy=float(traj.energies[-1]),
+                    n_sites=len(struct),
+                    n_steps=len(traj.energies),
+                    fmax_final=round(final_fmax, 5),
+                    converged=bool(final_fmax <= FMAX),
+                    seconds=round(time.time() - t1, 2),
+                )
+                fh.write(json.dumps(rec) + "\n")
+                fh.flush()
+                n_new += 1
+            except (ValueError, RuntimeError, OSError, KeyError) as exc:
+                failures.append(mat_id)
+                print(f"FAILED {mat_id}: {exc!r}")
 
+    # summary over the whole file (resumed + new)
+    with gzip.open(out, "rt", encoding="utf-8") as fh:
+        records = [json.loads(line) for line in fh]
+    print(f"this run: {n_new} new, {len(done)} resumed, {len(failures)} failed")
     secs = [r["seconds"] for r in records]
     print(f"versions: chgnet {version('chgnet')} | torch {version('torch')} | "
           f"numpy {version('numpy')} | device {args.device}"

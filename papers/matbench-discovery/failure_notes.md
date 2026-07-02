@@ -20,6 +20,12 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   metrics are computed; must round to match the YAML.
 - **Subset order**: filter is applied on the full set, *then* the `unique_prototypes`
   mask is applied.
+- **Step-cap non-convergence is part of the published protocol** (Layer B): 23/500
+  smoke structures (4.6%) hit the 500-step FIRE cap without reaching fmax ≤ 0.05.
+  The upstream generation script ran under the same cap, so the published predictions
+  contain the same regime; regenerated e_form still agreed to ≤1.1 meV/atom and
+  classification agreement was 100%. Not a defect — an evaluation assumption to state
+  when describing Layer B.
 
 ## Findings so far (2026-07-02)
 

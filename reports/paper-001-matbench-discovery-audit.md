@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-02 05:10 UTC_
+_Generated: 2026-07-02 06:31 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -53,37 +53,43 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
    download+compute path (SevenNet, first attempt); it did not recur once download and
    compute were split (`--download-only`). Recorded as a Windows-environment note.
 
-## Result — Layer B pre-smoke (GPU, prediction regeneration)
+## Result — Layer B (GPU, prediction regeneration, n=500)
 
 Beyond re-scoring published predictions, we regenerated predictions from scratch for
-**CHGNet** on a deterministic 20-structure WBM subset (seed-42 sample of
+**CHGNet** on a deterministic 500-structure WBM subset (seed-42 sample of
 `unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
 relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
-formation energy → scored through the *same* Layer A metric path.
+formation energy → scored through the *same* Layer A metric path. All thresholds were
+pre-registered in `layer_b_plan.md` §7 **before** the run.
 
-- **20/20 relaxed, 0 failures, 20/20 converged** — RTX 4090, mean 1.26 s/structure
-  (median 0.94, max 5.35)
-- **Regenerated e_form matches published values within 0.1 meV/atom on every
-  structure** (max |Δ| = 0.1 meV/atom = the published CSV's rounding precision;
-  median 0.0), despite a 2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29,
-  chgnet package 0.4.2 loading the same 0.3.0 weights, 412,525 params verified)
-- **100% stable/unstable classification agreement**; discovery metrics computed from
-  regenerated and published predictions are identical through both metric
-  implementations
-- GPU run-to-run variance (two independent runs): median 0.000, max 0.232 meV/atom —
-  far below the 10 meV/atom reproduce threshold, so the comparison is interpretable
-- Largest discrepancies (all +/−0.1 meV/atom): wbm-2-29187, wbm-4-16455, wbm-4-32299
+- **500/500 relaxed, 0 failures** — RTX 4090, mean 1.06 s/structure (median 0.99,
+  max 6.16), 9.3 min total GPU; 477/500 converged within the 500-step cap (the
+  published pipeline ran under the same cap)
+- **median |Δe_form| = 0.03 meV/atom vs published** (pre-registered threshold: ≤10);
+  p95 = 0.07, max = 1.08 meV/atom; 100% of structures within 10 meV/atom — despite a
+  2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29, chgnet package 0.4.2
+  loading the same 0.3.0 weights, 412,525 params verified)
+- **100% stable/unstable classification agreement** (threshold: ≥95%); **zero flips**
+  in either direction
+- Discovery metrics computed from regenerated and published predictions are
+  **identical** through both metric implementations (F1 0.584, MAE 0.067,
+  TP/FP/TN/FN = 47/47/386/20 on this subset)
+- GPU run-to-run variance bounded first on the 20-structure pre-smoke (two runs):
+  median 0.000, max 0.232 meV/atom — far below the threshold, so deltas are
+  interpretable
+- Worst structure: wbm-2-42265 (S6Sr3), Δ = +1.1 meV/atom, classification unchanged
 
-**Scaling to the 500-structure smoke run is justified** (estimated ~10–15 min GPU);
-pre-registered thresholds in `layer_b_plan.md` §7 formally apply at n=500.
+**Verdict: the published CHGNet predictions reproduce from model execution** on this
+subset, to well within the published CSV's own rounding scale.
 
 ## Scope and limits
 
 Layer A verifies that leaderboard metrics are correctly derived from the *published*
-predictions (4/4 models exact). Layer B so far regenerates predictions for one model on
-20 structures — a vertical-slice wiring proof, not yet a statistical claim. Next steps:
-the 500-structure smoke run, then (optionally) additional models. Full-WBM (257k)
-regeneration is out of scope for v0.x.
+predictions (4/4 models exact). Layer B regenerates predictions for one model
+(CHGNet) on a 500-structure deterministic subset — a small but valid audit of the
+generation path, not a full leaderboard reproduction. Next steps: additional Layer B
+models (ORB / MACE) or another paper. Full-WBM (257k) regeneration is out of scope
+for v0.x.
 
 
 
@@ -462,6 +468,61 @@ published preds: `models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz` | rege
 
 
 
+## 4. Metric check — metric_check-layer-b-chgnet-smoke500
+
+# Metric Check — Layer B: CHGNet regenerated predictions (n=500)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_chgnet_discovery.py` (FIRE, steps<=500, fmax=0.05, relax_cell, FrechetCellFilter). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz` | regenerated: `experiments/layer-b/chgnet/smoke500-run1.jsonl.gz`
+
+
+## Worst 15 structures by |Δ| (full data in experiments/)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-2-42265 | S6Sr3 | 9 | 80 | y | -1.6900 | -1.6889 | +1.1 | U | U | ✓ |
+| wbm-3-5904 | As4Gd2 | 6 | 37 | y | -0.9494 | -0.9488 | +0.6 | U | U | ✓ |
+| wbm-2-14997 | Al4F8 | 12 | 93 | y | -3.2045 | -3.2040 | +0.5 | U | U | ✓ |
+| wbm-2-45027 | Se6Sm2 | 8 | 49 | y | -1.4907 | -1.4904 | +0.3 | S | S | ✓ |
+| wbm-4-16455 | Cl4H2Mg2 | 8 | 44 | y | -1.1990 | -1.1989 | +0.1 | U | U | ✓ |
+| wbm-1-36458 | Au2Hg2O4 | 8 | 44 | y | -0.5065 | -0.5066 | -0.1 | U | U | ✓ |
+| wbm-1-25586 | Li1Ni2Pb1 | 4 | 18 | y | 0.0417 | 0.0418 | +0.1 | U | U | ✓ |
+| wbm-1-11292 | Co3Ir1 | 4 | 37 | y | 0.0611 | 0.0612 | +0.1 | U | U | ✓ |
+| wbm-1-7045 | Al4C5Th2 | 11 | 41 | y | -0.1514 | -0.1515 | -0.1 | U | U | ✓ |
+| wbm-4-24096 | Ir1Ni2Zr1 | 4 | 34 | y | -0.4924 | -0.4923 | +0.1 | U | U | ✓ |
+| wbm-5-5141 | Au1Cr1Fe2 | 4 | 16 | y | 0.2683 | 0.2684 | +0.1 | U | U | ✓ |
+| wbm-1-21801 | Ho2I6 | 8 | 49 | y | -1.6823 | -1.6824 | -0.1 | U | U | ✓ |
+| wbm-4-18193 | As2Co2Li1Nd1 | 6 | 30 | y | -0.6785 | -0.6784 | +0.1 | U | U | ✓ |
+| wbm-4-6677 | Cl6Fe1Rb2 | 9 | 35 | y | -1.6191 | -1.6190 | +0.1 | S | S | ✓ |
+| wbm-4-15908 | H8Nd2Pt2 | 12 | 42 | y | -0.5504 | -0.5503 | +0.1 | S | S | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 500
+- median |Δ| = **0.03 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.03 | p95 |Δ| = 0.07 | max |Δ| = 1.08 meV/atom
+- within 10 meV/atom: 100.0%
+- classification agreement: **100.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 0 | unstable->stable: 0
+
+## Discovery metrics on this subset via the Layer A path (n=500 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 0.584 | 0.584 | 0.584 | 0.584 |
+| Precision | 0.500 | 0.500 | 0.500 | 0.500 |
+| Recall | 0.701 | 0.701 | 0.701 | 0.701 |
+| Accuracy | 0.866 | 0.866 | 0.866 | 0.866 |
+| MAE | 0.067 | 0.067 | 0.067 | 0.067 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 47 | 47 | 47 | 47 |
+| FP | 47 | 47 | 47 | 47 |
+| TN | 386 | 386 | 386 | 386 |
+| FN | 20 | 20 | 20 | 20 |
+
+
+
 ## 4. Metric check — metric_check-mace-mp-0
 
 # Metric Check — MACE-MP-0
@@ -650,6 +711,12 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   metrics are computed; must round to match the YAML.
 - **Subset order**: filter is applied on the full set, *then* the `unique_prototypes`
   mask is applied.
+- **Step-cap non-convergence is part of the published protocol** (Layer B): 23/500
+  smoke structures (4.6%) hit the 500-step FIRE cap without reaching fmax ≤ 0.05.
+  The upstream generation script ran under the same cap, so the published predictions
+  contain the same regime; regenerated e_form still agreed to ≤1.1 meV/atom and
+  classification agreement was 100%. Not a defect — an evaluation assumption to state
+  when describing Layer B.
 
 ## Findings so far (2026-07-02)
 
@@ -730,60 +797,6 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 ## 6. Run log (tail)
 
-CHGNet v0.3.0 initialized with 412,525 parameters
-CHGNet will run on cuda
-versions: chgnet 0.4.2 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
-protocol: FIRE steps<=500 fmax=0.05 relax_cell=True FrechetCellFilter (ase_filter)
-relaxed 20/20 | failures 0 (0%)
-s/structure: mean 1.26 | median 0.92 | max 5.69
-converged: 20/20
-wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\chgnet\presmoke-run2.jsonl.gz
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\chgnet\model\model.py:898: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
-Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
-  volumes = torch.tensor(volumes, dtype=TORCH_DTYPE, device=atomic_numbers.device)
-```
-
-### 2026-07-02 05:07 UTC — layerB score pre-smoke vs published (Layer A path)
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz experiments/layer-b/chgnet/presmoke-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
-```
-
-- exit code: **1**  | duration: 2.3s  | raw log: `logs/cmd-20260702-050713.log`
-
-output tail:
-```
-    if self.parser.check_event(AliasEvent):
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 141, in check_event
-    self.current_event = self.state()
-                         ^^^^^^^^^^^^
-  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 639, in parse_block_mapping_value
-    return self.parse_block_node_or_indentless_sequence()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 355, in parse_block_node_or_indentless_sequence
-    return self.parse_node(block=True, indentless_sequence=True)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 437, in parse_node
-    if self.scanner.check_token(ScalarToken):
-       ^^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'YAML' object has no attribute 'check_token'
-```
-
-### 2026-07-02 05:08 UTC — layerB score pre-smoke vs published (Layer A path), after ruamel pin
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz experiments/layer-b/chgnet/presmoke-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
-```
-
-- exit code: **0**  | duration: 4.0s  | raw log: `logs/cmd-20260702-050849.log`
-
-output tail:
-```
-| Accuracy | 0.850 | 0.850 | 0.850 | 0.850 |
-| MAE | 0.082 | 0.082 | 0.082 | 0.082 |
-| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
-| TP | 1 | 1 | 1 | 1 |
 | FP | 2 | 2 | 2 | 2 |
 | TN | 16 | 16 | 16 | 16 |
 | FN | 1 | 1 | 1 | 1 |
@@ -809,5 +822,59 @@ output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260702-050928.json
 wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
+```
+
+### 2026-07-02 06:19 UTC — layerB smoke 500 run1 (GPU)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_relax.py --out experiments/layer-b/chgnet/smoke500-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 556.1s  | raw log: `logs/cmd-20260702-061926.log`
+
+output tail:
+```
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8950528433502876e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8898301709961935e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.895197489755525e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.84166155036159e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.917325198573279e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8708189922621193e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.891320154424595e-13
+  return f(*arrays, *other_args, **kwargs)
+```
+
+### 2026-07-02 06:29 UTC — layerB score smoke500 vs published (Layer A path)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/smoke500-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-smoke500.md
+```
+
+- exit code: **0**  | duration: 13.9s  | raw log: `logs/cmd-20260702-062921.log`
+
+output tail:
+```
+| Accuracy | 0.866 | 0.866 | 0.866 | 0.866 |
+| MAE | 0.067 | 0.067 | 0.067 | 0.067 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 47 | 47 | 47 | 47 |
+| FP | 47 | 47 | 47 | 47 |
+| TN | 386 | 386 | 386 | 386 |
+| FN | 20 | 20 | 20 | 20 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-chgnet-smoke500.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
 ```
 

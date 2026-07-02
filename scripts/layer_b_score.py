@@ -96,20 +96,25 @@ def main() -> None:
            for label in frames}
     agree = (cls["regenerated"] == cls["published"])
 
+    abs_d = d_meV.abs()
+    table_ids = ids if len(ids) <= 30 else abs_d.nlargest(15).index.tolist()
+    table_title = ("Per-structure: regenerated vs published e_form (eV/atom)"
+                   if len(ids) <= 30
+                   else "Worst 15 structures by |Δ| (full data in experiments/)")
     lines = [
-        "# Metric Check — Layer B pre-smoke: CHGNet regenerated predictions "
+        "# Metric Check — Layer B: CHGNet regenerated predictions "
         f"(n={len(ids)})\n",
         "Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. "
         "Generation protocol per upstream `test_chgnet_discovery.py` "
         "(FIRE, steps<=500, fmax=0.05, relax_cell, FrechetCellFilter). "
         "Scored with `compare_metrics.py` functions unchanged.\n",
         f"published preds: `{PUBLISHED}` | regenerated: `{args.preds[0]}`\n",
-        "\n## Per-structure: regenerated vs published e_form (eV/atom)\n",
+        f"\n## {table_title}\n",
         "| material_id | formula | n_sites | steps | conv | published | regenerated "
         "| Δ meV/atom | stable(pub) | stable(regen) | agree |",
         "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
-    for mat_id in ids:
+    for mat_id in table_ids:
         r = df_run.loc[mat_id]
         lines.append(
             f"| {mat_id} | {formulas[mat_id].replace(' ', '')} | {r.n_sites:.0f} "
@@ -120,14 +125,20 @@ def main() -> None:
             f"| {'✓' if agree[mat_id] else '✗'} |"
         )
 
-    abs_d = d_meV.abs()
+    flips_su = int((cls["published"] & ~cls["regenerated"]).sum())
+    flips_us = int((~cls["published"] & cls["regenerated"]).sum())
+    stats_header = "\n## Agreement stats (pre-registered thresholds: " \
+        "median |Δ|<=10 meV/atom, classification agreement >=95%)\n"
     lines += [
-        "\n## Agreement stats (pre-registered thresholds apply at n=500; "
-        "this is the wiring/variance run)\n",
-        f"- median |Δ| = **{abs_d.median():.1f} meV/atom** (reproduce threshold: <=10)",
-        f"- mean |Δ| = {abs_d.mean():.1f} | max |Δ| = {abs_d.max():.1f} meV/atom",
-        f"- within 10 meV/atom: {(abs_d <= 10).mean():.0%}",
-        f"- classification agreement: **{agree.mean():.0%}** (threshold: >=95%)",
+        stats_header,
+        f"- n scored = {len(ids)}",
+        f"- median |Δ| = **{abs_d.median():.2f} meV/atom** (threshold: <=10)",
+        f"- mean |Δ| = {abs_d.mean():.2f} | p95 |Δ| = {abs_d.quantile(0.95):.2f} "
+        f"| max |Δ| = {abs_d.max():.2f} meV/atom",
+        f"- within 10 meV/atom: {(abs_d <= 10).mean():.1%}",
+        f"- classification agreement: **{agree.mean():.1%}** (threshold: >=95%)",
+        f"- flips stable->unstable (pub->regen): {flips_su} "
+        f"| unstable->stable: {flips_us}",
     ]
 
     if len(runs) > 1:
@@ -139,7 +150,7 @@ def main() -> None:
         ]
 
     lines.append("\n## Discovery metrics on this subset via the Layer A path "
-                 "(n=20 — wiring proof, not leaderboard-comparable)\n")
+                 f"(n={len(ids)} — subset-level, not leaderboard-comparable)\n")
     lines.append("| metric | regenerated (indep) | regenerated (upstream_fn) "
                  "| published (indep) | published (upstream_fn) |")
     lines.append("|---|---|---|---|---|")
@@ -159,8 +170,7 @@ def main() -> None:
 
     out = ROOT / args.out
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print("\n".join(lines[lines.index("\n## Agreement stats (pre-registered thresholds "
-                                      "apply at n=500; this is the wiring/variance run)\n"):]))
+    print("\n".join(lines[lines.index(stats_header):]))
     print(f"\nwrote {out}")
 
 

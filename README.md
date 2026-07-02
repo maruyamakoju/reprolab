@@ -4,11 +4,19 @@ This repository independently audits **Layer A** of the Matbench Discovery leade
 recomputing published stability metrics from released prediction CSVs and the bundled
 WBM ground truth.
 
-**Current result: 4/4 checked models (CHGNet, SevenNet-0, MACE-MP-0, ORB v2) reproduce
-the official YAML metrics exactly across both audited subsets.** Side findings include
-Figshare WAF download behavior, PyPI/GitHub layout divergence under the same version
-string, and a transient Windows native crash when download and compute run in one
-process.
+Current result:
+
+- **Layer A: 4/4 released models (CHGNet, SevenNet-0, MACE-MP-0, ORB v2) reproduce
+  official YAML leaderboard metrics exactly** across both audited subsets.
+- **Layer B: CHGNet predictions were regenerated on a deterministic 500-structure WBM
+  subset and compared against the published predictions using the same scoring path**
+  — median |Δe_form| = 0.03 meV/atom (pre-registered threshold: ≤10), 100%
+  classification agreement, zero stable/unstable flips.
+
+Side findings include Figshare WAF download behavior, PyPI/GitHub layout divergence
+under the same version string, a stale — and upstream-unverified — md5 in the data-file
+registry, dependency-drift breakage (ruamel.yaml 0.19 vs pymatgen), and a transient
+Windows native crash when download and compute run in one process.
 
 ReproLab's broader goal: independent reproducibility audits of AI-for-science papers
 and benchmarks — *can the code run, are the metrics reproducible, are leaderboard
@@ -100,12 +108,15 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       - ORB v2: uniq_protos F1 0.880 / MAE 0.028 · full F1 0.858 / MAE 0.028
 - [x] Interim report generated (`reports/paper-001-…md`) + README polished for readers
 - [x] Layer A closed at 4/4 (`v0.1-layer-a`)
-- [x] **Layer B pre-smoke passed** (branch `layer-b-chgnet-smoke`): CHGNet regenerated
-      from initial structures on 20/20 deterministic WBM subset ids, RTX 4090,
-      mean 1.26 s/structure, 0 failures; regenerated e_form within 0.1 meV/atom of
-      published on every structure, 100% classification agreement
+- [x] Layer B pre-smoke passed: 20/20 ids, run-to-run GPU variance ≤0.232 meV/atom
       (`metric_check-layer-b-chgnet-presmoke.md`)
-- [ ] Layer B smoke (500 structures, ~10–15 min GPU) — go/no-go pending
+- [x] **Layer B smoke passed at n=500** (`v0.2-layer-b-smoke`): 500/500 relaxed,
+      0 failures, 9.3 min on RTX 4090 (mean 1.06 s/structure); median |Δe_form| =
+      0.03 meV/atom vs published (p95 0.07, max 1.08), 100% classification agreement,
+      zero flips; subset-level discovery metrics identical
+      (`metric_check-layer-b-chgnet-smoke500.md`)
+- [ ] Next: Layer B for a second model (ORB / MACE), or Paper-002 — after publication
+      polish
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

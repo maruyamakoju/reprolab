@@ -1,12 +1,14 @@
 # Layer B Plan — regenerate predictions
 
-Status: **PRE-SMOKE PASSED** (2026-07-02, branch `layer-b-chgnet-smoke`; results in
-`metric_check-layer-b-chgnet-presmoke.md`). 20/20 structures relaxed on RTX 4090,
-0 failures, all converged, mean 1.26 s/structure; regenerated e_form matches the
-published values within 0.1 meV/atom (the published CSV's rounding precision),
-100% classification agreement; run-to-run GPU variance ≤0.232 meV/atom.
-Scaling to the 500-structure smoke is justified (est. ~10–15 min GPU) and awaits
-go-decision. The design below is unchanged; §5 estimates were conservative.
+Status: **SMOKE PASSED at n=500** (2026-07-02, branch `layer-b-chgnet-smoke`,
+`v0.2-layer-b-smoke`; results in `metric_check-layer-b-chgnet-smoke500.md`).
+500/500 relaxed on RTX 4090, 0 failures, 477/500 converged within the step cap,
+mean 1.06 s/structure, 9.3 min total GPU. Against the pre-registered §7 thresholds:
+median |Δe_form| = 0.03 meV/atom (threshold 10), p95 = 0.07, max = 1.08;
+100% classification agreement (threshold 95%), zero flips in either direction.
+Verdict: **the published CHGNet predictions REPRODUCE from model execution** on this
+subset. Pre-smoke (n=20, two runs) had bounded GPU run-to-run variance at
+≤0.232 meV/atom, so these deltas are interpretable.
 
 Layer A closed at 4/4 (`v0.1-layer-a`); this plan defines the smallest vertical
 slice of Layer B:

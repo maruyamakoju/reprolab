@@ -439,3 +439,57 @@ output tail:
 wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260702-050928.json
 wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
 ```
+
+### 2026-07-02 06:19 UTC — layerB smoke 500 run1 (GPU)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_relax.py --out experiments/layer-b/chgnet/smoke500-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 556.1s  | raw log: `logs/cmd-20260702-061926.log`
+
+output tail:
+```
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8950528433502876e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8898301709961935e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.895197489755525e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.84166155036159e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.917325198573279e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8708189922621193e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.891320154424595e-13
+  return f(*arrays, *other_args, **kwargs)
+```
+
+### 2026-07-02 06:29 UTC — layerB score smoke500 vs published (Layer A path)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/smoke500-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-smoke500.md
+```
+
+- exit code: **0**  | duration: 13.9s  | raw log: `logs/cmd-20260702-062921.log`
+
+output tail:
+```
+| Accuracy | 0.866 | 0.866 | 0.866 | 0.866 |
+| MAE | 0.067 | 0.067 | 0.067 | 0.067 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 47 | 47 | 47 | 47 |
+| FP | 47 | 47 | 47 | 47 |
+| TN | 386 | 386 | 386 | 386 |
+| FN | 20 | 20 | 20 | 20 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-chgnet-smoke500.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+```

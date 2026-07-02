@@ -45,34 +45,40 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
    download+compute path (SevenNet, first attempt); it did not recur once download and
    compute were split (`--download-only`). Recorded as a Windows-environment note.
 
-## Result — Layer B pre-smoke (GPU, prediction regeneration)
+## Result — Layer B (GPU, prediction regeneration, n=500)
 
 Beyond re-scoring published predictions, we regenerated predictions from scratch for
-**CHGNet** on a deterministic 20-structure WBM subset (seed-42 sample of
+**CHGNet** on a deterministic 500-structure WBM subset (seed-42 sample of
 `unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
 relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
-formation energy → scored through the *same* Layer A metric path.
+formation energy → scored through the *same* Layer A metric path. All thresholds were
+pre-registered in `layer_b_plan.md` §7 **before** the run.
 
-- **20/20 relaxed, 0 failures, 20/20 converged** — RTX 4090, mean 1.26 s/structure
-  (median 0.94, max 5.35)
-- **Regenerated e_form matches published values within 0.1 meV/atom on every
-  structure** (max |Δ| = 0.1 meV/atom = the published CSV's rounding precision;
-  median 0.0), despite a 2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29,
-  chgnet package 0.4.2 loading the same 0.3.0 weights, 412,525 params verified)
-- **100% stable/unstable classification agreement**; discovery metrics computed from
-  regenerated and published predictions are identical through both metric
-  implementations
-- GPU run-to-run variance (two independent runs): median 0.000, max 0.232 meV/atom —
-  far below the 10 meV/atom reproduce threshold, so the comparison is interpretable
-- Largest discrepancies (all +/−0.1 meV/atom): wbm-2-29187, wbm-4-16455, wbm-4-32299
+- **500/500 relaxed, 0 failures** — RTX 4090, mean 1.06 s/structure (median 0.99,
+  max 6.16), 9.3 min total GPU; 477/500 converged within the 500-step cap (the
+  published pipeline ran under the same cap)
+- **median |Δe_form| = 0.03 meV/atom vs published** (pre-registered threshold: ≤10);
+  p95 = 0.07, max = 1.08 meV/atom; 100% of structures within 10 meV/atom — despite a
+  2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29, chgnet package 0.4.2
+  loading the same 0.3.0 weights, 412,525 params verified)
+- **100% stable/unstable classification agreement** (threshold: ≥95%); **zero flips**
+  in either direction
+- Discovery metrics computed from regenerated and published predictions are
+  **identical** through both metric implementations (F1 0.584, MAE 0.067,
+  TP/FP/TN/FN = 47/47/386/20 on this subset)
+- GPU run-to-run variance bounded first on the 20-structure pre-smoke (two runs):
+  median 0.000, max 0.232 meV/atom — far below the threshold, so deltas are
+  interpretable
+- Worst structure: wbm-2-42265 (S6Sr3), Δ = +1.1 meV/atom, classification unchanged
 
-**Scaling to the 500-structure smoke run is justified** (estimated ~10–15 min GPU);
-pre-registered thresholds in `layer_b_plan.md` §7 formally apply at n=500.
+**Verdict: the published CHGNet predictions reproduce from model execution** on this
+subset, to well within the published CSV's own rounding scale.
 
 ## Scope and limits
 
 Layer A verifies that leaderboard metrics are correctly derived from the *published*
-predictions (4/4 models exact). Layer B so far regenerates predictions for one model on
-20 structures — a vertical-slice wiring proof, not yet a statistical claim. Next steps:
-the 500-structure smoke run, then (optionally) additional models. Full-WBM (257k)
-regeneration is out of scope for v0.x.
+predictions (4/4 models exact). Layer B regenerates predictions for one model
+(CHGNet) on a 500-structure deterministic subset — a small but valid audit of the
+generation path, not a full leaderboard reproduction. Next steps: additional Layer B
+models (ORB / MACE) or another paper. Full-WBM (257k) regeneration is out of scope
+for v0.x.
