@@ -1,19 +1,24 @@
-# PR draft — upstream fix for janosh/matbench-discovery#357 (NOT yet submitted)
+# PR draft — upstream fix for janosh/matbench-discovery#357
+
+**SUBMITTED 2026-07-03 as [PR #359](https://github.com/janosh/matbench-discovery/pull/359)**
+(24–48h rule: no maintainer response on #357 since 2026-07-02, opened politely per
+the decision table). Body below is what was submitted, plus a short courtesy preamble.
 
 Branch: `maruyamakoju/matbench-discovery:fix-wbm-initial-structures-md5`
-(tip `71c33ee`, based on upstream `eaa7550`; lint-clean under upstream's pinned
-ruff 0.15.20 check+format). Awaiting maintainer response on
-[#357](https://github.com/janosh/matbench-discovery/issues/357) — per the decision
-table: OK → open immediately; no response within 24–48h of 2026-07-02 → open politely.
+(tip `0c753e0`, based on upstream `eaa7550`; lint-clean under upstream's pinned
+ruff 0.15.20 check+format).
 
-To open when approved:
+Post-submission updates:
 
-```bash
-gh pr create --repo janosh/matbench-discovery \
-  --head maruyamakoju:fix-wbm-initial-structures-md5 \
-  --title "Fix stale/missing md5s in data-files.yml, verify checksums on download" \
-  --body-file <this file, PR body section below>
-```
+- `b50b67b`: addressed CodeRabbit's I/O nit by hashing chunks while streaming
+  downloads instead of re-reading the completed `.part` file.
+- `0c753e0`: addressed CodeRabbit's caller-surfacing concern by making
+  `DataFiles.path` raise `FileNotFoundError` if an attempted download/verification
+  still leaves no local file; added a regression test.
+- Local verification after both updates:
+  `ruff check matbench_discovery/remote/fetch.py matbench_discovery/enums.py tests/remote/test_fetch.py tests/test_enums.py`,
+  `ruff format --check ...`, and
+  `pytest tests/remote/test_fetch.py tests/test_enums.py` -> 57 passed.
 
 ---
 
