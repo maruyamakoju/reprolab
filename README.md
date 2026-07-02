@@ -23,6 +23,12 @@ whether published predictions can be regenerated from model execution on a trace
 subset. Every command is logged, every metric traces to specific code and data, and
 comparison thresholds were pre-registered before the GPU runs.
 
+## External validation
+
+- Upstream issue filed with the stale-md5 / unverified-checksum finding:
+  [janosh/matbench-discovery#357](https://github.com/janosh/matbench-discovery/issues/357)
+  (response pending)
+
 ## Reproducibility findings along the way
 
 - Figshare landing URLs (`figshare.com/files/<id>`) are WAF-blocked for naive
