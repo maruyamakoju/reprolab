@@ -1,0 +1,84 @@
+# ReproLab Paper-001 — benchmark metadata (single source of truth for the audit)
+paper:
+  title: A framework to evaluate machine learning crystal stability predictions
+  authors: Riebesell, Goodall, Benner, et al.
+  venue: Nature Machine Intelligence
+  volume_pages: 7, 836-847
+  year: 2025
+  doi: 10.1038/s42256-025-01055-1
+  preprint: arXiv:2308.14920
+
+benchmark:
+  name: Matbench Discovery
+  repo: https://github.com/janosh/matbench-discovery
+  repo_commit_pinned: eaa755066edccbc5224b0404369e626e7f2294fd  # HEAD at clone time 2026-07-02
+  package_version: 1.3.1
+  license: MIT
+  leaderboard: https://matbench-discovery.materialsproject.org/
+  figshare_article: https://figshare.com/articles/dataset/22715158
+  domain: materials (ML interatomic potentials / crystal thermodynamic stability)
+
+task_under_audit:
+  name: discovery            # stable/unstable classification + energy regression
+  test_task: IS2RE-SR        # initial structure -> relaxed energy (structure relaxation)
+  stability_threshold_eV_per_atom: 0     # matbench_discovery.STABILITY_THRESHOLD
+  max_error_threshold_eV_per_atom: 5.0   # preds with |e_form_pred-e_form_dft|>5 -> NaN(unstable)
+
+# Column names in the WBM summary (ground truth) — from matbench_discovery/enums.py MbdKey
+ground_truth:
+  file: data/wbm/2023-12-13-wbm-summary.csv.gz   # bundled in clone; DataFiles.wbm_summary
+  each_true_col: e_above_hull_mp2020_corrected_ppd_mp   # DFT energy above MP convex hull
+  e_form_dft_col: e_form_per_atom_mp2020_corrected      # DFT formation energy (corrected)
+  id_col: material_id
+  uniq_proto_col: unique_prototype                      # boolean mask for uniq_protos subset
+
+# First model to audit
+primary_model:
+  key: chgnet-0.3.0
+  label: CHGNet
+  pred_col: e_form_per_atom_chgnet
+  pred_file: models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz  # NOT in clone
+  pred_file_url: https://figshare.com/files/52057526                # download at runtime
+  yaml: models/chgnet/chgnet-0.3.0.yml                              # holds official metrics
+
+# Official published metric values to reproduce (from models/chgnet/chgnet-0.3.0.yml)
+official_metrics:
+  unique_prototypes:   # leaderboard default subset
+    F1: 0.613
+    Precision: 0.514
+    Recall: 0.758
+    Accuracy: 0.851
+    MAE: 0.063     # eV/atom
+    RMSE: 0.103    # eV/atom
+    R2: 0.689
+    TP: 25313
+    FP: 23955
+    TN: 158159
+    FN: 8061
+    missing_preds: 0
+  full_test_set:
+    F1: 0.612
+    MAE: 0.061
+    RMSE: 0.1
+    R2: 0.69
+    TP: 32642
+    FP: 29979
+    TN: 182892
+    FN: 11450
+    missing_preds: 2
+  most_stable_10k:
+    F1: 0.92
+    Precision: 0.851
+    MAE: 0.063
+    R2: 0.816
+
+# Candidate second models to extend to (ideal line, Jul 4)
+secondary_models:
+  - key: mace-mp-0
+    yaml: models/mace/mace-mp-0.yml
+  - key: mace-mpa-0
+    yaml: models/mace/mace-mpa-0.yml
+  - key: sevennet-0
+    yaml: models/sevennet/sevennet-0.yml
+  - key: orb-v2
+    yaml: models/orb/orb-v2.yml

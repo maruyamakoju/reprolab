@@ -1,0 +1,31 @@
+# --- ReproLab ignores ---
+# Cloned upstream repos (large; reproducible via clone command in README)
+vendor/
+
+# Downloaded prediction / data caches (large; fetched from Figshare at runtime)
+experiments/**/data/
+experiments/**/*.csv.gz
+experiments/**/*.json.gz
+experiments/**/*.jsonl.gz
+experiments/**/*.h5
+experiments/**/*.zip
+*.cache/
+
+# Python envs / build
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.egg-info/
+.ipynb_checkpoints/
+
+# Secrets — never track (audit rule)
+.env
+*.key
+*.pem
+wandb/
+
+# OS cruft
+Thumbs.db
+.DS_Store
