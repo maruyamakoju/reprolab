@@ -30,16 +30,24 @@ def section(title: str, path: Path, *, code: bool = False, tail: int | None = No
 
 def main() -> None:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    # include every per-model metric-check file (metric_check.md is CHGNet;
+    # metric_check-<model>.md are the others)
+    metric_sections = [
+        section(f"4. Metric check — {mc.stem}", mc)
+        for mc in sorted(PAPER.glob("metric_check*.md"))
+    ]
+
     parts = [
         "# ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery",
         f"\n_Generated: {now}_\n",
         "> Auto-assembled from tracked artifacts by `scripts/make_report.py`.",
+        section("0. Executive summary", PAPER / "summary.md"),
         section("1. Benchmark metadata", PAPER / "metadata.yaml", code=True),
         section("2. Reproduction plan", PAPER / "reproduction_plan.md"),
         section("3. Environment", PAPER / "environment.md"),
-        section("4. Metric check (official vs reproduced)", PAPER / "metric_check.md"),
+        *metric_sections,
         section("5. Failure notes", PAPER / "failure_notes.md"),
-        section("6. Run log (tail)", PAPER / "run_log.md", tail=60),
+        section("6. Run log (tail)", PAPER / "run_log.md", tail=80),
     ]
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(parts) + "\n", encoding="utf-8")

@@ -22,6 +22,19 @@ required, and what fails?*
 See `papers/matbench-discovery/reproduction_plan.md` for the full metric→code→data
 →command→expected→compare mapping.
 
+## Result so far — Layer A, 3/3 models reproduce the official YAML exactly
+
+| Model | F1 official → reproduced (uniq_protos / full) | MAE eV/atom (uniq_protos / full) |
+|---|---|---|
+| CHGNet | 0.613→0.613 / 0.612→0.612 | 0.063 / 0.061 |
+| SevenNet-0 | 0.724→0.724 / 0.719→0.719 | 0.048 / 0.046 |
+| MACE-MP-0 | 0.669→0.669 / 0.668→0.668 | 0.057 / 0.055 |
+
+Every reported fraction (to 3 dp) and every integer confusion-matrix count (TP/FP/TN/FN)
+matches, computed **two independent ways** (a from-scratch re-implementation *and* the
+upstream `stable_metrics`). Assembled report:
+`reports/paper-001-matbench-discovery-audit.md`.
+
 ## Reproduce it yourself
 
 ```bash
@@ -37,12 +50,15 @@ pip install matbench-discovery   # brings the official stable_metrics + deps
 # 3. snapshot the environment
 python scripts/capture_env.py
 
-# 4. Layer A: recompute CHGNet discovery metrics and diff vs the official YAML
+# 4. Layer A — split download from compute (avoids a rare native crash on Windows),
+#    then recompute + diff vs the official YAML. Repeat --model for each:
+#    chgnet-0.3.0, sevennet-0, mace-mp-0
+python scripts/compare_metrics.py --model chgnet-0.3.0 --download-only
 python scripts/run_command.py --note "layerA chgnet" -- \
     python scripts/compare_metrics.py --model chgnet-0.3.0 \
         --subsets unique_prototypes full_test_set
 
-# 5. assemble the report
+# 5. assemble the report (includes every metric_check*.md)
 python scripts/make_report.py
 ```
 
@@ -69,7 +85,7 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       - CHGNet: uniq_protos F1 0.613 / MAE 0.063 · full F1 0.612 / MAE 0.061
       - SevenNet-0: uniq_protos F1 0.724 / MAE 0.048 · full F1 0.719 / MAE 0.046
       - MACE-MP-0: uniq_protos F1 0.669 / MAE 0.057 · full F1 0.668 / MAE 0.055
-- [ ] Interim report generated + README polished for external readers
+- [x] Interim report generated (`reports/paper-001-…md`) + README polished for readers
 - [ ] Fourth model (ORB) / GPU Layer B: regenerate predictions and re-score
 
 ## Rules
