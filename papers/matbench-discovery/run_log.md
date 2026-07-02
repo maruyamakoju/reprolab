@@ -493,3 +493,17 @@ C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x6
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 ```
+
+### 2026-07-02 — external-path self-audit (fresh clone of the PUBLIC repo)
+
+Followed README "Reproduce it yourself" verbatim in a throwaway directory:
+fresh `git clone https://github.com/maruyamakoju/reprolab`, fresh upstream clone
+(HEAD = `eaa7550`, identical to our pinned audit commit — no drift), fresh venv
+(`pip install matbench-discovery` 1.3.1), Figshare API download (2.38 MB), then
+`compare_metrics.py --model chgnet-0.3.0` on both subsets.
+
+- result: **22/22 metric checks pass, 0 mismatches** (F1 0.613/0.612,
+  MAE 0.063/0.061, integer confusion counts exact)
+- compute step: exit 0, 24.4 s
+- conclusion: the published instructions reproduce Layer A end-to-end from a
+  clean machine state.

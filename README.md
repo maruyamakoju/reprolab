@@ -136,8 +136,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       0.03 meV/atom vs published (p95 0.07, max 1.08), 100% classification agreement,
       zero flips; subset-level discovery metrics identical
       (`metric_check-layer-b-chgnet-smoke500.md`)
-- [ ] Next: Layer B for a second model (ORB / MACE), or Paper-002 — after publication
-      polish
+- [x] External-path self-audit: a fresh clone of this public repo, following the
+      steps above verbatim (fresh venv + upstream clone + Figshare download),
+      reproduces CHGNet Layer A exactly — 22/22 checks, 0 mismatches (run_log.md)
+- [ ] Next: Layer B for a second model (ORB / MACE), or Paper-002 — pending external
+      feedback
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,
