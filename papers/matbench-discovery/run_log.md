@@ -245,3 +245,197 @@ output tail:
 
 wrote papers\matbench-discovery\metric_check-orb-v2.md
 ```
+
+### 2026-07-02 04:58 UTC — layerB make subset (500, seed 42)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_subset.py
+```
+
+- exit code: **0**  | duration: 1.0s  | raw log: `logs/cmd-20260702-045822.log`
+
+output tail:
+```
+universe: 215,488 unique_prototypes rows (of 256,963 total)
+sampled: n=500 seed=42 -> papers\matbench-discovery\layer_b_subset.csv
+stable fraction: subset 0.132 vs universe 0.153
+pre-smoke (first 20 ids): ['wbm-3-33636', 'wbm-3-24460', 'wbm-2-29187', 'wbm-3-24851', 'wbm-1-49596', 'wbm-1-38260', 'wbm-3-20857', 'wbm-2-36510', 'wbm-2-31866', 'wbm-5-3711', 'wbm-4-16455', 'wbm-4-4335', 'wbm-3-11637', 'wbm-4-32299', 'wbm-2-24011', 'wbm-4-28433', 'wbm-5-10472', 'wbm-2-30414', 'wbm-2-17117', 'wbm-1-39713']
+```
+
+### 2026-07-02 04:58 UTC — layerB download wbm initial structures (md5-checked)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name wbm_initial_structures
+```
+
+- exit code: **1**  | duration: 25.1s  | raw log: `logs/cmd-20260702-045858.log`
+
+output tail:
+```
+downloading wbm_initial_structures: https://api.figshare.com/v2/file/download/53161835 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-init-structs.jsonl.gz
+downloaded 49.5 MB
+Traceback (most recent call last):
+  File "C:\Users\07013\Desktop\0702fable\reprolab\scripts\download_datafile.py", line 77, in <module>
+    main()
+  File "C:\Users\07013\Desktop\0702fable\reprolab\scripts\download_datafile.py", line 71, in main
+    raise RuntimeError(f"md5 mismatch: got {got_md5}, want {want_md5}")
+RuntimeError: md5 mismatch: got b809f101dd42a745ec2baabe7eb16f11, want ff2c40a3a7bf65468852b67f0dbc67df
+```
+
+### 2026-07-02 05:01 UTC — layerB download wbm init structs, retry w/ figshare computed_md5 (YAML md5 is stale, see failure_notes)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name wbm_initial_structures --expect-md5 b809f101dd42a745ec2baabe7eb16f11
+```
+
+- exit code: **0**  | duration: 17.6s  | raw log: `logs/cmd-20260702-050152.log`
+
+output tail:
+```
+downloading wbm_initial_structures: https://api.figshare.com/v2/file/download/53161835 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-init-structs.jsonl.gz
+downloaded 49.5 MB
+md5 OK (b809f101dd42a745ec2baabe7eb16f11): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-init-structs.jsonl.gz
+```
+
+### 2026-07-02 05:04 UTC — layerB preflight: cuda + chgnet weights check
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -c 
+import torch
+from chgnet.model import CHGNet
+print('torch', torch.__version__, '| cuda available:', torch.cuda.is_available())
+print('device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')
+model = CHGNet.load()
+n = sum(p.numel() for p in model.parameters())
+print('chgnet params:', n, '(YAML model_params: 412525, match:', n == 412525, ')')
+print('model version attr:', getattr(model, 'version', 'n/a'))
+
+```
+
+- exit code: **0**  | duration: 10.5s  | raw log: `logs/cmd-20260702-050410.log`
+
+output tail:
+```
+torch 2.11.0+cu128 | cuda available: True
+device: NVIDIA GeForce RTX 4090
+CHGNet v0.3.0 initialized with 412,525 parameters
+CHGNet will run on cuda
+chgnet params: 412525 (YAML model_params: 412525, match: True )
+model version attr: 0.3.0
+```
+
+### 2026-07-02 05:04 UTC — layerB pre-smoke 20 run1 (GPU)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_relax.py --limit 20 --out experiments/layer-b/chgnet/presmoke-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 31.5s  | raw log: `logs/cmd-20260702-050450.log`
+
+output tail:
+```
+loaded 20 initial structures in 3.3s
+CHGNet v0.3.0 initialized with 412,525 parameters
+CHGNet will run on cuda
+versions: chgnet 0.4.2 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: FIRE steps<=500 fmax=0.05 relax_cell=True FrechetCellFilter (ase_filter)
+relaxed 20/20 | failures 0 (0%)
+s/structure: mean 1.26 | median 0.94 | max 5.35
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\chgnet\presmoke-run1.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\chgnet\model\model.py:898: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  volumes = torch.tensor(volumes, dtype=TORCH_DTYPE, device=atomic_numbers.device)
+```
+
+### 2026-07-02 05:05 UTC — layerB pre-smoke 20 run2 (GPU, variance bound)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_relax.py --limit 20 --out experiments/layer-b/chgnet/presmoke-run2.jsonl.gz
+```
+
+- exit code: **0**  | duration: 31.3s  | raw log: `logs/cmd-20260702-050534.log`
+
+output tail:
+```
+loaded 20 initial structures in 3.3s
+CHGNet v0.3.0 initialized with 412,525 parameters
+CHGNet will run on cuda
+versions: chgnet 0.4.2 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: FIRE steps<=500 fmax=0.05 relax_cell=True FrechetCellFilter (ase_filter)
+relaxed 20/20 | failures 0 (0%)
+s/structure: mean 1.26 | median 0.92 | max 5.69
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\chgnet\presmoke-run2.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\chgnet\model\model.py:898: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  volumes = torch.tensor(volumes, dtype=TORCH_DTYPE, device=atomic_numbers.device)
+```
+
+### 2026-07-02 05:07 UTC — layerB score pre-smoke vs published (Layer A path)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz experiments/layer-b/chgnet/presmoke-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
+```
+
+- exit code: **1**  | duration: 2.3s  | raw log: `logs/cmd-20260702-050713.log`
+
+output tail:
+```
+    if self.parser.check_event(AliasEvent):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 141, in check_event
+    self.current_event = self.state()
+                         ^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 639, in parse_block_mapping_value
+    return self.parse_block_node_or_indentless_sequence()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 355, in parse_block_node_or_indentless_sequence
+    return self.parse_node(block=True, indentless_sequence=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\ruamel\yaml\parser.py", line 437, in parse_node
+    if self.scanner.check_token(ScalarToken):
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'YAML' object has no attribute 'check_token'
+```
+
+### 2026-07-02 05:08 UTC — layerB score pre-smoke vs published (Layer A path), after ruamel pin
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_b_score.py --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz experiments/layer-b/chgnet/presmoke-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
+```
+
+- exit code: **0**  | duration: 4.0s  | raw log: `logs/cmd-20260702-050849.log`
+
+output tail:
+```
+| Accuracy | 0.850 | 0.850 | 0.850 | 0.850 |
+| MAE | 0.082 | 0.082 | 0.082 | 0.082 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 2 | 2 | 2 | 2 |
+| TN | 16 | 16 | 16 | 16 |
+| FN | 1 | 1 | 1 | 1 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-chgnet-presmoke.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+```
+
+### 2026-07-02 05:09 UTC — capture env after layerB installs (torch/chgnet/ruamel pin)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/capture_env.py
+```
+
+- exit code: **0**  | duration: 0.5s  | raw log: `logs/cmd-20260702-050927.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260702-050928.json
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
+```

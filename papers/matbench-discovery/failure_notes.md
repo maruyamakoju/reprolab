@@ -56,6 +56,29 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   pre-download the CSV in a separate step, then run the compute (the file-exists check in
   `ensure_preds` makes the compute run skip the download).
 
+- **[data] Stale md5 in `data-files.yml` for `wbm_initial_structures` — and upstream
+  never checks it.** (Found 2026-07-02, Layer B preflight.) The registry at the pinned
+  commit declares `md5: ff2c40a3a7bf65468852b67f0dbc67df` for
+  `wbm/2022-10-19-wbm-init-structs.jsonl.gz` (Figshare file `53161835`), but the
+  Figshare API reports `computed_md5: b809f101dd42a745ec2baabe7eb16f11` (size
+  49,537,334 B) for that file id — our download matched Figshare exactly. The declared
+  md5 actually belongs to a *different, older* artifact in the same Figshare article:
+  `2022-10-19-wbm-init-structs.json.bz2` (file id `40344466`). Root cause is upstream:
+  the download path (`remote/fetch.py::download_file`) performs **no md5 verification**,
+  so the stale value can never trip their own pipeline — only independent auditors who
+  trust the YAML. **Mitigation:** `download_datafile.py --expect-md5 <figshare
+  computed_md5>` (override logged in `run_log.md`). Report-worthy: checksum metadata
+  that is published but unverified drifts silently.
+
+- **[env] `ruamel.yaml` 0.19.1 breaks `pymatgen` config loading (via `monty.loadfn`).**
+  (Found 2026-07-02, Layer B scoring.) `import pymatgen.entries.computed_entries`
+  cascades into `pymatgen.io.vasp.sets`, which loads YAML configs through
+  `monty.serialization.loadfn` → ruamel; with ruamel.yaml 0.19.1 + monty 2026.5.18 +
+  pymatgen 2026.5.4 this dies with `AttributeError: 'YAML' object has no attribute
+  'check_token'`. Layer A never imported pymatgen, so the venv looked healthy until
+  Layer B. **Mitigation:** pin `ruamel.yaml<0.19` (installed 0.18.17); import then
+  succeeds. Another instance of silent dependency drift breaking a published pipeline.
+
 - **[env] `run_command.py` needs an absolute path to the child interpreter on Windows.**
   Invoking the wrapper with a *relative* `.venv/Scripts/python.exe` as the wrapped
   command fails before logging (`WinError 2`, `CreateProcess` does not resolve

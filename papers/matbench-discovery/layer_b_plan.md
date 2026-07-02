@@ -1,7 +1,15 @@
-# Layer B Plan — regenerate predictions (design only, NOT yet executed)
+# Layer B Plan — regenerate predictions
 
-Status: **DESIGN**. Nothing in this file has been run. Layer A closed at 4/4
-(`v0.1-layer-a`); this plan defines the smallest vertical slice of Layer B:
+Status: **PRE-SMOKE PASSED** (2026-07-02, branch `layer-b-chgnet-smoke`; results in
+`metric_check-layer-b-chgnet-presmoke.md`). 20/20 structures relaxed on RTX 4090,
+0 failures, all converged, mean 1.26 s/structure; regenerated e_form matches the
+published values within 0.1 meV/atom (the published CSV's rounding precision),
+100% classification agreement; run-to-run GPU variance ≤0.232 meV/atom.
+Scaling to the 500-structure smoke is justified (est. ~10–15 min GPU) and awaits
+go-decision. The design below is unchanged; §5 estimates were conservative.
+
+Layer A closed at 4/4 (`v0.1-layer-a`); this plan defines the smallest vertical
+slice of Layer B:
 
 > model relaxation/inference → prediction CSV → the *same* Layer A metric path.
 

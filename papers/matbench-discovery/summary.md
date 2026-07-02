@@ -45,10 +45,34 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
    download+compute path (SevenNet, first attempt); it did not recur once download and
    compute were split (`--download-only`). Recorded as a Windows-environment note.
 
+## Result — Layer B pre-smoke (GPU, prediction regeneration)
+
+Beyond re-scoring published predictions, we regenerated predictions from scratch for
+**CHGNet** on a deterministic 20-structure WBM subset (seed-42 sample of
+`unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
+relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
+formation energy → scored through the *same* Layer A metric path.
+
+- **20/20 relaxed, 0 failures, 20/20 converged** — RTX 4090, mean 1.26 s/structure
+  (median 0.94, max 5.35)
+- **Regenerated e_form matches published values within 0.1 meV/atom on every
+  structure** (max |Δ| = 0.1 meV/atom = the published CSV's rounding precision;
+  median 0.0), despite a 2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29,
+  chgnet package 0.4.2 loading the same 0.3.0 weights, 412,525 params verified)
+- **100% stable/unstable classification agreement**; discovery metrics computed from
+  regenerated and published predictions are identical through both metric
+  implementations
+- GPU run-to-run variance (two independent runs): median 0.000, max 0.232 meV/atom —
+  far below the 10 meV/atom reproduce threshold, so the comparison is interpretable
+- Largest discrepancies (all +/−0.1 meV/atom): wbm-2-29187, wbm-4-16455, wbm-4-32299
+
+**Scaling to the 500-structure smoke run is justified** (estimated ~10–15 min GPU);
+pre-registered thresholds in `layer_b_plan.md` §7 formally apply at n=500.
+
 ## Scope and limits
 
-This is **Layer A** only: it verifies that leaderboard metrics are correctly derived
-from the *published* predictions. It does **not** yet re-generate those predictions.
-**Layer B** — running each model over the WBM initial structures on a GPU and re-scoring
-— is the next step and will test the deeper claim that the predictions themselves
-reproduce.
+Layer A verifies that leaderboard metrics are correctly derived from the *published*
+predictions (4/4 models exact). Layer B so far regenerates predictions for one model on
+20 structures — a vertical-slice wiring proof, not yet a statistical claim. Next steps:
+the 500-structure smoke run, then (optionally) additional models. Full-WBM (257k)
+regeneration is out of scope for v0.x.

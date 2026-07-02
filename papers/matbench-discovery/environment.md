@@ -1,8 +1,8 @@
 # Environment
 
-_Captured: 2026-07-02 03:55:09 UTC_
+_Captured: 2026-07-02 05:09:27 UTC_
 
-- **timestamp_utc**: `2026-07-02 03:55:09 UTC`
+- **timestamp_utc**: `2026-07-02 05:09:27 UTC`
 - **platform**: `Windows-10-10.0.26200-SP0`
 - **python_version**: `3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]`
 - **python_executable**: `C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe`
@@ -19,14 +19,18 @@ asttokens==3.0.1
 bibtexparser==1.4.4
 certifi==2026.6.17
 charset-normalizer==3.4.7
+chgnet==0.4.2
 click==8.4.2
 colorama==0.4.6
 comm==0.2.3
 contourpy==1.3.3
 cycler==0.12.1
+Cython==3.2.8
 decorator==5.3.1
 executing==2.2.1
+filelock==3.29.0
 fonttools==4.63.0
+fsspec==2026.4.0
 gitdb==4.0.12
 GitPython==3.1.50
 idna==3.18
@@ -49,6 +53,7 @@ mpmath==1.3.0
 narwhals==2.23.0
 networkx==3.6.1
 numpy==2.4.6
+nvidia-ml-py3==7.352.0
 orjson==3.11.9
 packaging==26.2
 palettable==3.3.3
@@ -72,7 +77,8 @@ pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 PyYAML==6.0.3
 requests==2.34.2
-ruamel.yaml==0.19.1
+ruamel.yaml==0.18.17
+ruamel.yaml.clib==0.2.15
 scikit-learn==1.9.0
 scipy==1.17.1
 seaborn==0.13.2
@@ -84,6 +90,7 @@ stack-data==0.6.3
 sympy==1.14.0
 tabulate==0.10.0
 threadpoolctl==3.6.0
+torch==2.11.0+cu128
 tqdm==4.68.3
 traitlets==5.15.1
 typing-inspection==0.4.2

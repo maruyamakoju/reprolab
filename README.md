@@ -100,8 +100,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       - ORB v2: uniq_protos F1 0.880 / MAE 0.028 · full F1 0.858 / MAE 0.028
 - [x] Interim report generated (`reports/paper-001-…md`) + README polished for readers
 - [x] Layer A closed at 4/4 (`v0.1-layer-a`)
-- [ ] Layer B (GPU): regenerate predictions for one model on a small WBM subset,
-      re-score through the same Layer A path — design first (`layer_b_plan.md`)
+- [x] **Layer B pre-smoke passed** (branch `layer-b-chgnet-smoke`): CHGNet regenerated
+      from initial structures on 20/20 deterministic WBM subset ids, RTX 4090,
+      mean 1.26 s/structure, 0 failures; regenerated e_form within 0.1 meV/atom of
+      published on every structure, 100% classification agreement
+      (`metric_check-layer-b-chgnet-presmoke.md`)
+- [ ] Layer B smoke (500 structures, ~10–15 min GPU) — go/no-go pending
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,
