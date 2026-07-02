@@ -1,8 +1,10 @@
 # PR draft — upstream fix for janosh/matbench-discovery#357 (NOT yet submitted)
 
 Branch: `maruyamakoju/matbench-discovery:fix-wbm-initial-structures-md5`
-(commit `40c6eaa`, based on upstream `eaa7550`). Awaiting maintainer response on
-[#357](https://github.com/janosh/matbench-discovery/issues/357) or owner approval.
+(tip `71c33ee`, based on upstream `eaa7550`; lint-clean under upstream's pinned
+ruff 0.15.20 check+format). Awaiting maintainer response on
+[#357](https://github.com/janosh/matbench-discovery/issues/357) — per the decision
+table: OK → open immediately; no response within 24–48h of 2026-07-02 → open politely.
 
 To open when approved:
 
