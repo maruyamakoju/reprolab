@@ -178,6 +178,8 @@ def main() -> None:
     ap.add_argument("--subsets", nargs="+",
                     default=["unique_prototypes", "full_test_set"])
     ap.add_argument("--out", default="papers/matbench-discovery/metric_check.md")
+    ap.add_argument("--download-only", action="store_true",
+                    help="download+validate the prediction CSV, then exit (no compute)")
     args = ap.parse_args()
 
     repo = Path(args.repo).resolve()
@@ -187,10 +189,20 @@ def main() -> None:
     # resolve to the pinned commit.
     import sys
     sys.path.insert(0, str(repo))
-    gt = load_ground_truth(repo)
     ydata, disc = load_model_yaml(repo, args.model)
+
+    # --download-only: fetch + validate the prediction CSV, then stop. Keeps the network
+    # download in a separate process from the heavy numpy/pandas compute (see the
+    # transient 0xC0000005 crash on the combined path in failure_notes.md).
+    if args.download_only:
+        path = ensure_preds(repo, disc)
+        print(f"downloaded {args.model}: {path} ({path.stat().st_size / 1e6:.2f} MB)")
+        return
+
     pred_col = disc["pred_col"]
-    preds = pd.read_csv(ensure_preds(repo, disc))
+    pred_path = ensure_preds(repo, disc)  # already cached if pre-downloaded
+    gt = load_ground_truth(repo)
+    preds = pd.read_csv(pred_path)
     df = build_each_pred(gt, preds, pred_col)
 
     report_metrics = ("F1", "Precision", "Recall", "Accuracy", "MAE", "RMSE", "R2",

@@ -64,12 +64,13 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Env built (venv, Python 3.11.9) + `matbench-discovery` installed (exit 0)
 - [x] Wiring verified: `stable_metrics` imports; ground-truth rows (256,963) and
       uniq-proto rows (215,488) match the YAML confusion-matrix totals exactly
-- [x] **Layer A — 2 models checked, both reproduce the official YAML exactly**
+- [x] **Layer A — 3 models checked, all reproduce the official YAML exactly**
       (both subsets; integer confusion counts identical; independent + upstream agree)
       - CHGNet: uniq_protos F1 0.613 / MAE 0.063 · full F1 0.612 / MAE 0.061
       - SevenNet-0: uniq_protos F1 0.724 / MAE 0.048 · full F1 0.719 / MAE 0.046
-- [ ] Third model Layer A (MACE / ORB)
-- [ ] GPU Layer B: regenerate predictions and re-score (2026-07-04+)
+      - MACE-MP-0: uniq_protos F1 0.669 / MAE 0.057 · full F1 0.668 / MAE 0.055
+- [ ] Interim report generated + README polished for external readers
+- [ ] Fourth model (ORB) / GPU Layer B: regenerate predictions and re-score
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

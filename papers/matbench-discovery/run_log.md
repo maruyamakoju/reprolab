@@ -146,3 +146,61 @@ Python traceback. Re-running with the file cached (both directly and through the
 wrapper) succeeded with identical results. Classified as a transient native crash on
 the download+compute-in-one-process path, not a data or metric issue (see
 `failure_notes.md`). Metrics above are from the reproducible cached runs.
+
+### 2026-07-02 04:26 UTC — predownload mace-mp-0
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe C:\Users\07013\Desktop\0702fable\reprolab\scripts\compare_metrics.py --repo C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery --model mace-mp-0 --download-only
+```
+
+- exit code: **0**  | duration: 6.4s  | raw log: `logs/cmd-20260702-042641.log`
+
+output tail:
+```
+downloading predictions: https://api.figshare.com/v2/file/download/52057538 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\mace\mace-mp-0\2023-12-11-wbm-IS2RE-FIRE.csv.gz
+downloaded mace-mp-0: C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\mace\mace-mp-0\2023-12-11-wbm-IS2RE-FIRE.csv.gz (2.38 MB)
+```
+
+### 2026-07-02 04:26 UTC — layerA mace-mp-0
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe C:\Users\07013\Desktop\0702fable\reprolab\scripts\compare_metrics.py --repo C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery --model mace-mp-0 --subsets unique_prototypes full_test_set --out C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-mace-mp-0.md
+```
+
+- exit code: **0**  | duration: 3.9s  | raw log: `logs/cmd-20260702-042656.log`
+
+output tail:
+```
+| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
+|---|---|---|---|---|---|
+| F1 | 0.668 | 0.668 | 0.668 | 0.000 | ✓ |
+| Precision | 0.583 | 0.583 | 0.583 | -0.000 | ✓ |
+| Recall | 0.781 | 0.781 | 0.781 | 0.000 | ✓ |
+| Accuracy | 0.867 | 0.867 | 0.867 | 0.000 | ✓ |
+| MAE | 0.055 | 0.055 | 0.055 | 0.000 | ✓ |
+| RMSE | 0.099 | 0.099 | 0.099 | 0.000 | ✓ |
+| R2 | 0.698 | 0.698 | 0.698 | -0.000 | ✓ |
+| TP | 34420.000 | 34420 | 34420 | 0.000 | ✓ |
+| FP | 24576.000 | 24576 | 24576 | 0.000 | ✓ |
+| TN | 188295.000 | 188295 | 188295 | 0.000 | ✓ |
+| FN | 9672.000 | 9672 | 9672 | 0.000 | ✓ |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-mace-mp-0.md
+```
+
+### 2026-07-02 — Layer A MACE-MP-0 result (manual summary)
+Layer A MACE-MP-0 completed. Prediction CSV downloaded **separately** (via the new
+`--download-only` mode, 2.38 MB) and cached before metric computation — the
+download+compute split avoided the transient native crash seen once for SevenNet; this
+run completed cleanly (exit 0, no crash). Independent re-implementation and upstream
+`stable_metrics` agree with each other and with the official YAML on **every** metric
+for both `unique_prototypes` (F1 0.669, MAE 0.057, TP 26582 / FP 19457 / TN 162657 /
+FN 6792) and `full_test_set` (F1 0.668, MAE 0.055, TP 34420 / FP 24576 / TN 188295 /
+FN 9672).
+
+Notable: MACE's `missing_preds` (38 full / 34 uniq) are **genuine NaNs in the published
+CSV** — the 5 eV/atom outlier filter dropped 0 — whereas CHGNet (2) and SevenNet (3)
+missing came entirely from that filter. The pipeline reproduces the exact confusion
+counts in both regimes, validating the missing/outlier handling.
+
+Result: MATCH. No discrepancies (3/3 models).

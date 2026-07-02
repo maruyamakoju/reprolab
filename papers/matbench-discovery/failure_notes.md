@@ -57,8 +57,10 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   `ensure_preds` makes the compute run skip the download).
 
 ## Open discrepancies
-**None (2 of 2 models).** Layer A reproduced the official YAML exactly for **CHGNet**
-and **SevenNet-0** on both `unique_prototypes` and `full_test_set` — every fraction to
-3 dp and every integer confusion count (TP/FP/TN/FN) identical, via both an independent
-re-implementation and the upstream `stable_metrics`. See `metric_check.md` and
-`metric_check-sevennet.md`.
+**None (3 of 3 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
+**SevenNet-0**, and **MACE-MP-0** on both `unique_prototypes` and `full_test_set` —
+every fraction to 3 dp and every integer confusion count (TP/FP/TN/FN) identical, via
+both an independent re-implementation and the upstream `stable_metrics`. The pipeline
+matches `missing_preds` in both regimes: outlier-filter-driven (CHGNet 2, SevenNet 3)
+and genuine-NaN-driven (MACE 38 full / 34 uniq, filter dropped 0). See
+`metric_check.md`, `metric_check-sevennet.md`, `metric_check-mace-mp-0.md`.
