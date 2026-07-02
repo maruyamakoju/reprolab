@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-02 04:30 UTC_
+_Generated: 2026-07-02 04:42 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -29,12 +29,15 @@ committed in the model's YAML.
 | SevenNet-0 | full_test_set | 0.719 / 0.719 | 0.046 / 0.046 | exact | ✅ MATCH |
 | MACE-MP-0 | unique_prototypes | 0.669 / 0.669 | 0.057 / 0.057 | exact | ✅ MATCH |
 | MACE-MP-0 | full_test_set | 0.668 / 0.668 | 0.055 / 0.055 | exact | ✅ MATCH |
+| ORB v2 | unique_prototypes | 0.880 / 0.880 | 0.028 / 0.028 | exact | ✅ MATCH |
+| ORB v2 | full_test_set | 0.858 / 0.858 | 0.028 / 0.028 | exact | ✅ MATCH |
 
-**3 of 3 models reproduce exactly** — every reported fraction to 3 decimals and every
+**4 of 4 models reproduce exactly** — every reported fraction to 3 decimals and every
 integer confusion-matrix count (TP/FP/TN/FN) identical, on both audited subsets. The
 outlier/missing-prediction accounting also matches in two distinct regimes: filter-driven
-(CHGNet 2, SevenNet 3 dropped by the 5 eV/atom rule) and genuine-NaN-driven (MACE 38
-full / 34 uniq, filter dropped 0).
+(CHGNet 2, SevenNet 3, ORB v2 2 dropped by the 5 eV/atom rule) and genuine-NaN-driven
+(MACE 38 full / 34 uniq, filter dropped 0). The four models span three architecture
+families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
 
 ## Reproducibility findings (worth knowing before you trust `pip install`)
 
@@ -410,6 +413,47 @@ repo commit: `C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discover
 
 
 
+## 4. Metric check — metric_check-orb-v2
+
+# Metric Check — ORB v2
+
+repo commit: `vendor/matbench-discovery` | pred_col: `e_form_per_atom_orb` | filtered(|Δ|>5): 2 | missing_preds: 2
+
+
+## unique_prototypes  (n=215,488)
+
+| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
+|---|---|---|---|---|---|
+| F1 | 0.880 | 0.880 | 0.880 | -0.000 | ✓ |
+| Precision | 0.924 | 0.924 | 0.924 | 0.000 | ✓ |
+| Recall | 0.841 | 0.841 | 0.841 | 0.000 | ✓ |
+| Accuracy | 0.965 | 0.965 | 0.965 | 0.000 | ✓ |
+| MAE | 0.028 | 0.028 | 0.028 | -0.000 | ✓ |
+| RMSE | 0.077 | 0.077 | 0.077 | -0.000 | ✓ |
+| R2 | 0.824 | 0.824 | 0.824 | -0.000 | ✓ |
+| TP | 28055.000 | 28055 | 28055 | 0.000 | ✓ |
+| FP | 2323.000 | 2323 | 2323 | 0.000 | ✓ |
+| TN | 179791.000 | 179791 | 179791 | 0.000 | ✓ |
+| FN | 5319.000 | 5319 | 5319 | 0.000 | ✓ |
+
+## full_test_set  (n=256,963)
+
+| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
+|---|---|---|---|---|---|
+| F1 | 0.858 | 0.858 | 0.858 | -0.000 | ✓ |
+| Precision | 0.906 | 0.906 | 0.906 | -0.000 | ✓ |
+| Recall | 0.815 | 0.815 | 0.815 | -0.000 | ✓ |
+| Accuracy | 0.954 | 0.954 | 0.954 | 0.000 | ✓ |
+| MAE | 0.028 | 0.028 | 0.028 | -0.000 | ✓ |
+| RMSE | 0.078 | 0.078 | 0.078 | 0.000 | ✓ |
+| R2 | 0.814 | 0.814 | 0.814 | 0.000 | ✓ |
+| TP | 35949.000 | 35949 | 35949 | 0.000 | ✓ |
+| FP | 3725.000 | 3725 | 3725 | 0.000 | ✓ |
+| TN | 209146.000 | 209146 | 209146 | 0.000 | ✓ |
+| FN | 8143.000 | 8143 | 8143 | 0.000 | ✓ |
+
+
+
 ## 4. Metric check — metric_check-sevennet
 
 # Metric Check — SevenNet-0
@@ -552,60 +596,27 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   pre-download the CSV in a separate step, then run the compute (the file-exists check in
   `ensure_preds` makes the compute run skip the download).
 
+- **[env] `run_command.py` needs an absolute path to the child interpreter on Windows.**
+  Invoking the wrapper with a *relative* `.venv/Scripts/python.exe` as the wrapped
+  command fails before logging (`WinError 2`, `CreateProcess` does not resolve
+  forward-slash relative executables). Not an upstream issue; re-run with the absolute
+  venv path (as the README commands now do). Noted 2026-07-02 during the ORB run.
+
 ## Open discrepancies
-**None (3 of 3 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
-**SevenNet-0**, and **MACE-MP-0** on both `unique_prototypes` and `full_test_set` —
-every fraction to 3 dp and every integer confusion count (TP/FP/TN/FN) identical, via
-both an independent re-implementation and the upstream `stable_metrics`. The pipeline
-matches `missing_preds` in both regimes: outlier-filter-driven (CHGNet 2, SevenNet 3)
-and genuine-NaN-driven (MACE 38 full / 34 uniq, filter dropped 0). See
-`metric_check.md`, `metric_check-sevennet.md`, `metric_check-mace-mp-0.md`.
+**None (4 of 4 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
+**SevenNet-0**, **MACE-MP-0**, and **ORB v2** on both `unique_prototypes` and
+`full_test_set` — every fraction to 3 dp and every integer confusion count (TP/FP/TN/FN)
+identical, via both an independent re-implementation and the upstream `stable_metrics`.
+The pipeline matches `missing_preds` in both regimes: outlier-filter-driven (CHGNet 2,
+SevenNet 3, ORB v2 2) and genuine-NaN-driven (MACE 38 full / 34 uniq, filter dropped 0).
+The ORB v2 run (pre-download + compute split) completed with no new blockers. See
+`metric_check.md`, `metric_check-sevennet.md`, `metric_check-mace-mp-0.md`,
+`metric_check-orb-v2.md`.
 
 
 
 ## 6. Run log (tail)
 
-| FP | 18765.000 | 18765 | 18765 | 0.000 | ✓ |
-| TN | 194106.000 | 194106 | 194106 | 0.000 | ✓ |
-| FN | 8833.000 | 8833 | 8833 | 0.000 | ✓ |
-
-wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-sevennet.md
-```
-
-### 2026-07-02 — Layer A SevenNet result (manual summary)
-Layer A SevenNet-0 completed. Prediction CSV `2024-07-11-wbm-IS2RE.csv.gz` (2.62 MB,
-valid gzip) from Figshare API endpoint. Independent re-implementation and upstream
-`stable_metrics` **agree with each other and with the official YAML on every metric**,
-both subsets: `unique_prototypes` (F1 0.724, MAE 0.048, TP 27304 / FP 14703 / TN 167411
-/ FN 6070) and `full_test_set` (F1 0.719, MAE 0.046, TP 35259 / FP 18765 / TN 194106 /
-FN 8833). The 5 eV/atom filter drops exactly 3 predictions = YAML `missing_preds: 3`.
-No discrepancies — second model reproduced exactly.
-
-**Note on the first attempt (exit 3221225477 = 0xC0000005):** the *first* SevenNet run
-(which had to download the CSV) hard-crashed with a native access violation and no
-Python traceback. Re-running with the file cached (both directly and through the
-wrapper) succeeded with identical results. Classified as a transient native crash on
-the download+compute-in-one-process path, not a data or metric issue (see
-`failure_notes.md`). Metrics above are from the reproducible cached runs.
-
-### 2026-07-02 04:26 UTC — predownload mace-mp-0
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe C:\Users\07013\Desktop\0702fable\reprolab\scripts\compare_metrics.py --repo C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery --model mace-mp-0 --download-only
-```
-
-- exit code: **0**  | duration: 6.4s  | raw log: `logs/cmd-20260702-042641.log`
-
-output tail:
-```
-downloading predictions: https://api.figshare.com/v2/file/download/52057538 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\mace\mace-mp-0\2023-12-11-wbm-IS2RE-FIRE.csv.gz
-downloaded mace-mp-0: C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\mace\mace-mp-0\2023-12-11-wbm-IS2RE-FIRE.csv.gz (2.38 MB)
-```
-
-### 2026-07-02 04:26 UTC — layerA mace-mp-0
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe C:\Users\07013\Desktop\0702fable\reprolab\scripts\compare_metrics.py --repo C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery --model mace-mp-0 --subsets unique_prototypes full_test_set --out C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-mace-mp-0.md
 ```
 
 - exit code: **0**  | duration: 3.9s  | raw log: `logs/cmd-20260702-042656.log`
@@ -645,4 +656,45 @@ missing came entirely from that filter. The pipeline reproduces the exact confus
 counts in both regimes, validating the missing/outlier handling.
 
 Result: MATCH. No discrepancies (3/3 models).
+
+### 2026-07-02 04:39 UTC — predownload orb-v2
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/compare_metrics.py --model orb-v2 --download-only
+```
+
+- exit code: **0**  | duration: 6.0s  | raw log: `logs/cmd-20260702-043930.log`
+
+output tail:
+```
+downloading predictions: https://api.figshare.com/v2/file/download/52057562 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\orb\orbff-v2\2024-10-11-wbm-IS2RE.csv.gz
+downloaded orb-v2: C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\orb\orbff-v2\2024-10-11-wbm-IS2RE.csv.gz (2.39 MB)
+```
+
+### 2026-07-02 04:39 UTC — layerA orb-v2
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/compare_metrics.py --model orb-v2 --subsets unique_prototypes full_test_set --out papers/matbench-discovery/metric_check-orb-v2.md
+```
+
+- exit code: **0**  | duration: 4.2s  | raw log: `logs/cmd-20260702-043954.log`
+
+output tail:
+```
+| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
+|---|---|---|---|---|---|
+| F1 | 0.858 | 0.858 | 0.858 | -0.000 | ✓ |
+| Precision | 0.906 | 0.906 | 0.906 | -0.000 | ✓ |
+| Recall | 0.815 | 0.815 | 0.815 | -0.000 | ✓ |
+| Accuracy | 0.954 | 0.954 | 0.954 | 0.000 | ✓ |
+| MAE | 0.028 | 0.028 | 0.028 | -0.000 | ✓ |
+| RMSE | 0.078 | 0.078 | 0.078 | 0.000 | ✓ |
+| R2 | 0.814 | 0.814 | 0.814 | 0.000 | ✓ |
+| TP | 35949.000 | 35949 | 35949 | 0.000 | ✓ |
+| FP | 3725.000 | 3725 | 3725 | 0.000 | ✓ |
+| TN | 209146.000 | 209146 | 209146 | 0.000 | ✓ |
+| FN | 8143.000 | 8143 | 8143 | 0.000 | ✓ |
+
+wrote papers\matbench-discovery\metric_check-orb-v2.md
+```
 

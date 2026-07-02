@@ -56,11 +56,19 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   pre-download the CSV in a separate step, then run the compute (the file-exists check in
   `ensure_preds` makes the compute run skip the download).
 
+- **[env] `run_command.py` needs an absolute path to the child interpreter on Windows.**
+  Invoking the wrapper with a *relative* `.venv/Scripts/python.exe` as the wrapped
+  command fails before logging (`WinError 2`, `CreateProcess` does not resolve
+  forward-slash relative executables). Not an upstream issue; re-run with the absolute
+  venv path (as the README commands now do). Noted 2026-07-02 during the ORB run.
+
 ## Open discrepancies
-**None (3 of 3 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
-**SevenNet-0**, and **MACE-MP-0** on both `unique_prototypes` and `full_test_set` —
-every fraction to 3 dp and every integer confusion count (TP/FP/TN/FN) identical, via
-both an independent re-implementation and the upstream `stable_metrics`. The pipeline
-matches `missing_preds` in both regimes: outlier-filter-driven (CHGNet 2, SevenNet 3)
-and genuine-NaN-driven (MACE 38 full / 34 uniq, filter dropped 0). See
-`metric_check.md`, `metric_check-sevennet.md`, `metric_check-mace-mp-0.md`.
+**None (4 of 4 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
+**SevenNet-0**, **MACE-MP-0**, and **ORB v2** on both `unique_prototypes` and
+`full_test_set` — every fraction to 3 dp and every integer confusion count (TP/FP/TN/FN)
+identical, via both an independent re-implementation and the upstream `stable_metrics`.
+The pipeline matches `missing_preds` in both regimes: outlier-filter-driven (CHGNet 2,
+SevenNet 3, ORB v2 2) and genuine-NaN-driven (MACE 38 full / 34 uniq, filter dropped 0).
+The ORB v2 run (pre-download + compute split) completed with no new blockers. See
+`metric_check.md`, `metric_check-sevennet.md`, `metric_check-mace-mp-0.md`,
+`metric_check-orb-v2.md`.

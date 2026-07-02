@@ -21,12 +21,15 @@ committed in the model's YAML.
 | SevenNet-0 | full_test_set | 0.719 / 0.719 | 0.046 / 0.046 | exact | ✅ MATCH |
 | MACE-MP-0 | unique_prototypes | 0.669 / 0.669 | 0.057 / 0.057 | exact | ✅ MATCH |
 | MACE-MP-0 | full_test_set | 0.668 / 0.668 | 0.055 / 0.055 | exact | ✅ MATCH |
+| ORB v2 | unique_prototypes | 0.880 / 0.880 | 0.028 / 0.028 | exact | ✅ MATCH |
+| ORB v2 | full_test_set | 0.858 / 0.858 | 0.028 / 0.028 | exact | ✅ MATCH |
 
-**3 of 3 models reproduce exactly** — every reported fraction to 3 decimals and every
+**4 of 4 models reproduce exactly** — every reported fraction to 3 decimals and every
 integer confusion-matrix count (TP/FP/TN/FN) identical, on both audited subsets. The
 outlier/missing-prediction accounting also matches in two distinct regimes: filter-driven
-(CHGNet 2, SevenNet 3 dropped by the 5 eV/atom rule) and genuine-NaN-driven (MACE 38
-full / 34 uniq, filter dropped 0).
+(CHGNet 2, SevenNet 3, ORB v2 2 dropped by the 5 eV/atom rule) and genuine-NaN-driven
+(MACE 38 full / 34 uniq, filter dropped 0). The four models span three architecture
+families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
 
 ## Reproducibility findings (worth knowing before you trust `pip install`)
 

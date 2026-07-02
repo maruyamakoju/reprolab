@@ -22,13 +22,14 @@ required, and what fails?*
 See `papers/matbench-discovery/reproduction_plan.md` for the full metric→code→data
 →command→expected→compare mapping.
 
-## Result so far — Layer A, 3/3 models reproduce the official YAML exactly
+## Result so far — Layer A, 4/4 models reproduce the official YAML exactly
 
 | Model | F1 official → reproduced (uniq_protos / full) | MAE eV/atom (uniq_protos / full) |
 |---|---|---|
 | CHGNet | 0.613→0.613 / 0.612→0.612 | 0.063 / 0.061 |
 | SevenNet-0 | 0.724→0.724 / 0.719→0.719 | 0.048 / 0.046 |
 | MACE-MP-0 | 0.669→0.669 / 0.668→0.668 | 0.057 / 0.055 |
+| ORB v2 | 0.880→0.880 / 0.858→0.858 | 0.028 / 0.028 |
 
 Every reported fraction (to 3 dp) and every integer confusion-matrix count (TP/FP/TN/FN)
 matches, computed **two independent ways** (a from-scratch re-implementation *and* the
@@ -52,7 +53,9 @@ python scripts/capture_env.py
 
 # 4. Layer A — split download from compute (avoids a rare native crash on Windows),
 #    then recompute + diff vs the official YAML. Repeat --model for each:
-#    chgnet-0.3.0, sevennet-0, mace-mp-0
+#    chgnet-0.3.0, sevennet-0, mace-mp-0, orb-v2
+#    (invoke the venv python by ABSOLUTE path — run_command.py's subprocess
+#    cannot resolve a relative .venv/Scripts/python.exe on Windows)
 python scripts/compare_metrics.py --model chgnet-0.3.0 --download-only
 python scripts/run_command.py --note "layerA chgnet" -- \
     python scripts/compare_metrics.py --model chgnet-0.3.0 \
@@ -80,13 +83,16 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Env built (venv, Python 3.11.9) + `matbench-discovery` installed (exit 0)
 - [x] Wiring verified: `stable_metrics` imports; ground-truth rows (256,963) and
       uniq-proto rows (215,488) match the YAML confusion-matrix totals exactly
-- [x] **Layer A — 3 models checked, all reproduce the official YAML exactly**
+- [x] **Layer A — 4 models checked, all reproduce the official YAML exactly**
       (both subsets; integer confusion counts identical; independent + upstream agree)
       - CHGNet: uniq_protos F1 0.613 / MAE 0.063 · full F1 0.612 / MAE 0.061
       - SevenNet-0: uniq_protos F1 0.724 / MAE 0.048 · full F1 0.719 / MAE 0.046
       - MACE-MP-0: uniq_protos F1 0.669 / MAE 0.057 · full F1 0.668 / MAE 0.055
+      - ORB v2: uniq_protos F1 0.880 / MAE 0.028 · full F1 0.858 / MAE 0.028
 - [x] Interim report generated (`reports/paper-001-…md`) + README polished for readers
-- [ ] Fourth model (ORB) / GPU Layer B: regenerate predictions and re-score
+- [x] Layer A closed at 4/4 (`v0.1-layer-a`)
+- [ ] Layer B (GPU): regenerate predictions for one model on a small WBM subset,
+      re-score through the same Layer A path — design first (`layer_b_plan.md`)
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

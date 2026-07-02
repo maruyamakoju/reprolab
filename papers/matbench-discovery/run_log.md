@@ -204,3 +204,44 @@ missing came entirely from that filter. The pipeline reproduces the exact confus
 counts in both regimes, validating the missing/outlier handling.
 
 Result: MATCH. No discrepancies (3/3 models).
+
+### 2026-07-02 04:39 UTC — predownload orb-v2
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/compare_metrics.py --model orb-v2 --download-only
+```
+
+- exit code: **0**  | duration: 6.0s  | raw log: `logs/cmd-20260702-043930.log`
+
+output tail:
+```
+downloading predictions: https://api.figshare.com/v2/file/download/52057562 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\orb\orbff-v2\2024-10-11-wbm-IS2RE.csv.gz
+downloaded orb-v2: C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\models\orb\orbff-v2\2024-10-11-wbm-IS2RE.csv.gz (2.39 MB)
+```
+
+### 2026-07-02 04:39 UTC — layerA orb-v2
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/compare_metrics.py --model orb-v2 --subsets unique_prototypes full_test_set --out papers/matbench-discovery/metric_check-orb-v2.md
+```
+
+- exit code: **0**  | duration: 4.2s  | raw log: `logs/cmd-20260702-043954.log`
+
+output tail:
+```
+| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
+|---|---|---|---|---|---|
+| F1 | 0.858 | 0.858 | 0.858 | -0.000 | ✓ |
+| Precision | 0.906 | 0.906 | 0.906 | -0.000 | ✓ |
+| Recall | 0.815 | 0.815 | 0.815 | -0.000 | ✓ |
+| Accuracy | 0.954 | 0.954 | 0.954 | 0.000 | ✓ |
+| MAE | 0.028 | 0.028 | 0.028 | -0.000 | ✓ |
+| RMSE | 0.078 | 0.078 | 0.078 | 0.000 | ✓ |
+| R2 | 0.814 | 0.814 | 0.814 | 0.000 | ✓ |
+| TP | 35949.000 | 35949 | 35949 | 0.000 | ✓ |
+| FP | 3725.000 | 3725 | 3725 | 0.000 | ✓ |
+| TN | 209146.000 | 209146 | 209146 | 0.000 | ✓ |
+| FN | 8143.000 | 8143 | 8143 | 0.000 | ✓ |
+
+wrote papers\matbench-discovery\metric_check-orb-v2.md
+```
