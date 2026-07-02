@@ -73,7 +73,9 @@ upstream `stable_metrics`). Assembled report:
 ## Reproduce it yourself
 
 ```bash
-# 1. clone this repo, then clone the upstream benchmark into vendor/ (git-ignored)
+# 1. clone this repo, then clone the upstream benchmark into vendor/ (git-ignored).
+#    We audited upstream commit eaa7550 (2026-07-02); a --depth 1 clone gets current
+#    HEAD, so check `git -C vendor/matbench-discovery log -1` and note any drift.
 git clone --depth 1 https://github.com/janosh/matbench-discovery \
     vendor/matbench-discovery
 
@@ -81,6 +83,8 @@ git clone --depth 1 https://github.com/janosh/matbench-discovery \
 python -m venv .venv
 . .venv/Scripts/activate         # Windows;  use  source .venv/bin/activate  on Linux/mac
 pip install matbench-discovery   # brings the official stable_metrics + deps
+# exact versions we ran with (incl. Layer B extras + the ruamel.yaml<0.19 pin):
+#   papers/matbench-discovery/requirements-frozen.txt
 
 # 3. snapshot the environment
 python scripts/capture_env.py

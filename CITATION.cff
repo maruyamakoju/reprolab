@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use or reference this audit, please cite it as below."
+title: "ReproLab: Independent Reproducibility Audit of the Matbench Discovery Leaderboard"
+authors:
+  - family-names: Maruyama
+    given-names: Koju
+date-released: 2026-07-02
+url: "https://github.com/maruyamakoju/reprolab"
+repository-code: "https://github.com/maruyamakoju/reprolab"
+license: MIT
+keywords:
+  - reproducibility
+  - materials science
+  - machine learning
+  - benchmark audit
+references:
+  - type: article
+    title: "A framework to evaluate machine learning crystal stability predictions"
+    authors:
+      - family-names: Riebesell
+        given-names: Janosh
+    journal: "Nature Machine Intelligence"
+    volume: 7
+    year: 2025
+    start: 836
+    end: 847
+    doi: 10.1038/s42256-025-01055-1
