@@ -90,3 +90,59 @@ Integer confusion-matrix counts match **exactly** (e.g. uniq_protos TP 25313 / F
 / TN 158159 / FN 8061). The 5 eV/atom filter drops exactly 2 predictions, matching the
 YAML `full_test_set: missing_preds: 2` (0 in uniq_protos). Official YAML values
 reproduced within rounding tolerance — no discrepancies.
+
+### 2026-07-02 04:06 UTC — layerA sevennet
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe C:\Users\07013\Desktop\0702fable\reprolab\scripts\compare_metrics.py --repo C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery --model sevennet-0 --subsets unique_prototypes full_test_set --out C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-sevennet.md
+```
+
+- exit code: **3221225477**  | duration: 9.0s  | raw log: `logs/cmd-20260702-040654.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-02 04:08 UTC — layerA sevennet (cached, rerun)
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe C:\Users\07013\Desktop\0702fable\reprolab\scripts\compare_metrics.py --repo C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery --model sevennet-0 --subsets unique_prototypes full_test_set --out C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-sevennet.md
+```
+
+- exit code: **0**  | duration: 3.9s  | raw log: `logs/cmd-20260702-040847.log`
+
+output tail:
+```
+| metric | official | reproduced | upstream_fn | Δ(off−repro) | pass |
+|---|---|---|---|---|---|
+| F1 | 0.719 | 0.719 | 0.719 | 0.000 | ✓ |
+| Precision | 0.653 | 0.653 | 0.653 | 0.000 | ✓ |
+| Recall | 0.800 | 0.800 | 0.800 | 0.000 | ✓ |
+| Accuracy | 0.893 | 0.893 | 0.893 | 0.000 | ✓ |
+| MAE | 0.046 | 0.046 | 0.046 | -0.000 | ✓ |
+| RMSE | 0.090 | 0.090 | 0.090 | 0.000 | ✓ |
+| R2 | 0.750 | 0.750 | 0.750 | -0.000 | ✓ |
+| TP | 35259.000 | 35259 | 35259 | 0.000 | ✓ |
+| FP | 18765.000 | 18765 | 18765 | 0.000 | ✓ |
+| TN | 194106.000 | 194106 | 194106 | 0.000 | ✓ |
+| FN | 8833.000 | 8833 | 8833 | 0.000 | ✓ |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-sevennet.md
+```
+
+### 2026-07-02 — Layer A SevenNet result (manual summary)
+Layer A SevenNet-0 completed. Prediction CSV `2024-07-11-wbm-IS2RE.csv.gz` (2.62 MB,
+valid gzip) from Figshare API endpoint. Independent re-implementation and upstream
+`stable_metrics` **agree with each other and with the official YAML on every metric**,
+both subsets: `unique_prototypes` (F1 0.724, MAE 0.048, TP 27304 / FP 14703 / TN 167411
+/ FN 6070) and `full_test_set` (F1 0.719, MAE 0.046, TP 35259 / FP 18765 / TN 194106 /
+FN 8833). The 5 eV/atom filter drops exactly 3 predictions = YAML `missing_preds: 3`.
+No discrepancies — second model reproduced exactly.
+
+**Note on the first attempt (exit 3221225477 = 0xC0000005):** the *first* SevenNet run
+(which had to download the CSV) hard-crashed with a native access violation and no
+Python traceback. Re-running with the file cached (both directly and through the
+wrapper) succeeded with identical results. Classified as a transient native crash on
+the download+compute-in-one-process path, not a data or metric issue (see
+`failure_notes.md`). Metrics above are from the reproducible cached runs.

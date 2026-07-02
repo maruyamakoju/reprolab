@@ -46,8 +46,19 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   independent auditor hitting the URL directly does. `compare_metrics.py` now applies
   the same rewrite and validates the gzip magic bytes. Reproducibility note for report.
 
+- **[env] Transient native crash (0xC0000005) on the download+compute run.** The first
+  SevenNet run — the one that had to download the prediction CSV — hard-crashed with a
+  Windows access violation and no Python traceback (exit 3221225477, ~9 s). The
+  downloaded file was intact (2.62 MB, valid gzip). Re-running with the file cached
+  succeeded twice (direct + wrapper) with identical, exact-match results. Not a data or
+  metric defect; a native-layer flake correlated with doing an in-process HTTPS download
+  immediately before heavy numpy/pandas work. **Mitigation if it recurs (e.g. MACE):**
+  pre-download the CSV in a separate step, then run the compute (the file-exists check in
+  `ensure_preds` makes the compute run skip the download).
+
 ## Open discrepancies
-**None.** Layer A CHGNet reproduced the official YAML exactly on `unique_prototypes`
-and `full_test_set` — every fraction to 3 dp and every integer confusion count
-(TP/FP/TN/FN) identical, via both an independent re-implementation and the upstream
-`stable_metrics`. See `metric_check.md`.
+**None (2 of 2 models).** Layer A reproduced the official YAML exactly for **CHGNet**
+and **SevenNet-0** on both `unique_prototypes` and `full_test_set` — every fraction to
+3 dp and every integer confusion count (TP/FP/TN/FN) identical, via both an independent
+re-implementation and the upstream `stable_metrics`. See `metric_check.md` and
+`metric_check-sevennet.md`.
