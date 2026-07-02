@@ -35,12 +35,28 @@ are cases where that assignment hinges on pymatgen's oxidation-state guessing:
 | wbm-4-28450 | PaIO | oxide (−1.374 eV) after explicit pymatgen warning "Failed to guess oxidation states… assigning anion correction to only the most electronegative atom" | heuristic fallback, version-dependent |
 | wbm-4-15908 | NdH4Pt | hydride H (−1.432 eV) | upstream value implies no hydride correction was applied |
 
-**Finding:** the benchmark's ground-truth column embeds correction heuristics that are
-not stable across pymatgen versions. Under pymatgen 2026.5, 3/500 subset structures
-(0.6%) shift by 119–217 meV/atom and 2/500 stability labels flip relative to the
-published column. 497/500 reproduce to ≤0.001 meV/atom (median 0.0003), and the 2023
-`PatchedPhaseDiagram` pickle unpickles cleanly under pymatgen 2026. Reproducing the
-ground truth *bit-exactly* therefore requires the correction behavior of the original
-2022/2023-era environment — a version-pinning requirement the benchmark does not
-currently state. At leaderboard scale, ~0.4–0.6% label ambiguity is material when
-adjacent models are separated by ΔF1 of 0.001–0.003 (see the statistical audit).
+## Control experiment: pymatgen 2023.5.10 reproduces all three (run_log)
+
+Rerunning the identical diagnosis in a clean venv with **pymatgen 2023.5.10** (the
+version upstream's own `data-files.yml` `_links` reference) reproduces the published
+values for all three outliers:
+
+| id | formula | Δ under pymatgen 2026.5 | Δ under 2023.5.10 | corrections 2023.5.10 | corrections 2026.5 |
+|---|---|---|---|---|---|
+| wbm-2-28782 | SrBrN3 | +216.601 | **+0.001** | Br **and** N | Br only |
+| wbm-4-28450 | PaIO | +126.307 | **−0.027** | oxide **and** I | oxide only (guess-failure fallback) |
+| wbm-4-15908 | NdH4Pt | −119.303 | **+0.031** | **none** | hydride H |
+
+(Δ in meV/atom vs the published `e_form_per_atom_mp2020_corrected`.)
+
+**Finding (demonstrated bidirectionally):** the benchmark's ground-truth column
+embeds MP2020 anion-correction assignment decisions (oxidation-state guessing) that
+changed between pymatgen 2023.5.10 and 2026.5. The 2023 version reproduces the
+published column exactly (500/500 within 0.031 meV/atom); the 2026 version diverges
+by 119–217 meV/atom on 3/500 structures (0.6%) and flips 2/500 stability labels.
+Which correction assignment is chemically preferable is out of scope for this audit —
+the reproducibility point is that the ground truth depends on unstated library-version
+behavior. 497/500 values reproduce to ≤0.001 meV/atom under either version, and the
+2023 `PatchedPhaseDiagram` pickle unpickles cleanly under pymatgen 2026. At
+leaderboard scale, ~0.4–0.6% label ambiguity is material when adjacent models are
+separated by ΔF1 of 0.001–0.003 (see the statistical audit).

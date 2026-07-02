@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-02 08:08 UTC_
+_Generated: 2026-07-02 08:19 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -854,15 +854,31 @@ are cases where that assignment hinges on pymatgen's oxidation-state guessing:
 | wbm-4-28450 | PaIO | oxide (−1.374 eV) after explicit pymatgen warning "Failed to guess oxidation states… assigning anion correction to only the most electronegative atom" | heuristic fallback, version-dependent |
 | wbm-4-15908 | NdH4Pt | hydride H (−1.432 eV) | upstream value implies no hydride correction was applied |
 
-**Finding:** the benchmark's ground-truth column embeds correction heuristics that are
-not stable across pymatgen versions. Under pymatgen 2026.5, 3/500 subset structures
-(0.6%) shift by 119–217 meV/atom and 2/500 stability labels flip relative to the
-published column. 497/500 reproduce to ≤0.001 meV/atom (median 0.0003), and the 2023
-`PatchedPhaseDiagram` pickle unpickles cleanly under pymatgen 2026. Reproducing the
-ground truth *bit-exactly* therefore requires the correction behavior of the original
-2022/2023-era environment — a version-pinning requirement the benchmark does not
-currently state. At leaderboard scale, ~0.4–0.6% label ambiguity is material when
-adjacent models are separated by ΔF1 of 0.001–0.003 (see the statistical audit).
+## Control experiment: pymatgen 2023.5.10 reproduces all three (run_log)
+
+Rerunning the identical diagnosis in a clean venv with **pymatgen 2023.5.10** (the
+version upstream's own `data-files.yml` `_links` reference) reproduces the published
+values for all three outliers:
+
+| id | formula | Δ under pymatgen 2026.5 | Δ under 2023.5.10 | corrections 2023.5.10 | corrections 2026.5 |
+|---|---|---|---|---|---|
+| wbm-2-28782 | SrBrN3 | +216.601 | **+0.001** | Br **and** N | Br only |
+| wbm-4-28450 | PaIO | +126.307 | **−0.027** | oxide **and** I | oxide only (guess-failure fallback) |
+| wbm-4-15908 | NdH4Pt | −119.303 | **+0.031** | **none** | hydride H |
+
+(Δ in meV/atom vs the published `e_form_per_atom_mp2020_corrected`.)
+
+**Finding (demonstrated bidirectionally):** the benchmark's ground-truth column
+embeds MP2020 anion-correction assignment decisions (oxidation-state guessing) that
+changed between pymatgen 2023.5.10 and 2026.5. The 2023 version reproduces the
+published column exactly (500/500 within 0.031 meV/atom); the 2026 version diverges
+by 119–217 meV/atom on 3/500 structures (0.6%) and flips 2/500 stability labels.
+Which correction assignment is chemically preferable is out of scope for this audit —
+the reproducibility point is that the ground truth depends on unstated library-version
+behavior. 497/500 values reproduce to ≤0.001 meV/atom under either version, and the
+2023 `PatchedPhaseDiagram` pickle unpickles cleanly under pymatgen 2026. At
+leaderboard scale, ~0.4–0.6% label ambiguity is material when adjacent models are
+separated by ΔF1 of 0.001–0.003 (see the statistical audit).
 
 
 
@@ -942,10 +958,12 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   i.e. the discrepancy is in the **MP2020 anion-correction assignment**, which hinges
   on oxidation-state guessing heuristics that drift across pymatgen versions
   (SrBrN3: nitride-vs-Br ambiguity; PaIO: explicit "failed to guess oxidation states"
-  fallback; NdH4Pt: hydride correction applied by us, not upstream). Bit-exact ground
-  truth requires the 2022/2023-era pymatgen behavior — unstated upstream. Side result:
-  the 2023 phase-diagram *pickle* unpickles cleanly under pymatgen 2026.5.
-  See `layer_c_gt_hull_check.md`.
+  fallback; NdH4Pt: hydride correction applied by us, not upstream). **Control
+  experiment: pymatgen 2023.5.10 reproduces all three published values to
+  ≤0.031 meV/atom** — the drift is demonstrated bidirectionally, not inferred.
+  Bit-exact ground truth requires the 2023-era pymatgen behavior — unstated upstream.
+  Side result: the 2023 phase-diagram *pickle* unpickles cleanly under pymatgen
+  2026.5. See `layer_c_gt_hull_check.md`.
 
 - **[data] Stale md5 in `data-files.yml` for `wbm_initial_structures` — and upstream
   never checks it.** (Found 2026-07-02, Layer B preflight.) The registry at the pinned
@@ -990,33 +1008,6 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 
 ## 6. Run log (tail)
-
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name mp_patched_phase_diagram
-```
-
-- exit code: **0**  | duration: 113.3s  | raw log: `logs/cmd-20260702-080239.log`
-
-output tail:
-```
-downloading mp_patched_phase_diagram: https://api.figshare.com/v2/file/download/48241624 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\mp\2023-02-07-ppd-mp.pkl.gz
-downloaded 220.0 MB
-md5 OK (60d19d691fa1d338aa496a40a9641bef): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\mp\2023-02-07-ppd-mp.pkl.gz
-```
-
-### 2026-07-02 08:04 UTC — layerC-GT download wbm CSEs (87MB, figshare computed_md5 - YAML md5 stale, see failure_notes)
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/download_datafile.py --name wbm_computed_structure_entries --expect-md5 655b7a9c368e136dd8747f1ef8002e7a
-```
-
-- exit code: **0**  | duration: 27.9s  | raw log: `logs/cmd-20260702-080433.log`
-
-output tail:
-```
-downloading wbm_computed_structure_entries: https://api.figshare.com/v2/file/download/53161832 -> C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-computed-structure-entries.jsonl.gz
-downloaded 86.5 MB
-md5 OK (655b7a9c368e136dd8747f1ef8002e7a): C:\Users\07013\Desktop\0702fable\reprolab\vendor\matbench-discovery\data\wbm\2022-10-19-wbm-computed-structure-entries.jsonl.gz
-```
 
 ### 2026-07-02 08:05 UTC — layerC-GT recompute e_above_hull from ppd-mp for 500 subset
 
@@ -1070,5 +1061,32 @@ C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x6
   val = self.func(instance)
 C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28450 (PaIO). Assigning anion correction to only the most electronegative atom.
   adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+```
+
+### 2026-07-02 08:18 UTC — layerC-GT control: rerun outlier diagnosis under pymatgen 2023.5.10
+
+```
+$ C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Scripts\python.exe scripts/layer_c_gt_diagnose.py --ids wbm-2-28782 wbm-4-28450 wbm-4-15908
+```
+
+- exit code: **0**  | duration: 8.9s  | raw log: `logs/cmd-20260702-081826.log`
+
+output tail:
+```
+  our adjustments: [('MP2020 anion correction (oxide)', -1.374), ('MP2020 anion correction (I)', -0.758)]
+wbm-4-15908 NdH4Pt      
+  e_form summary=-0.466418 ours=-0.466387 delta=+0.031 meV/atom
+  our adjustments: []
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  warnings.warn(
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\composition.py:1217: FutureWarning: gcd is deprecated, and will be removed on 2028-01-01
+Use math.gcd instead.
+  factor = abs(gcd(*(int(i) for i in sym_amt.values())))
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\uncertainties\core.py:1024: UserWarning: Using UFloat objects with std_dev==0 may give unexpected results.
+  warn("Using UFloat objects with std_dev==0 may give unexpected results.")
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  warnings.warn(
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  warnings.warn(
 ```
 

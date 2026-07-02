@@ -645,3 +645,30 @@ C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x6
 C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28450 (PaIO). Assigning anion correction to only the most electronegative atom.
   adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
 ```
+
+### 2026-07-02 08:18 UTC — layerC-GT control: rerun outlier diagnosis under pymatgen 2023.5.10
+
+```
+$ C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Scripts\python.exe scripts/layer_c_gt_diagnose.py --ids wbm-2-28782 wbm-4-28450 wbm-4-15908
+```
+
+- exit code: **0**  | duration: 8.9s  | raw log: `logs/cmd-20260702-081826.log`
+
+output tail:
+```
+  our adjustments: [('MP2020 anion correction (oxide)', -1.374), ('MP2020 anion correction (I)', -0.758)]
+wbm-4-15908 NdH4Pt      
+  e_form summary=-0.466418 ours=-0.466387 delta=+0.031 meV/atom
+  our adjustments: []
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  warnings.warn(
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\composition.py:1217: FutureWarning: gcd is deprecated, and will be removed on 2028-01-01
+Use math.gcd instead.
+  factor = abs(gcd(*(int(i) for i in sym_amt.values())))
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\uncertainties\core.py:1024: UserWarning: Using UFloat objects with std_dev==0 may give unexpected results.
+  warn("Using UFloat objects with std_dev==0 may give unexpected results.")
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  warnings.warn(
+C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  warnings.warn(
+```

@@ -72,10 +72,12 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   i.e. the discrepancy is in the **MP2020 anion-correction assignment**, which hinges
   on oxidation-state guessing heuristics that drift across pymatgen versions
   (SrBrN3: nitride-vs-Br ambiguity; PaIO: explicit "failed to guess oxidation states"
-  fallback; NdH4Pt: hydride correction applied by us, not upstream). Bit-exact ground
-  truth requires the 2022/2023-era pymatgen behavior — unstated upstream. Side result:
-  the 2023 phase-diagram *pickle* unpickles cleanly under pymatgen 2026.5.
-  See `layer_c_gt_hull_check.md`.
+  fallback; NdH4Pt: hydride correction applied by us, not upstream). **Control
+  experiment: pymatgen 2023.5.10 reproduces all three published values to
+  ≤0.031 meV/atom** — the drift is demonstrated bidirectionally, not inferred.
+  Bit-exact ground truth requires the 2023-era pymatgen behavior — unstated upstream.
+  Side result: the 2023 phase-diagram *pickle* unpickles cleanly under pymatgen
+  2026.5. See `layer_c_gt_hull_check.md`.
 
 - **[data] Stale md5 in `data-files.yml` for `wbm_initial_structures` — and upstream
   never checks it.** (Found 2026-07-02, Layer B preflight.) The registry at the pinned
