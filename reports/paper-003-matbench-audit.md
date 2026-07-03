@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 08:00 UTC_
+_Generated: 2026-07-03 08:03 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -30,6 +30,12 @@ Across all 20 checked folds, the max absolute stored-vs-recomputed score delta i
 Report: `layer_a_rf_composition_tasks.md`.
 
 ## Layer B source replay
+
+`scripts/matbench_submission_inventory.py` scanned 28 Matbench v0.1 submission
+directories before the source replay. It found 11 direct `run.py` files, 14
+notebook sources, and only one pickle/joblib model artifact. `matbench_v0.1_TPOT`
+stands out as the best bounded replay candidate because it has one small task, a
+notebook, a submitted helper, and a pickled TPOT pipeline.
 
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
@@ -78,12 +84,14 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
+- Source artifact inventory: `source_artifact_inventory.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
+- Submission inventory script: `../../scripts/matbench_submission_inventory.py`
 - Report script: `../../scripts/make_matbench_report.py`
 - Run log: `run_log.md`
 
@@ -193,6 +201,16 @@ classification_auc_probe:
       glass_stored_mean: 0.9603111829242
       glass_probability_auc_mean: 0.9898761972560001
 
+source_artifact_inventory:
+  status: completed
+  script: scripts/matbench_submission_inventory.py
+  report: papers/matbench/source_artifact_inventory.md
+  submission_directories_scanned: 28
+  direct_run_py_files: 11
+  notebook_sources: 14
+  pickle_or_joblib_model_artifacts: 1
+  best_bounded_replay_candidate: matbench_v0.1_TPOT
+
 layer_b_tpot_steels:
   status: source_replay_completed_non_identical
   script: scripts/matbench_tpot_replay.py
@@ -277,6 +295,9 @@ Report: `layer_a_score_recompute.md`.
   path can be replayed for `matbench_steels`, but it refits stochastic estimators
   without a submitted random seed, so public-source execution does not regenerate
   the committed predictions exactly.
+- `source_artifact_inventory.md` records the broader source-artifact scan: 28
+  submission directories, 11 direct `run.py` files, 14 notebooks, and one
+  pickle/joblib model artifact.
 
 
 
@@ -824,7 +845,67 @@ note.
 
 
 
-## 6. Layer B TPOT steels source replay
+## 6. Source artifact inventory
+
+# Matbench v0.1 source artifact inventory
+
+- Submission directories scanned: 28
+- Direct `run.py` files: 11
+- Notebook sources: 14
+- Pickle/joblib model artifacts: 1
+
+## Disposition counts
+
+| Disposition | Count |
+|---|---:|
+| artifact-only or unclear source path | 1 |
+| best bounded replay candidate | 1 |
+| dependency-conflicting AutoML runner | 1 |
+| external/heavy MODNet path | 2 |
+| heavy neural dependency path | 12 |
+| notebook-only source | 9 |
+| source runner present; inspect manually | 2 |
+
+## Submission inventory
+
+| Submission | Algorithm | Tasks | Source artifacts | Model artifacts | Signals | Disposition |
+|---|---|---:|---|---|---|---|
+| matbench_v0.1_alignn | ALIGNN | 9 | run.py | config_example.json |  | heavy neural dependency path |
+| matbench_v0.1_Auto-sklearn | AutoML-Mat | 1 | environment.yml, notebook.ipynb |  | seed, fit, predict, external_repo | dependency-conflicting AutoML runner |
+| matbench_v0.1_automatminer_expressv2020 | AMMExpress v2020 | 13 | notebook.ipynb |  | fit, predict, external_repo | notebook-only source |
+| matbench_v0.1_Ax_10_90_CrabNet_v1.2.7 | Ax(10/90)+CrabNet v1.2.7 | 1 | gpei_submitit.py, notebook.ipynb |  | pickle, external_repo | notebook-only source |
+| matbench_v0.1_Ax_CrabNet_v1.2.1 | Ax+CrabNet v1.2.1 | 1 | notebook.ipynb |  | seed, predict, external_repo | notebook-only source |
+| matbench_v0.1_Ax_SAASBO_CrabNet_v1.2.7 | Ax/SAASBO CrabNet v1.2.7 | 1 | notebook.ipynb, saas_submitit.py |  | pickle, external_repo | notebook-only source |
+| matbench_v0.1_cgcnnv2019 | CGCNN v2019 | 9 | run.py |  |  | source runner present; inspect manually |
+| matbench_v0.1_coGN | coGN | 9 | preprocessing.py, run.py |  | fit, predict | heavy neural dependency path |
+| matbench_v0.1_coNGN | coNGN | 9 | preprocess_crystal.py, processing.py, run.py |  | fit, predict | heavy neural dependency path |
+| matbench_v0.1_CrabNet | CrabNet | 10 | notebook.ipynb |  | seed | notebook-only source |
+| matbench_v0.1_CrabNet_v1.2.1 | CrabNet v1.2.1 | 1 | notebook.ipynb |  | predict, external_repo | notebook-only source |
+| matbench_v0.1_darwin | Darwin | 4 | preprocessing.py, run.py |  | external_repo | heavy neural dependency path |
+| matbench_v0.1_DeeperGATGNN | DeeperGATGNN | 8 | config.yml, deep_gatgnn.py, main.py, training.py |  | seed, predict | heavy neural dependency path |
+| matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | DimeNet++ (kgcnn v2.1.0) | 9 | run.py |  | fit, predict | heavy neural dependency path |
+| matbench_v0.1_dummy | Dummy | 13 | notebook.ipynb |  | fit, predict | notebook-only source |
+| matbench_v0.1_Finder_v1.2_composition | Finder_v1.2 composition-only version | 8 | matbench_test.py |  | seed, external_repo | heavy neural dependency path |
+| matbench_v0.1_Finder_v1.2_structure | Finder_v1.2 structure-based version | 8 | matbench_test.py |  | seed, external_repo | heavy neural dependency path |
+| matbench_v0.1_GN-OA | GN-OA v1 | 1 | GN_OA.ipynb |  |  | heavy neural dependency path |
+| matbench_v0.1_gptchem | gptchem | 4 | run_experiments_classification.py, run_experiments_regression.py |  | fit, predict, pickle, external_repo | artifact-only or unclear source path |
+| matbench_v0.1_lattice_xgboost | Lattice-XGBoost | 1 | notebook.ipynb |  | predict, external_repo | notebook-only source |
+| matbench_v0.1_matformer | Matformer | 1 | config.py, data.py, train.py, train_matbench.py, train_on_folder.py | config_example.json | seed, fit, pickle | heavy neural dependency path |
+| matbench_v0.1_MegNet_kgcnn_v2.1.0 | MegNet (kgcnn v2.1.0) | 9 | run.py |  | fit, predict | heavy neural dependency path |
+| matbench_v0.1_modnet_v0.1.10 | MODNet (v0.1.10) | 13 | benchmarks.ipynb, run.py |  | predict, pickle, external_repo | external/heavy MODNet path |
+| matbench_v0.1_modnet_v0.1.12 | MODNet (v0.1.12) | 13 | benchmarks.ipynb, run.py |  | predict, pickle, external_repo | external/heavy MODNet path |
+| matbench_v0.1_rf | RF-SCM/Magpie | 13 | run.py |  | fit, predict | source runner present; inspect manually |
+| matbench_v0.1_RFLR | RF-Regex Steels | 1 | Matbench_Steels_RFLR.ipynb |  | seed, fit, predict | notebook-only source |
+| matbench_v0.1_SchNet_kgcnn_v2.1.0 | SchNet (kgcnn v2.1.0) | 9 | run.py |  | fit, predict | heavy neural dependency path |
+| matbench_v0.1_TPOT | TPOT-Mat | 1 | Matbench_steel_TPOT.ipynb, utils.py | tpot_best_pipeline.pkl | fit, predict, pickle | best bounded replay candidate |
+
+## Interpretation
+
+`matbench_v0.1_TPOT` stands out as the best bounded Layer B target because it has one small task, a notebook, a submitted helper, and a pickled pipeline artifact. Many other submissions are either notebook-only without saved fold-level models, full-run AutoML paths, or neural/external repositories with heavier dependencies.
+
+
+
+## 7. Layer B TPOT steels source replay
 
 # Matbench v0.1 TPOT steels source replay
 
@@ -853,7 +934,7 @@ The replay mirrors the notebook path: load the pickled TPOT pipeline, load Matbe
 
 
 
-## 7. Upstream issue draft
+## 8. Upstream issue draft
 
 # Matbench upstream issue draft - classification ROC-AUC scoring
 
@@ -970,89 +1051,8 @@ the classification `rocauc` field.
 
 
 
-## 8. Run log (tail)
+## 9. Run log (tail)
 
-  warnings.warn(
-```
-
-### 2026-07-03 07:54 UTC — paper003 compile seeded TPOT replay script
-
-```
-$ .venv\Scripts\python.exe -m py_compile scripts\matbench_tpot_replay.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075455-609148.log`
-
-output tail:
-```
-
-```
-
-### 2026-07-03 07:55 UTC — paper003 replay TPOT steels all folds seeded
-
-```
-$ env\matbench-tpot\Scripts\python.exe scripts\matbench_tpot_replay.py --report papers\matbench\layer_b_tpot_steels_replay.md --seed 0
-```
-
-- exit code: **0**  | duration: 1.9s  | raw log: `logs/cmd-20260703-075500-370249.log`
-
-output tail:
-```
-If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
-
-from sklearn.pipeline import make_pipeline
-
-model = make_pipeline(StandardScaler(with_mean=False), LassoLarsCV())
-
-If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
-
-kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}
-model.fit(X, y, **kwargs)
-
-Set parameter alpha to: original_alpha * np.sqrt(n_samples).
-  warnings.warn(
-C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\svm\_base.py:1244: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
-  warnings.warn(
-```
-
-### 2026-07-03 07:57 UTC — paper003 verify TPOT replay docs
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
-```
-
-- exit code: **1**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075724-036491.log`
-
-output tail:
-```
-  File "<string>", line 1
-    from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^
-SyntaxError: unterminated string literal (detected at line 1)
-```
-
-### 2026-07-03 07:57 UTC — paper003 verify TPOT replay docs rerun
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed' in report]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075739-651817.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True]}
-```
-
-### 2026-07-03 07:57 UTC — paper003 TPOT replay git diff whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-075744-886128.log`
-
-output tail:
 ```
 papers/matbench/run_log.md:1087: trailing whitespace.
 +Set parameter alpha to: original_alpha * np.sqrt(n_samples).
@@ -1131,5 +1131,86 @@ $ .venv\Scripts\python.exe scripts\make_matbench_report.py
 output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:00 UTC — paper003 reassemble Matbench audit report after packet wiring
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080041-670148.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:00 UTC — paper003 verify assembled report packet
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/make_matbench_report.py','scripts/matbench_tpot_replay.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); readme=Path('README.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); report=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); one=Path('reports/one_page_summary.md').read_text(encoding='utf-8'); checks=[meta['reports']['assembled_report']=='reports/paper-003-matbench-audit.md', 'External packet' in summary, 'paper-003-matbench-audit.md' in readme, 'Layer B TPOT steels source replay' in report, 'Claims to avoid' in packet, 'paper-003-external_release_packet.md' in one]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080049-812997.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 08:00 UTC — paper003 assembled report whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-080054-077290.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:02 UTC — paper003 compile Matbench inventory script
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\matbench_submission_inventory.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080203-386282.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 08:02 UTC — paper003 inventory Matbench source artifacts
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_submission_inventory.py --report papers\matbench\source_artifact_inventory.md
+```
+
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-080209-223516.log`
+
+output tail:
+```
+{
+  "dispositions": {
+    "artifact-only or unclear source path": 1,
+    "best bounded replay candidate": 1,
+    "dependency-conflicting AutoML runner": 1,
+    "external/heavy MODNet path": 2,
+    "heavy neural dependency path": 12,
+    "notebook-only source": 9,
+    "source runner present; inspect manually": 2
+  },
+  "report": "papers\\matbench\\source_artifact_inventory.md",
+  "submissions": 28
+}
 ```
 

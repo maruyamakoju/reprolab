@@ -54,3 +54,6 @@ Report: `layer_a_score_recompute.md`.
   path can be replayed for `matbench_steels`, but it refits stochastic estimators
   without a submitted random seed, so public-source execution does not regenerate
   the committed predictions exactly.
+- `source_artifact_inventory.md` records the broader source-artifact scan: 28
+  submission directories, 11 direct `run.py` files, 14 notebooks, and one
+  pickle/joblib model artifact.

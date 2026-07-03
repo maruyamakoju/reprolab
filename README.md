@@ -235,6 +235,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
       vs submitted mean MAE 79.947 (`papers/matbench/layer_b_tpot_steels_replay.md`)
+- [x] Matbench source artifact inventory: 28 submission directories scanned; 11
+      direct `run.py` files, 14 notebooks, and only 1 pickle/joblib model artifact
+      (`papers/matbench/source_artifact_inventory.md`)
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,
       `reports/paper-003-external_release_packet.md`)
@@ -322,12 +325,14 @@ Artifacts:
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
+- Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
 - Layer B replay script: `scripts/matbench_tpot_replay.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`
+- Submission inventory script: `scripts/matbench_submission_inventory.py`
 - Report script: `scripts/make_matbench_report.py`
 
 ## Rules

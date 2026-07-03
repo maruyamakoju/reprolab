@@ -33,6 +33,9 @@ submitted random seed.
   notebook artifacts in a pinned TPOT/sklearn environment. It is not
   prediction-identical: with audit seed 0, replay mean MAE is 79.094 vs submitted
   mean MAE 79.947.
+- **Source inventory:** 28 submission directories scanned; 11 have direct
+  `run.py` files, 14 have notebooks, and only one has a pickle/joblib model
+  artifact. This supports treating TPOT-Mat as the bounded Layer B candidate.
 
 ## Key numbers
 
@@ -43,6 +46,7 @@ submitted random seed.
 | Stored `rocauc` differing from balanced accuracy | 27 records | 0 |
 | Classification leaderboard rows checked | 27 displayed rows | all `mean rocauc == mean balanced_accuracy` |
 | MODNet probability-AUC gap | 4 submission/task probes | mean gap 0.029565-0.122272 |
+| Source artifact inventory | 28 submission directories | 1 pickle/joblib model artifact |
 | TPOT source replay | 5 steels folds | runnable, non-identical predictions |
 
 ## Evidence map
@@ -60,6 +64,7 @@ submitted random seed.
   - `papers/matbench/classification_auc_probe.md`
   - `papers/matbench/layer_a_modnet_0_1_10_probability_auc_probe.md`
   - `papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md`
+- Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Command log: `papers/matbench/run_log.md`
@@ -67,6 +72,7 @@ submitted random seed.
   - `scripts/matbench_score.py`
   - `scripts/matbench_classification_scan.py`
   - `scripts/matbench_leaderboard_metric_scan.py`
+  - `scripts/matbench_submission_inventory.py`
   - `scripts/matbench_tpot_replay.py`
   - `scripts/make_matbench_report.py`
 

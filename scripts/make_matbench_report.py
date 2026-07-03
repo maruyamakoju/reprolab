@@ -38,9 +38,10 @@ def main() -> None:
         section("5c. Classification ROC-AUC probe", PAPER / "classification_auc_probe.md"),
         section("5d. MODNet v0.1.10 probability-AUC probe", PAPER / "layer_a_modnet_0_1_10_probability_auc_probe.md"),
         section("5e. MODNet v0.1.12 probability-AUC probe", PAPER / "layer_a_modnet_0_1_12_probability_auc_probe.md"),
-        section("6. Layer B TPOT steels source replay", PAPER / "layer_b_tpot_steels_replay.md"),
-        section("7. Upstream issue draft", ROOT / "reports" / "paper-003_upstream_issue_draft.md"),
-        section("8. Run log (tail)", PAPER / "run_log.md", tail=160),
+        section("6. Source artifact inventory", PAPER / "source_artifact_inventory.md"),
+        section("7. Layer B TPOT steels source replay", PAPER / "layer_b_tpot_steels_replay.md"),
+        section("8. Upstream issue draft", ROOT / "reports" / "paper-003_upstream_issue_draft.md"),
+        section("9. Run log (tail)", PAPER / "run_log.md", tail=160),
     ]
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(parts) + "\n", encoding="utf-8")

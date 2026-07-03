@@ -23,6 +23,12 @@ Report: `layer_a_rf_composition_tasks.md`.
 
 ## Layer B source replay
 
+`scripts/matbench_submission_inventory.py` scanned 28 Matbench v0.1 submission
+directories before the source replay. It found 11 direct `run.py` files, 14
+notebook sources, and only one pickle/joblib model artifact. `matbench_v0.1_TPOT`
+stands out as the best bounded replay candidate because it has one small task, a
+notebook, a submitted helper, and a pickled TPOT pipeline.
+
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
 the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
@@ -70,11 +76,13 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
+- Source artifact inventory: `source_artifact_inventory.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
+- Submission inventory script: `../../scripts/matbench_submission_inventory.py`
 - Report script: `../../scripts/make_matbench_report.py`
 - Run log: `run_log.md`

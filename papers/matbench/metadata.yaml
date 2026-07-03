@@ -99,6 +99,16 @@ classification_auc_probe:
       glass_stored_mean: 0.9603111829242
       glass_probability_auc_mean: 0.9898761972560001
 
+source_artifact_inventory:
+  status: completed
+  script: scripts/matbench_submission_inventory.py
+  report: papers/matbench/source_artifact_inventory.md
+  submission_directories_scanned: 28
+  direct_run_py_files: 11
+  notebook_sources: 14
+  pickle_or_joblib_model_artifacts: 1
+  best_bounded_replay_candidate: matbench_v0.1_TPOT
+
 layer_b_tpot_steels:
   status: source_replay_completed_non_identical
   script: scripts/matbench_tpot_replay.py

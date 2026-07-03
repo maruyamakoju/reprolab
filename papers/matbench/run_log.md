@@ -1290,3 +1290,85 @@ warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will 
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 08:02 UTC — paper003 compile Matbench inventory script
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\matbench_submission_inventory.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080203-386282.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 08:02 UTC — paper003 inventory Matbench source artifacts
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_submission_inventory.py --report papers\matbench\source_artifact_inventory.md
+```
+
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-080209-223516.log`
+
+output tail:
+```
+{
+  "dispositions": {
+    "artifact-only or unclear source path": 1,
+    "best bounded replay candidate": 1,
+    "dependency-conflicting AutoML runner": 1,
+    "external/heavy MODNet path": 2,
+    "heavy neural dependency path": 12,
+    "notebook-only source": 9,
+    "source runner present; inspect manually": 2
+  },
+  "report": "papers\\matbench\\source_artifact_inventory.md",
+  "submissions": 28
+}
+```
+
+### 2026-07-03 08:03 UTC — paper003 reassemble report with source inventory
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080306-762706.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:03 UTC — paper003 verify source inventory wiring
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/matbench_submission_inventory.py','scripts/make_matbench_report.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); inventory=Path('papers/matbench/source_artifact_inventory.md').read_text(encoding='utf-8'); report=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['source_artifact_inventory']['submission_directories_scanned']==28, 'Pickle/joblib model artifacts: 1' in inventory, 'Source artifact inventory' in report, 'Source inventory' in packet, 'matbench_submission_inventory.py' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080314-086322.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True]}
+```
+
+### 2026-07-03 08:03 UTC — paper003 source inventory whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-080319-730305.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
