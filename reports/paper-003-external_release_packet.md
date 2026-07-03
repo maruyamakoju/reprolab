@@ -25,7 +25,8 @@ submitted random seed.
   scanned: 180 submission-task records and 900 folds. 179/180 records match stored
   scores to numerical precision. The only exception is `matbench_v0.1_GN-OA` on
   `matbench_mp_e_form`, where MAPE differs on all five folds while MAE, RMSE, and
-  max error match exactly.
+  max error match exactly. A simple unmasked MAPE is not the stored formula either;
+  it is infinite because the target contains exact zeros.
 - **Classification metric probe:** 27 classification submission-task records were
   scanned. 11 store float predictions and 16 store booleans; in all 27 records,
   stored `rocauc` equals balanced accuracy within numerical precision. For MODNet
@@ -70,6 +71,7 @@ submitted random seed.
   - `papers/matbench/layer_a_rf_all_tasks.md`
   - `papers/matbench/layer_a_dummy_all_tasks.md`
   - `papers/matbench/layer_a_all_submission_score_scan.md`
+  - `papers/matbench/layer_a_gn_oa_mape_probe.md`
 - Classification reports:
   - `papers/matbench/classification_prediction_scan.md`
   - `papers/matbench/classification_leaderboard_metric_scan.md`

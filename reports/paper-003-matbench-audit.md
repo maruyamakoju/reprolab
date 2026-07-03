@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 09:20 UTC_
+_Generated: 2026-07-03 09:25 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -63,6 +63,7 @@ max error match exactly. All 135 classification folds in the scan have stored
 `rocauc == balanced_accuracy`.
 
 Report: `layer_a_all_submission_score_scan.md`.
+Exception probe: `layer_a_gn_oa_mape_probe.md`.
 
 ## Layer B source replay
 
@@ -121,6 +122,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - RF all-task report: `layer_a_rf_all_tasks.md`
 - Dummy all-task report: `layer_a_dummy_all_tasks.md`
 - All-submission score scan: `layer_a_all_submission_score_scan.md`
+- GN-OA MAPE exception probe: `layer_a_gn_oa_mape_probe.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
@@ -277,6 +279,7 @@ layer_a_all_submission_score_scan:
   passing_submission_task_records: 179
   classification_folds_checked: 135
   classification_folds_rocauc_equal_balanced_accuracy: 135
+  exception_probe: papers/matbench/layer_a_gn_oa_mape_probe.md
 
 classification_auc_probe:
   status: completed
@@ -1301,6 +1304,47 @@ Report:
 
 
 
+## 4h. Layer A GN-OA MAPE exception probe
+
+# Matbench v0.1 GN-OA MAPE exception probe
+
+The all-submission score scan found one score-recompute exception:
+`matbench_v0.1_GN-OA` on `matbench_mp_e_form`. This probe checks whether the
+exception affects all regression metrics or only MAPE.
+
+## Result
+
+MAE, RMSE, and max error match the stored fold scores exactly or to floating-point
+precision. The mismatch is isolated to MAPE.
+
+| Fold | Stored MAPE | Recomputed Matbench MAPE | Delta | Other regression metrics |
+|---:|---:|---:|---:|---|
+| 0 | 12.5887409438 | 0.420116236715 | 12.1686247071 | match |
+| 1 | 7.94659210396 | 0.137819988807 | 7.80877211515 | match |
+| 2 | 9.26331433818 | 0.149750183903 | 9.11356415428 | match |
+| 3 | 11.8881843898 | 0.236287007689 | 11.6518973821 | match |
+| 4 | 12.1946455981 | 0.201616727224 | 11.9930288708 | match |
+
+## Formula checks
+
+The Matbench v0.1 MAPE path masks target values with `abs(y_true) > 1e-5`. Using
+that formula gives the recomputed values above.
+
+A simple unmasked MAPE is not the stored formula either: it becomes infinite on
+all five folds because the `matbench_mp_e_form` test targets contain exact zeros.
+
+Threshold sweeps over small denominators also did not reproduce the stored values.
+This points to a submission-specific stored-MAPE inconsistency rather than an ID
+alignment problem or a general scoring-path issue.
+
+## Interpretation
+
+The published GN-OA predictions appear aligned with the official validation IDs:
+MAE, RMSE, and max error all match. The exception should be treated narrowly as a
+stored MAPE inconsistency for `matbench_v0.1_GN-OA` / `matbench_mp_e_form`.
+
+
+
 ## 5. Classification prediction scan
 
 # Matbench v0.1 classification prediction-type scan
@@ -1765,93 +1809,6 @@ the classification `rocauc` field.
 
 ## 9. Run log (tail)
 
-
-output tail:
-```
-    "matbench_dielectric",
-    "matbench_expt_gap",
-    "matbench_expt_is_metal",
-    "matbench_glass",
-    "matbench_jdft2d",
-    "matbench_log_gvrh",
-    "matbench_log_kvrh",
-    "matbench_mp_e_form",
-    "matbench_mp_gap",
-    "matbench_mp_is_metal",
-    "matbench_perovskites",
-    "matbench_phonons",
-    "matbench_steels"
-  ]
-}
-```
-
-### 2026-07-03 09:05 UTC — paper003 reassemble report with Dummy all-task check
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090524-501589.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 09:05 UTC — paper003 verify Dummy all-task docs
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_dummy_all_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_dummy_all_tasks']['folds_checked']==65, abs(meta['layer_a_dummy_all_tasks']['max_abs_stored_vs_recomputed_delta']-3.552713678800501e-15)<1e-30, 'Fold scores checked: 65' in report, '130 folds' in summary, 'Layer A Dummy all-task expansion' in assembled, 'Dummy all-task score recomputation' in packet, 'Dummy all-task Layer A completed' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090532-115905.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True, True]}
-```
-
-### 2026-07-03 09:05 UTC — paper003 Dummy all-task whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-090538-483556.log`
-
-output tail:
-```
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 09:07 UTC — paper003 compile all-submission score scan
-
-```
-$ .venv\Scripts\python.exe -m py_compile scripts\matbench_all_results_score_scan.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090745-257077.log`
-
-output tail:
-```
-
-```
-
-### 2026-07-03 09:07 UTC — paper003 smoke all-submission score scan
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_all_results_score_scan.py --limit 2 --report papers\matbench\layer_a_all_submission_score_scan_smoke.md
-```
-
-- exit code: **0**  | duration: 311.1s  | raw log: `logs/cmd-20260703-090750-266320.log`
-
-output tail:
 ```
   "submission_task_records": 10,
   "submissions": 2,
@@ -1924,5 +1881,92 @@ fold_4
  stored {'mae': 0.02498503808917608, 'mape': 12.194645598056068, 'max_error': 1.7973616971756918, 'rmse': 0.06583117785444022}
  recomputed {'mae': 0.024985038089176084, 'rmse': 0.06583117785444023, 'mape': 0.2016167272238903, 'max_error': 1.7973616971756918}
  delta {'mae': -3.469446951953614e-18, 'rmse': -1.3877787807814457e-17, 'mape': 11.993028870832179, 'max_error': 0.0}
+```
+
+### 2026-07-03 09:20 UTC — paper003 reassemble report with all-submission scan
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-092056-233694.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 09:21 UTC — paper003 verify all-submission scan docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/matbench_all_results_score_scan.py','scripts/make_matbench_report.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); scan=Path('papers/matbench/layer_a_all_submission_score_scan.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_all_submission_score_scan']['folds_checked']==900, meta['layer_a_all_submission_score_scan']['failing_folds_at_1e_12']==5, 'Submissions checked: 28' in scan, '179/180' in summary, 'Layer A all-submission score scan' in assembled, 'GN-OA formation-energy MAPE-only mismatch' in packet, 'matbench_all_results_score_scan.py' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-092104-879955.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 09:21 UTC — paper003 all-submission scan whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-092110-429187.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 09:21 UTC — paper003 test GN-OA MAPE unmasked formula
+
+```
+$ env\jarvis\Scripts\python.exe -c import sys, numpy as np; from pathlib import Path; sys.path.insert(0,'scripts'); import matbench_score as ms; meta=ms.read_json(ms.METADATA_PATH); val=ms.read_json(ms.VALIDATION_PATH)['splits']; res=ms.read_json(Path('vendor/matbench/benchmarks/matbench_v0.1_GN-OA/results.json.gz')); truth=ms.load_truth('matbench_mp_e_form', meta); task=res['tasks']['matbench_mp_e_form']['results'];
+for fold_key, fold in sorted(task.items()):
+ ids=val['matbench_mp_e_form'][fold_key]['test']; y_true=np.asarray([truth[i] for i in ids], dtype=float); y_pred=np.asarray([fold['data'][i] for i in ids], dtype=float); stored=float(fold['scores']['mape']); masked=ms.mean_absolute_percentage_error(y_true.tolist(), y_pred.tolist()); unmasked=float(np.mean(np.abs((y_true-y_pred)/y_true))); print(fold_key, {'stored': stored, 'masked': masked, 'unmasked': unmasked, 'stored_minus_unmasked': stored-unmasked})
+```
+
+- exit code: **0**  | duration: 92.7s  | raw log: `logs/cmd-20260703-092149-422576.log`
+
+output tail:
+```
+fold_0 {'stored': 12.588740943785309, 'masked': 0.42011623671463005, 'unmasked': inf, 'stored_minus_unmasked': -inf}
+fold_1 {'stored': 7.946592103960418, 'masked': 0.1378199888074734, 'unmasked': inf, 'stored_minus_unmasked': -inf}
+fold_2 {'stored': 9.26331433818309, 'masked': 0.14975018390270012, 'unmasked': inf, 'stored_minus_unmasked': -inf}
+fold_3 {'stored': 11.888184389789986, 'masked': 0.2362870076890531, 'unmasked': inf, 'stored_minus_unmasked': -inf}
+fold_4 {'stored': 12.194645598056068, 'masked': 0.2016167272238903, 'unmasked': inf, 'stored_minus_unmasked': -inf}
+<string>:3: RuntimeWarning: divide by zero encountered in divide
+```
+
+### 2026-07-03 09:23 UTC — paper003 probe GN-OA MAPE denominator thresholds
+
+```
+$ env\jarvis\Scripts\python.exe -c import sys, numpy as np; from pathlib import Path; sys.path.insert(0,'scripts'); import matbench_score as ms; meta=ms.read_json(ms.METADATA_PATH); val=ms.read_json(ms.VALIDATION_PATH)['splits']; res=ms.read_json(Path('vendor/matbench/benchmarks/matbench_v0.1_GN-OA/results.json.gz')); truth=ms.load_truth('matbench_mp_e_form', meta); thresholds=[0,1e-12,1e-10,1e-8,1e-6,1e-5,1e-4,1e-3,1e-2];
+for fold_key, fold in sorted(res['tasks']['matbench_mp_e_form']['results'].items()):
+ ids=val['matbench_mp_e_form'][fold_key]['test']; y_true=np.asarray([truth[i] for i in ids], dtype=float); y_pred=np.asarray([fold['data'][i] for i in ids], dtype=float); stored=float(fold['scores']['mape']); vals=[]
+ for th in thresholds:
+  mask=np.abs(y_true)>th; vals.append((th, float(np.mean(np.abs((y_true[mask]-y_pred[mask])/y_true[mask]))), int(mask.sum())))
+ print(fold_key, 'stored', stored, 'thresholds', vals[:])
+```
+
+- exit code: **0**  | duration: 91.2s  | raw log: `logs/cmd-20260703-092336-873137.log`
+
+output tail:
+```
+fold_0 stored 12.588740943785309 thresholds [(0, 36208305780.65018, 26536), (1e-12, 0.42011623671463005, 26524), (1e-10, 0.42011623671463005, 26524), (1e-08, 0.42011623671463005, 26524), (1e-06, 0.42011623671463005, 26524), (1e-05, 0.42011623671463005, 26524), (0.0001, 0.1407519234581715, 26521), (0.001, 0.10932615236200711, 26507), (0.01, 0.07803323678021382, 26354)]
+fold_1 stored 7.946592103960418 thresholds [(0, 11623467173.323946, 26532), (1e-12, 0.1378199888074734, 26527), (1e-10, 0.1378199888074734, 26527), (1e-08, 0.1378199888074734, 26527), (1e-06, 0.1378199888074734, 26527), (1e-05, 0.1378199888074734, 26527), (0.0001, 0.12214296181840023, 26526), (0.001, 0.11061117133414702, 26514), (0.01, 0.07954811155663817, 26340)]
+fold_2 stored 9.26331433818309 thresholds [(0, 7675763341.431668, 26531), (1e-12, 0.14975018390270012, 26528), (1e-10, 0.14975018390270012, 26528), (1e-08, 0.14975018390270012, 26528), (1e-06, 0.14975018390270012, 26528), (1e-05, 0.14975018390270012, 26528), (0.0001, 0.14317462268710246, 26527), (0.001, 0.12889036323996245, 26507), (0.01, 0.08372506558387922, 26339)]
+fold_3 stored 11.888184389789986 thresholds [(0, 10207211548.549372, 26532), (1e-12, 0.7612213581581823, 26527), (1e-10, 0.7612213581581823, 26527), (1e-08, 0.7612213581581823, 26527), (1e-06, 0.2362870076890531, 26526), (1e-05, 0.2362870076890531, 26526), (0.0001, 0.2257906424938835, 26524), (0.001, 0.11558689634065783, 26507), (0.01, 0.0769429070645547, 26330)]
+fold_4 stored 12.194645598056068 thresholds [(0, 6340327997.301482, 26531), (1e-12, 0.6087244811242674, 26527), (1e-10, 0.6087244811242674, 26527), (1e-08, 0.6087244811242674, 26527), (1e-06, 0.6087244811242674, 26527), (1e-05, 0.2016167272238903, 26526), (0.0001, 0.17111811656954143, 26524), (0.001, 0.11711666268586597, 26501), (0.01, 0.07597983109866668, 26346)]
 ```
 

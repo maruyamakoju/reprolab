@@ -248,6 +248,8 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       submission-task records, 900 folds; 179/180 records match to numerical
       precision, with one GN-OA `matbench_mp_e_form` MAPE-only exception
       (`papers/matbench/layer_a_all_submission_score_scan.md`)
+- [x] Matbench GN-OA MAPE exception isolated: MAE/RMSE/max error match, stored
+      MAPE only differs (`papers/matbench/layer_a_gn_oa_mape_probe.md`)
 - [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
@@ -349,6 +351,7 @@ Artifacts:
 - RF all-task report: `papers/matbench/layer_a_rf_all_tasks.md`
 - Dummy all-task report: `papers/matbench/layer_a_dummy_all_tasks.md`
 - All-submission score scan: `papers/matbench/layer_a_all_submission_score_scan.md`
+- GN-OA MAPE exception probe: `papers/matbench/layer_a_gn_oa_mape_probe.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:

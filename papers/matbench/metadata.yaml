@@ -134,6 +134,7 @@ layer_a_all_submission_score_scan:
   passing_submission_task_records: 179
   classification_folds_checked: 135
   classification_folds_rocauc_equal_balanced_accuracy: 135
+  exception_probe: papers/matbench/layer_a_gn_oa_mape_probe.md
 
 classification_auc_probe:
   status: completed

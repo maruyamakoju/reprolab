@@ -55,6 +55,7 @@ max error match exactly. All 135 classification folds in the scan have stored
 `rocauc == balanced_accuracy`.
 
 Report: `layer_a_all_submission_score_scan.md`.
+Exception probe: `layer_a_gn_oa_mape_probe.md`.
 
 ## Layer B source replay
 
@@ -113,6 +114,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - RF all-task report: `layer_a_rf_all_tasks.md`
 - Dummy all-task report: `layer_a_dummy_all_tasks.md`
 - All-submission score scan: `layer_a_all_submission_score_scan.md`
+- GN-OA MAPE exception probe: `layer_a_gn_oa_mape_probe.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
