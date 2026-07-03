@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 08:03 UTC_
+_Generated: 2026-07-03 08:43 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -28,6 +28,12 @@ Across all 20 checked folds, the max absolute stored-vs-recomputed score delta i
 `1.1102230246251565e-16`.
 
 Report: `layer_a_rf_composition_tasks.md`.
+
+The RF baseline check now also covers two small structure tasks:
+`matbench_jdft2d` and `matbench_phonons`. Across those 10 additional folds, the
+max stored-vs-recomputed score delta is `0.0`.
+
+Report: `layer_a_rf_structure_small_tasks.md`.
 
 ## Layer B source replay
 
@@ -81,6 +87,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Metadata: `metadata.yaml`
 - Layer A seed report: `layer_a_score_recompute.md`
 - RF composition-task report: `layer_a_rf_composition_tasks.md`
+- RF small-structure-task report: `layer_a_rf_structure_small_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
@@ -172,6 +179,19 @@ layer_a_rf_composition:
     - matbench_glass
     - matbench_steels
   max_abs_stored_vs_recomputed_delta: 1.1102230246251565e-16
+
+layer_a_rf_small_structure:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_structure_small_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 2
+  folds_checked: 10
+  tasks:
+    - matbench_jdft2d
+    - matbench_phonons
+  max_abs_stored_vs_recomputed_delta: 0.0
 
 classification_auc_probe:
   status: completed
@@ -380,6 +400,7 @@ The seed check passed:
 |---|---:|---:|---:|---|
 | `matbench_v0.1_rf` | 2 | 10 | 1.110e-16 | `layer_a_score_recompute.md` |
 | `matbench_v0.1_rf` composition tasks | 4 | 20 | 1.110e-16 | `layer_a_rf_composition_tasks.md` |
+| `matbench_v0.1_rf` small structure tasks | 2 | 10 | 0.000e+00 | `layer_a_rf_structure_small_tasks.md` |
 
 The classification predictions in the RF baseline are stored as hard booleans, so
 the stored ROC-AUC equals balanced accuracy for the checked classification task.
@@ -586,6 +607,51 @@ Report:
 | rmse | 149.383944441 | 196.358570629 | 113.154922817 | 27.4893431478 |
 | mape | 0.0744721297401 | 0.0807437889227 | 0.0653807405884 | 0.0056047478171 |
 | max_error | 594.98156 | 1121.1276 | 362.663 | 278.700159881 |
+
+
+
+## 4c. Layer A RF small-structure-task expansion
+
+# Matbench v0.1 score recomputation
+
+- Results artifact: `vendor/matbench/benchmarks/matbench_v0.1_rf/results.json.gz`
+- Fold scores checked: 10
+- Max absolute stored-vs-recomputed score delta: 0.000e+00
+
+## Fold checks
+
+| Task | Fold | n | Prediction type | Max score delta | Stored rocauc | Probability rocauc |
+|---|---:|---:|---|---:|---:|---:|
+| matbench_jdft2d | 0 | 128 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 1 | 127 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 2 | 127 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 3 | 127 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 4 | 127 | float | 0.000e+00 |  |  |
+| matbench_phonons | 0 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 1 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 2 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 3 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 4 | 253 | float | 0.000e+00 |  |  |
+
+## Recomputed fold aggregates
+
+### matbench_jdft2d
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 50.04399974 | 66.2421301222 | 42.7472945267 | 8.62712887611 |
+| rmse | 112.265975486 | 159.638986052 | 72.7391490957 | 36.7066225573 |
+| mape | 5.23911546788 | 23.7624894676 | 0.43823538542 | 9.26294774418 |
+| max_error | 718.045733692 | 1538.60726856 | 295.743678511 | 453.647322018 |
+
+### matbench_phonons
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 67.6126142422 | 82.3862649649 | 58.6036107598 | 8.9899908374 |
+| rmse | 146.276431864 | 172.801458959 | 122.15658115 | 21.4751689658 |
+| mape | 0.118485135116 | 0.134769893668 | 0.104049045388 | 0.00979558791325 |
+| max_error | 1270.68885897 | 2024.7301119 | 861.90049904 | 402.730658047 |
 
 
 
@@ -1053,122 +1119,6 @@ the classification `rocauc` field.
 
 ## 9. Run log (tail)
 
-```
-papers/matbench/run_log.md:1087: trailing whitespace.
-+Set parameter alpha to: original_alpha * np.sqrt(n_samples).
-papers/matbench/run_log.md:1127: trailing whitespace.
-+Set parameter alpha to: original_alpha * np.sqrt(n_samples).
-papers/matbench/run_log.md:1136: trailing whitespace.
-+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
-papers/matbench/run_log.md:1144: trailing whitespace.
-+    from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 07:58 UTC — paper003 TPOT replay git diff whitespace check rerun
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-075808-299482.log`
-
-output tail:
-```
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 07:58 UTC — paper003 verify TPOT replay docs final
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'env/matbench-tpot/Scripts/python.exe -m pip install' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed' in report]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075841-802043.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True]}
-```
-
-### 2026-07-03 07:58 UTC — paper003 TPOT replay final whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075846-206235.log`
-
-output tail:
-```
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 08:00 UTC — paper003 assemble Matbench audit report
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080015-463513.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 08:00 UTC — paper003 reassemble Matbench audit report after packet wiring
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080041-670148.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 08:00 UTC — paper003 verify assembled report packet
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/make_matbench_report.py','scripts/matbench_tpot_replay.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); readme=Path('README.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); report=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); one=Path('reports/one_page_summary.md').read_text(encoding='utf-8'); checks=[meta['reports']['assembled_report']=='reports/paper-003-matbench-audit.md', 'External packet' in summary, 'paper-003-matbench-audit.md' in readme, 'Layer B TPOT steels source replay' in report, 'Claims to avoid' in packet, 'paper-003-external_release_packet.md' in one]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080049-812997.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True]}
-```
-
-### 2026-07-03 08:00 UTC — paper003 assembled report whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-080054-077290.log`
-
-output tail:
-```
 warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
@@ -1211,6 +1161,122 @@ output tail:
   },
   "report": "papers\\matbench\\source_artifact_inventory.md",
   "submissions": 28
+}
+```
+
+### 2026-07-03 08:03 UTC — paper003 reassemble report with source inventory
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080306-762706.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:03 UTC — paper003 verify source inventory wiring
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/matbench_submission_inventory.py','scripts/make_matbench_report.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); inventory=Path('papers/matbench/source_artifact_inventory.md').read_text(encoding='utf-8'); report=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['source_artifact_inventory']['submission_directories_scanned']==28, 'Pickle/joblib model artifacts: 1' in inventory, 'Source artifact inventory' in report, 'Source inventory' in packet, 'matbench_submission_inventory.py' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080314-086322.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True]}
+```
+
+### 2026-07-03 08:03 UTC — paper003 source inventory whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-080319-730305.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:42 UTC — paper003 recompute RF score for small structure task jdft2d
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_jdft2d --report papers\matbench\layer_a_rf_structure_small_jdft2d.md
+```
+
+- exit code: **0**  | duration: 3.3s  | raw log: `logs/cmd-20260703-084229-875302.log`
+
+output tail:
+```
+Fetching matbench_jdft2d.json.gz from https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_jdft2d.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_small_jdft2d.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_jdft2d"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB:   0%|          | 0.0/0.267131 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
+```
+
+### 2026-07-03 08:42 UTC — paper003 recompute RF score for small structure task phonons
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_phonons --report papers\matbench\layer_a_rf_structure_small_phonons.md
+```
+
+- exit code: **0**  | duration: 3.0s  | raw log: `logs/cmd-20260703-084239-464814.log`
+
+output tail:
+```
+Fetching matbench_phonons.json.gz from https://ml.materialsproject.org/projects/matbench_phonons.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_phonons.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_small_phonons.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_phonons"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB:   0%|          | 0.0/0.45967199999999997 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+```
+
+### 2026-07-03 08:42 UTC — paper003 recompute RF scores for small structure tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_jdft2d matbench_phonons --report papers\matbench\layer_a_rf_structure_small_tasks.md
+```
+
+- exit code: **0**  | duration: 2.5s  | raw log: `logs/cmd-20260703-084248-280472.log`
+
+output tail:
+```
+{
+  "folds_checked": 10,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_small_tasks.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_jdft2d",
+    "matbench_phonons"
+  ]
 }
 ```
 

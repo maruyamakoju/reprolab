@@ -19,7 +19,8 @@ submitted random seed.
 
 - **Layer A:** RF-SCM/Magpie `matbench_v0.1_rf` fold scores reproduce exactly on
   all four low-cost composition tasks checked: `matbench_expt_gap`,
-  `matbench_expt_is_metal`, `matbench_glass`, and `matbench_steels`. Scope: 20
+  `matbench_expt_is_metal`, `matbench_glass`, and `matbench_steels`, plus two
+  small structure tasks: `matbench_jdft2d` and `matbench_phonons`. Scope: 30
   folds, max stored-vs-recomputed score delta `1.110e-16`.
 - **Classification metric probe:** 27 classification submission-task records were
   scanned. 11 store float predictions and 16 store booleans; in all 27 records,
@@ -41,7 +42,7 @@ submitted random seed.
 
 | Check | Scope | Result |
 |---|---:|---|
-| RF composition-task score recomputation | 4 tasks, 20 folds | max delta `1.110e-16` |
+| RF composition/structure score recomputation | 6 tasks, 30 folds | max delta `1.110e-16` |
 | Classification records scanned | 27 submission-task records | 16 bool, 11 float, 0 mixed |
 | Stored `rocauc` differing from balanced accuracy | 27 records | 0 |
 | Classification leaderboard rows checked | 27 displayed rows | all `mean rocauc == mean balanced_accuracy` |
@@ -58,6 +59,7 @@ submitted random seed.
 - Layer A reports:
   - `papers/matbench/layer_a_score_recompute.md`
   - `papers/matbench/layer_a_rf_composition_tasks.md`
+  - `papers/matbench/layer_a_rf_structure_small_tasks.md`
 - Classification reports:
   - `papers/matbench/classification_prediction_scan.md`
   - `papers/matbench/classification_leaderboard_metric_scan.md`
@@ -93,7 +95,8 @@ submitted random seed.
 
 > I ran a ReproLab audit on Matbench v0.1. The positive result is that the checked
 > RF baseline prediction artifacts reproduce their stored fold scores exactly on
-> four low-cost composition tasks. The main finding is in classification scoring:
+> six checked tasks: four low-cost composition tasks and two small structure tasks.
+> The main finding is in classification scoring:
 > across 27 classification submission-task records, stored `rocauc` always equals
 > balanced accuracy, and for MODNet probability outputs the raw-probability ROC-AUC
 > is higher by up to 0.122 mean AUC. I also ran a bounded TPOT-Mat source replay:

@@ -1372,3 +1372,147 @@ warning: in the working copy of 'papers/matbench/summary.md', LF will be replace
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 08:42 UTC — paper003 recompute RF score for small structure task jdft2d
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_jdft2d --report papers\matbench\layer_a_rf_structure_small_jdft2d.md
+```
+
+- exit code: **0**  | duration: 3.3s  | raw log: `logs/cmd-20260703-084229-875302.log`
+
+output tail:
+```
+Fetching matbench_jdft2d.json.gz from https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_jdft2d.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_small_jdft2d.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_jdft2d"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB:   0%|          | 0.0/0.267131 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
+```
+
+### 2026-07-03 08:42 UTC — paper003 recompute RF score for small structure task phonons
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_phonons --report papers\matbench\layer_a_rf_structure_small_phonons.md
+```
+
+- exit code: **0**  | duration: 3.0s  | raw log: `logs/cmd-20260703-084239-464814.log`
+
+output tail:
+```
+Fetching matbench_phonons.json.gz from https://ml.materialsproject.org/projects/matbench_phonons.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_phonons.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_small_phonons.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_phonons"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB:   0%|          | 0.0/0.45967199999999997 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+```
+
+### 2026-07-03 08:42 UTC — paper003 recompute RF scores for small structure tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_jdft2d matbench_phonons --report papers\matbench\layer_a_rf_structure_small_tasks.md
+```
+
+- exit code: **0**  | duration: 2.5s  | raw log: `logs/cmd-20260703-084248-280472.log`
+
+output tail:
+```
+{
+  "folds_checked": 10,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_small_tasks.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_jdft2d",
+    "matbench_phonons"
+  ]
+}
+```
+
+### 2026-07-03 08:43 UTC — paper003 reassemble report with RF small structure tasks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-084342-361222.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:43 UTC — paper003 verify RF small structure task docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_structure_small_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_small_structure']['folds_checked']==10, meta['layer_a_rf_small_structure']['max_abs_stored_vs_recomputed_delta']==0.0, 'Fold scores checked: 10' in report, 'layer_a_rf_structure_small_tasks.md' in summary, 'Layer A RF small-structure-task expansion' in assembled, '6 tasks, 30 folds' in packet, 'All 30 checked folds' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-084350-844786.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 08:43 UTC — paper003 RF small structure whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084355-339443.log`
+
+output tail:
+```
+papers/matbench/run_log.md:1398: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
+papers/matbench/run_log.md:1423: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+reports/paper-003-matbench-audit.md:1233: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
+reports/paper-003-matbench-audit.md:1258: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:44 UTC — paper003 RF small structure whitespace check rerun
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084430-014323.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```

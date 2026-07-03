@@ -231,6 +231,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench RF composition-task Layer A expanded: 4 tasks, 20 folds, max
       stored-vs-recomputed score delta 1.110e-16
       (`papers/matbench/layer_a_rf_composition_tasks.md`)
+- [x] Matbench RF small-structure-task Layer A expanded: `matbench_jdft2d` +
+      `matbench_phonons`, 10 folds, max stored-vs-recomputed score delta 0
+      (`papers/matbench/layer_a_rf_structure_small_tasks.md`)
 - [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
@@ -294,9 +297,10 @@ artifacts. Each submission directory is expected to contain `results.json.gz`,
 Layer A seed result: for `matbench_v0.1_rf`, `scripts/matbench_score.py`
 recomputed all fold scores for the four low-cost composition tasks
 (`matbench_expt_gap`, `matbench_expt_is_metal`, `matbench_glass`,
-`matbench_steels`) from released predictions, official split IDs, and Matminer
-targets. All 20 checked
-folds match the stored scores to numerical precision (max absolute delta 1.110e-16).
+`matbench_steels`) plus two small structure tasks (`matbench_jdft2d`,
+`matbench_phonons`) from released predictions, official split IDs, and Matminer
+targets. All 30 checked folds match the stored scores to numerical precision
+(max absolute delta 1.110e-16).
 
 Classification metric probe: 11/27 classification submission-task records store
 float predictions, but every checked stored `rocauc` value equals balanced accuracy.
@@ -321,6 +325,7 @@ Artifacts:
 - Candidate screen: `papers/matbench/candidate_screen.md`
 - Layer A seed report: `papers/matbench/layer_a_score_recompute.md`
 - RF composition-task report: `papers/matbench/layer_a_rf_composition_tasks.md`
+- RF small-structure-task report: `papers/matbench/layer_a_rf_structure_small_tasks.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:

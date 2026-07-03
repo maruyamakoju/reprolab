@@ -71,6 +71,19 @@ layer_a_rf_composition:
     - matbench_steels
   max_abs_stored_vs_recomputed_delta: 1.1102230246251565e-16
 
+layer_a_rf_small_structure:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_structure_small_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 2
+  folds_checked: 10
+  tasks:
+    - matbench_jdft2d
+    - matbench_phonons
+  max_abs_stored_vs_recomputed_delta: 0.0
+
 classification_auc_probe:
   status: completed
   scan_script: scripts/matbench_classification_scan.py

@@ -21,6 +21,12 @@ Across all 20 checked folds, the max absolute stored-vs-recomputed score delta i
 
 Report: `layer_a_rf_composition_tasks.md`.
 
+The RF baseline check now also covers two small structure tasks:
+`matbench_jdft2d` and `matbench_phonons`. Across those 10 additional folds, the
+max stored-vs-recomputed score delta is `0.0`.
+
+Report: `layer_a_rf_structure_small_tasks.md`.
+
 ## Layer B source replay
 
 `scripts/matbench_submission_inventory.py` scanned 28 Matbench v0.1 submission
@@ -73,6 +79,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Metadata: `metadata.yaml`
 - Layer A seed report: `layer_a_score_recompute.md`
 - RF composition-task report: `layer_a_rf_composition_tasks.md`
+- RF small-structure-task report: `layer_a_rf_structure_small_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
