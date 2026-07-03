@@ -1,6 +1,6 @@
 # ReproLab Paper-002 candidate - JARVIS-Leaderboard
 paper:
-  title: JARVIS-Leaderboard: a large scale benchmark of materials design methods
+  title: "JARVIS-Leaderboard: a large scale benchmark of materials design methods"
   venue: npj Computational Materials
   volume_article: 10, 93
   year: 2024
@@ -40,3 +40,14 @@ layer_a_expanded_tasks:
   all_csv_ids_match_json_test_split: true
   classification_zip_internal_name_note: outer archives use test-acc.csv.zip but
     internal CSV names use test-mae.csv
+
+layer_b_probe:
+  status: execution_path_probe_completed
+  model_execution_smoke_run: false
+  current_venv_missing:
+    - jarvis
+    - matminer
+    - xgboost
+    - lightgbm
+  dependency_dry_run_succeeds: true
+  recommended_next: isolated JARVIS env plus a small matminer_rf dft_3d wrapper

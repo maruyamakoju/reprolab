@@ -2,6 +2,7 @@
 
 Status: Layer A metric recomputation has passed for 14 JARVIS-Leaderboard AI
 benchmarks: 6 regression pages, 7 classification pages, and 1 spectra page.
+Layer B has an execution-path probe, but no model-execution smoke yet.
 
 ## Result
 
@@ -59,8 +60,21 @@ correctly use `test-acc.csv.zip`, but the single CSV stored inside those zips is
 named `test-mae.csv`. Upstream reads the zip directly and is unaffected; independent
 tools should not assume the internal filename matches the outer archive.
 
+## Layer B probe
+
+The first execution-path probe inspected the public `matminer_rf`,
+`matminer_xgboost`, `cfid`, and `cfid_chem` contribution runners. The current
+Matbench audit venv lacks `jarvis`, `matminer`, `xgboost`, and `lightgbm`; a
+`pip --dry-run` dependency solve succeeds, but would add a broad JARVIS stack to
+the shared environment.
+
+The runners are also not one-command fits for the audited dft_3d formation-energy
+page: the matminer scripts are hardcoded to `snumat`, `matminer_xgboost` defaults
+to `gpu_hist`, and the CFID scripts use a different benchmark path convention plus
+full descriptor/data-directory generation. Details are in `layer_b_probe.md`.
+
 ## Next
 
-The best next move is one tractable Layer B model-execution smoke for a simple
-baseline. The public run scripts are heterogeneous enough that this should start as
-an execution-path probe before attempting full benchmark regeneration.
+The best next move is an isolated JARVIS env and a small `matminer_rf` wrapper for
+`dft_3d` formation energy. If that is too slow or invasive, Paper-002 can be
+stopped as a strong three-format Layer A audit with a documented Layer B blocker.

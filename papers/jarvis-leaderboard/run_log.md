@@ -776,3 +776,90 @@ total 101
 bad []
 metadata_has_14 True
 ```
+
+### 2026-07-03 06:47 UTC — paper002 layerB dependency import probe
+
+```
+$ .venv\Scripts\python.exe -c mods=['jarvis','matminer','sklearn','xgboost','lightgbm','pymatgen']; import importlib; missing=[]; versions={};
+for m in mods:
+    try:
+        mod=importlib.import_module(m); versions[m]=getattr(mod,'__version__','unknown')
+    except Exception as exc:
+        missing.append((m,type(exc).__name__,str(exc)[:160]))
+print('versions', versions); print('missing', missing); raise SystemExit(1 if missing else 0)
+```
+
+- exit code: **1**  | duration: 1.3s  | raw log: `logs/cmd-20260703-064741.log`
+
+output tail:
+```
+versions {'sklearn': '1.9.0', 'pymatgen': 'unknown'}
+missing [('jarvis', 'ModuleNotFoundError', "No module named 'jarvis'"), ('matminer', 'ModuleNotFoundError', "No module named 'matminer'"), ('xgboost', 'ModuleNotFoundError', "No module named 'xgboost'"), ('lightgbm', 'ModuleNotFoundError', "No module named 'lightgbm'")]
+```
+
+### 2026-07-03 06:48 UTC — paper002 layerB dependency dry-run
+
+```
+$ .venv\Scripts\python.exe -m pip install --dry-run jarvis-tools matminer xgboost lightgbm
+```
+
+- exit code: **0**  | duration: 7.0s  | raw log: `logs/cmd-20260703-064853.log`
+
+output tail:
+```
+Requirement already satisfied: ruamel.yaml in .\.venv\Lib\site-packages (from monty>=2023->matminer) (0.18.17)
+Requirement already satisfied: pymatgen-core>=2026.4.16 in .\.venv\Lib\site-packages (from pymatgen>=2023->matminer) (2026.5.18)
+Requirement already satisfied: bibtexparser in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (1.4.4)
+Requirement already satisfied: lxml>=6.1.0 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (6.1.1)
+Requirement already satisfied: networkx>=2.7 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (3.6.1)
+Requirement already satisfied: orjson<4,>=3.10 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (3.11.9)
+Requirement already satisfied: palettable>=3.3.3 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (3.3.3)
+Requirement already satisfied: plotly>=6.0 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (6.8.0)
+Requirement already satisfied: spglib>=2.5 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (2.7.0)
+Requirement already satisfied: tabulate>=0.9.0 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (0.10.0)
+Requirement already satisfied: uncertainties>=3.1 in .\.venv\Lib\site-packages (from pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (3.2.3)
+Requirement already satisfied: six>=1.5 in .\.venv\Lib\site-packages (from python-dateutil>=2.8.2->pandas<3,>=1.5->matminer) (1.17.0)
+Requirement already satisfied: typing-extensions>=4.9.0 in .\.venv\Lib\site-packages (from spglib>=2.5->pymatgen-core>=2026.4.16->pymatgen>=2023->matminer) (4.15.0)
+Requirement already satisfied: ruamel.yaml.clib>=0.2.15 in .\.venv\Lib\site-packages (from ruamel.yaml->monty>=2023->matminer) (0.2.15)
+Would install dnspython-2.8.0 jarvis-tools-2026.6.12 lightgbm-4.6.0 matminer-0.10.1 pandas-2.3.3 pymongo-4.17.0 pytz-2026.2 toolz-1.1.0 xgboost-3.2.0 xmltodict-1.0.4
+```
+
+### 2026-07-03 06:49 UTC — verify paper002 layerB probe docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; import yaml; root=Path('papers/jarvis-leaderboard'); meta=yaml.safe_load((root/'metadata.yaml').read_text(encoding='utf-8')); summary=(root/'summary.md').read_text(encoding='utf-8'); plan=(root/'reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); probe=(root/'layer_b_probe.md').read_text(encoding='utf-8'); files=sorted(root.glob('metric_check*.md')); total=sum(int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files); checks=[len(files)==14,total==101,meta['layer_b_probe']['status']=='execution_path_probe_completed',meta['layer_b_probe']['model_execution_smoke_run'] is False,'layer_b_probe.md' in summary,'layer_b_probe.md' in plan,'layer_b_probe.md' in readme,'matminer_rf' in probe,'dependency_dry_run_succeeds' in (root/'metadata.yaml').read_text(encoding='utf-8')]; print({'metric_files':len(files),'total_submissions':total,'checks':checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **1**  | duration: 0.3s  | raw log: `logs/cmd-20260703-064949.log`
+
+output tail:
+```
+                         ^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\yaml\parser.py", line 428, in parse_block_mapping_key
+    if self.check_token(KeyToken):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\yaml\scanner.py", line 116, in check_token
+    self.fetch_more_tokens()
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\yaml\scanner.py", line 223, in fetch_more_tokens
+    return self.fetch_value()
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\yaml\scanner.py", line 577, in fetch_value
+    raise ScannerError(None, None,
+yaml.scanner.ScannerError: mapping values are not allowed here
+  in "<unicode string>", line 3, column 28:
+      title: JARVIS-Leaderboard: a large scale benchmark of mat ... 
+                               ^
+```
+
+### 2026-07-03 06:50 UTC — verify paper002 layerB probe docs after yaml quote fix
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; import yaml; root=Path('papers/jarvis-leaderboard'); meta=yaml.safe_load((root/'metadata.yaml').read_text(encoding='utf-8')); summary=(root/'summary.md').read_text(encoding='utf-8'); plan=(root/'reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); probe=(root/'layer_b_probe.md').read_text(encoding='utf-8'); files=sorted(root.glob('metric_check*.md')); total=sum(int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files); checks=[len(files)==14,total==101,meta['layer_b_probe']['status']=='execution_path_probe_completed',meta['layer_b_probe']['model_execution_smoke_run'] is False,'layer_b_probe.md' in summary,'layer_b_probe.md' in plan,'layer_b_probe.md' in readme,'matminer_rf' in probe,'dependency_dry_run_succeeds' in (root/'metadata.yaml').read_text(encoding='utf-8')]; print({'metric_files':len(files),'total_submissions':total,'checks':checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-065007.log`
+
+output tail:
+```
+{'metric_files': 14, 'total_submissions': 101, 'checks': [True, True, True, True, True, True, True, True, True]}
+```

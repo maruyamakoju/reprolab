@@ -1,7 +1,8 @@
 # Reproduction Plan - JARVIS-Leaderboard (Paper-002 candidate)
 
 Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
-(101 total submissions) on 2026-07-03.
+(101 total submissions) on 2026-07-03. Layer B execution-path probe completed; no
+model-execution smoke yet.
 
 ## 0. Why this candidate
 
@@ -106,11 +107,32 @@ Closest adjacent official gaps in the selected leaderboard are small:
 The page reports point estimates only; uncertainty or split-sensitivity checks would
 be the natural Layer C analogue.
 
-## 6. Next
+## 6. Layer B execution-path probe
 
-1. Check whether a Layer B model-execution smoke is practical for one tractable
-   baseline.
-2. If Layer B is too environment-heavy, document the exact blocker and stop at the
-   three-format Layer A result.
-3. Add a small leaderboard-resolution analysis if this becomes the main Paper-002
+The first Layer B probe inspected the public contribution runners for
+`matminer_rf`, `matminer_xgboost`, `cfid`, and `cfid_chem`, then checked dependency
+availability in the current `.venv`.
+
+Current `.venv` import probe:
+
+- present: `sklearn`, `pymatgen`
+- missing: `jarvis`, `matminer`, `xgboost`, `lightgbm`
+
+Dependency resolution is feasible (`pip install --dry-run jarvis-tools matminer
+xgboost lightgbm` exits 0), but installing those packages into the shared Paper-001
+audit venv would broaden the environment materially. The public scripts also need
+minor adaptation before they represent a clean dft_3d formation-energy smoke:
+`matminer_rf` and `matminer_xgboost` are hardcoded to `snumat`, the XGBoost runner
+uses `gpu_hist`, and the CFID runners assume a different benchmark path layout.
+
+Details: `layer_b_probe.md`.
+
+## 7. Next
+
+1. Create an isolated JARVIS env.
+2. Install only the `matminer_rf` dependency set.
+3. Wrap or patch the runner to target `dft_3d` formation energy explicitly.
+4. If runtime is too high, stop at the documented three-format Layer A result plus
+   this Layer B probe.
+5. Add a small leaderboard-resolution analysis if this becomes the main Paper-002
    target rather than a candidate.

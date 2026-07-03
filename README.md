@@ -202,8 +202,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       101/101 submissions reproduce official MAE/ACC/MULTIMAE within displayed
       rounding, with exact CSV-vs-JSON test-id agreement
       (`papers/jarvis-leaderboard/summary.md`)
-- [ ] Next: attempt one tractable JARVIS Layer B smoke, starting with an
-      execution-path probe
+- [x] JARVIS Layer B execution-path probe: current shared venv lacks the JARVIS
+      runner stack, dependency dry-run succeeds, and public baseline scripts need
+      light adaptation before a clean dft_3d smoke (`layer_b_probe.md`)
+- [ ] Next: create an isolated JARVIS env and run a bounded `matminer_rf` smoke, or
+      stop Paper-002 as a strong Layer A audit with documented Layer B blocker
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -216,11 +219,16 @@ Layer A result: 14 benchmark pages, 101 total submissions; all reproduce the
 official MAE/ACC/MULTIMAE within displayed rounding, and every CSV id set exactly
 matches the corresponding JSON test split.
 
+Layer B probe: public runners exist but are not one-command fits for the audited
+dft_3d target in the current shared venv. The next clean step is an isolated JARVIS
+env and a small `matminer_rf` wrapper.
+
 Artifacts:
 
 - Summary: `papers/jarvis-leaderboard/summary.md`
 - Plan: `papers/jarvis-leaderboard/reproduction_plan.md`
 - Metadata: `papers/jarvis-leaderboard/metadata.yaml`
+- Layer B probe: `papers/jarvis-leaderboard/layer_b_probe.md`
 - Metric check: `papers/jarvis-leaderboard/metric_check.md`
 - Script: `scripts/jarvis_score.py`
 
