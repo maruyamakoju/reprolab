@@ -42,12 +42,23 @@ layer_a_expanded_tasks:
     internal CSV names use test-mae.csv
 
 layer_b_probe:
-  status: execution_path_probe_completed
-  model_execution_smoke_run: false
+  status: bounded_pre_smoke_passed
+  model_execution_smoke_run: true
   current_venv_missing:
     - jarvis
     - matminer
     - xgboost
     - lightgbm
   dependency_dry_run_succeeds: true
-  recommended_next: isolated JARVIS env plus a small matminer_rf dft_3d wrapper
+  isolated_env: env/jarvis
+  smoke:
+    script: scripts/jarvis_matminer_rf_smoke.py
+    report: papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md
+    benchmark: AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae
+    train_rows: 32
+    test_rows: 16
+    feature_columns: 273
+    all_nan_feature_rows: 0
+    trees: 100
+    subset_mae: 0.6299147437500001
+  recommended_next: scale matminer_rf smoke cautiously or stop at bounded Layer B

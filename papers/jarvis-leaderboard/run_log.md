@@ -863,3 +863,179 @@ output tail:
 ```
 {'metric_files': 14, 'total_submissions': 101, 'checks': [True, True, True, True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 06:50 UTC — paper002 create isolated JARVIS env
+
+```
+$ .venv\Scripts\python.exe -m venv env\jarvis
+```
+
+- exit code: **0**  | duration: 12.6s  | raw log: `logs/cmd-20260703-065046.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:51 UTC — paper002 install isolated matminer_rf deps
+
+```
+$ env\jarvis\Scripts\python.exe -m pip install jarvis-tools matminer
+```
+
+- exit code: **0**  | duration: 141.9s  | raw log: `logs/cmd-20260703-065104.log`
+
+output tail:
+```
+Using cached networkx-3.6.1-py3-none-any.whl (2.1 MB)
+Using cached orjson-3.11.9-cp311-cp311-win_amd64.whl (127 kB)
+Using cached palettable-3.3.3-py2.py3-none-any.whl (332 kB)
+Using cached plotly-6.8.0-py3-none-any.whl (9.9 MB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Using cached spglib-2.7.0-cp311-cp311-win_amd64.whl (669 kB)
+Using cached tabulate-0.10.0-py3-none-any.whl (39 kB)
+Using cached uncertainties-3.2.3-py3-none-any.whl (60 kB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+   ---------------------------------------- 45.6/45.6 kB ? eta 0:00:00
+Installing collected packages: pytz, mpmath, xmltodict, urllib3, uncertainties, tzdata, typing-extensions, toolz, threadpoolctl, tabulate, sympy, six, ruamel.yaml, pyparsing, pillow, palettable, packaging, orjson, numpy, networkx, narwhals, lxml, kiwisolver, joblib, idna, fonttools, dnspython, cycler, colorama, charset_normalizer, certifi, tqdm, spglib, scipy, requests, python-dateutil, pymongo, plotly, monty, contourpy, bibtexparser, scikit-learn, pandas, matplotlib, pymatgen-core, jarvis-tools, pymatgen, matminer
+Successfully installed bibtexparser-1.4.4 certifi-2026.6.17 charset_normalizer-3.4.7 colorama-0.4.6 contourpy-1.3.3 cycler-0.12.1 dnspython-2.8.0 fonttools-4.63.0 idna-3.18 jarvis-tools-2026.6.12 joblib-1.5.3 kiwisolver-1.5.0 lxml-6.1.1 matminer-0.10.1 matplotlib-3.11.0 monty-2026.5.18 mpmath-1.3.0 narwhals-2.23.0 networkx-3.6.1 numpy-2.4.6 orjson-3.11.9 packaging-26.2 palettable-3.3.3 pandas-2.3.3 pillow-12.3.0 plotly-6.8.0 pymatgen-2026.5.4 pymatgen-core-2026.5.18 pymongo-4.17.0 pyparsing-3.3.2 python-dateutil-2.9.0.post0 pytz-2026.2 requests-2.34.2 ruamel.yaml-0.19.1 scikit-learn-1.9.0 scipy-1.17.1 six-1.17.0 spglib-2.7.0 sympy-1.14.0 tabulate-0.10.0 threadpoolctl-3.6.0 toolz-1.1.0 tqdm-4.68.3 typing-extensions-4.16.0 tzdata-2026.2 uncertainties-3.2.3 urllib3-2.7.0 xmltodict-1.0.4
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 06:53 UTC — paper002 isolated JARVIS env import probe
+
+```
+$ env\jarvis\Scripts\python.exe -c import importlib; mods=['jarvis','matminer','sklearn','pymatgen','pandas','numpy']; versions={}; missing=[];\nfor m in mods:\n    try:\n        mod=importlib.import_module(m); versions[m]=getattr(mod,'__version__','unknown')\n    except Exception as exc:\n        missing.append((m,type(exc).__name__,str(exc)[:160]))\nprint('versions', versions); print('missing', missing); raise SystemExit(1 if missing else 0)
+```
+
+- exit code: **1**  | duration: 0.1s  | raw log: `logs/cmd-20260703-065331.log`
+
+output tail:
+```
+  File "<string>", line 1
+    import importlib; mods=['jarvis','matminer','sklearn','pymatgen','pandas','numpy']; versions={}; missing=[];\nfor m in mods:\n    try:\n        mod=importlib.import_module(m); versions[m]=getattr(mod,'__version__','unknown')\n    except Exception as exc:\n        missing.append((m,type(exc).__name__,str(exc)[:160]))\nprint('versions', versions); print('missing', missing); raise SystemExit(1 if missing else 0)
+                                                                                                                 ^
+SyntaxError: unexpected character after line continuation character
+```
+
+### 2026-07-03 06:53 UTC — paper002 isolated JARVIS env import probe after quote fix
+
+```
+$ env\jarvis\Scripts\python.exe -c import jarvis, matminer, sklearn, pymatgen, pandas, numpy; print({'jarvis': getattr(jarvis, '__version__', 'unknown'), 'matminer': matminer.__version__, 'sklearn': sklearn.__version__, 'pymatgen': getattr(pymatgen, '__version__', 'unknown'), 'pandas': pandas.__version__, 'numpy': numpy.__version__})
+```
+
+- exit code: **0**  | duration: 13.7s  | raw log: `logs/cmd-20260703-065341.log`
+
+output tail:
+```
+{'jarvis': '2026.6.12', 'matminer': '0.10.1', 'sklearn': '1.9.0', 'pymatgen': 'unknown', 'pandas': '2.3.3', 'numpy': '2.4.6'}
+```
+
+### 2026-07-03 06:54 UTC — paper002 isolated JARVIS dft_3d data probe
+
+```
+$ env\jarvis\Scripts\python.exe -c from jarvis.db.figshare import data; d=data('dft_3d'); print('rows', len(d)); print('first_keys', sorted(d[0].keys())[:12]); print('first_id', d[0].get('jid') or d[0].get('id'))
+```
+
+- exit code: **0**  | duration: 49.5s  | raw log: `logs/cmd-20260703-065401.log`
+
+output tail:
+```
+ 82%|████████▏ | 39.8M/48.4M [00:36<00:03, 2.87MiB/s]
+ 83%|████████▎ | 40.3M/48.4M [00:36<00:02, 3.20MiB/s]
+ 84%|████████▍ | 40.6M/48.4M [00:37<00:02, 2.99MiB/s]
+ 85%|████████▍ | 41.1M/48.4M [00:37<00:02, 3.38MiB/s]
+ 86%|████████▌ | 41.5M/48.4M [00:37<00:02, 3.17MiB/s]
+ 87%|████████▋ | 42.0M/48.4M [00:37<00:01, 3.53MiB/s]
+ 87%|████████▋ | 42.4M/48.4M [00:37<00:01, 3.32MiB/s]
+ 89%|████████▊ | 42.9M/48.4M [00:37<00:01, 3.76MiB/s]
+ 89%|████████▉ | 43.3M/48.4M [00:37<00:01, 3.52MiB/s]
+ 91%|█████████ | 43.9M/48.4M [00:37<00:01, 3.92MiB/s]
+ 91%|█████████▏| 44.3M/48.4M [00:38<00:01, 3.69MiB/s]
+ 92%|█████████▏| 44.8M/48.4M [00:38<00:01, 1.99MiB/s]
+ 96%|█████████▋| 46.7M/48.4M [00:38<00:00, 4.77MiB/s]
+ 98%|█████████▊| 47.5M/48.4M [00:39<00:00, 2.65MiB/s]
+100%|██████████| 48.4M/48.4M [00:39<00:00, 1.23MiB/s]
+```
+
+### 2026-07-03 06:56 UTC — verify jarvis matminer_rf smoke script py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_matminer_rf_smoke.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-065602.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:56 UTC — paper002 matminer_rf tiny pre-smoke
+
+```
+$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 8 --test-size 4 --trees 20 --pred-out experiments\jarvis-leaderboard\matminer_rf_tiny\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_tiny.md
+```
+
+- exit code: **0**  | duration: 32.3s  | raw log: `logs/cmd-20260703-065606.log`
+
+output tail:
+```
+Loading the zipfile...
+Loading completed.
+{
+  "all_nan_feature_rows": 0,
+  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
+  "feature_columns": 273,
+  "first_test_id": "JVASP-38636",
+  "first_train_id": "JVASP-21450",
+  "mae": 0.603553,
+  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_tiny\\predictions.csv",
+  "seconds": 18.46750545501709,
+  "test_rows": 4,
+  "train_rows": 8,
+  "trees": 20
+}
+```
+
+### 2026-07-03 06:56 UTC — paper002 matminer_rf bounded pre-smoke
+
+```
+$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 32 --test-size 16 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke.md
+```
+
+- exit code: **0**  | duration: 30.4s  | raw log: `logs/cmd-20260703-065648.log`
+
+output tail:
+```
+Loading the zipfile...
+Loading completed.
+{
+  "all_nan_feature_rows": 0,
+  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
+  "feature_columns": 273,
+  "first_test_id": "JVASP-38636",
+  "first_train_id": "JVASP-21450",
+  "mae": 0.6299147437500001,
+  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke\\predictions.csv",
+  "seconds": 26.74735999107361,
+  "test_rows": 16,
+  "train_rows": 32,
+  "trees": 100
+}
+```
+
+### 2026-07-03 06:58 UTC — verify paper002 matminer_rf pre-smoke docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re, yaml; root=Path('papers/jarvis-leaderboard'); meta=yaml.safe_load((root/'metadata.yaml').read_text(encoding='utf-8')); summary=(root/'summary.md').read_text(encoding='utf-8'); plan=(root/'reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=(root/'layer_b_matminer_rf_smoke.md').read_text(encoding='utf-8'); script=Path('scripts/jarvis_matminer_rf_smoke.py').read_text(encoding='utf-8'); files=sorted(root.glob('metric_check*.md')); total=sum(int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files); smoke=meta['layer_b_probe']['smoke']; checks=[len(files)==14,total==101,meta['layer_b_probe']['status']=='bounded_pre_smoke_passed',meta['layer_b_probe']['model_execution_smoke_run'] is True,smoke['train_rows']==32,smoke['test_rows']==16,smoke['feature_columns']==273,'0.62991474' in report,'jarvis_matminer_rf_smoke.py' in summary,'layer_b_matminer_rf_smoke.md' in readme,'experiments/**/predictions.csv' in Path('.gitignore').read_text(encoding='utf-8'),'RandomForestRegressor' in script]; print({'metric_files':len(files),'total_submissions':total,'smoke':smoke,'checks':checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-065814.log`
+
+output tail:
+```
+{'metric_files': 14, 'total_submissions': 101, 'smoke': {'script': 'scripts/jarvis_matminer_rf_smoke.py', 'report': 'papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md', 'benchmark': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'train_rows': 32, 'test_rows': 16, 'feature_columns': 273, 'all_nan_feature_rows': 0, 'trees': 100, 'subset_mae': 0.6299147437500001}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True]}
+```

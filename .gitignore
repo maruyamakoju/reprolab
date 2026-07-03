@@ -9,6 +9,7 @@ experiments/**/*.json.gz
 experiments/**/*.jsonl.gz
 experiments/**/*.h5
 experiments/**/*.zip
+experiments/**/predictions.csv
 *.cache/
 
 # Python envs / build

@@ -2,7 +2,7 @@
 
 Status: Layer A metric recomputation has passed for 14 JARVIS-Leaderboard AI
 benchmarks: 6 regression pages, 7 classification pages, and 1 spectra page.
-Layer B has an execution-path probe, but no model-execution smoke yet.
+Layer B has a bounded `matminer_rf` execution-path pre-smoke.
 
 ## Result
 
@@ -73,8 +73,20 @@ page: the matminer scripts are hardcoded to `snumat`, `matminer_xgboost` default
 to `gpu_hist`, and the CFID scripts use a different benchmark path convention plus
 full descriptor/data-directory generation. Details are in `layer_b_probe.md`.
 
+## Layer B pre-smoke
+
+An isolated JARVIS env was then created under `env/jarvis`, with `jarvis-tools` and
+`matminer` installed. `scripts/jarvis_matminer_rf_smoke.py` ran a bounded CPU smoke
+on the official dft_3d formation-energy split: 32 train rows, 16 test rows, 273
+Matminer feature columns, 100-tree random forest, 0 all-NaN feature rows, subset
+MAE 0.62991474. Report: `layer_b_matminer_rf_smoke.md`.
+
+This is not a full leaderboard regeneration and does not claim the official
+`matminer_rf` MAE. It establishes that the public runner family can be adapted into
+a traceable Layer B execution path without mutating the Paper-001 environment.
+
 ## Next
 
-The best next move is an isolated JARVIS env and a small `matminer_rf` wrapper for
-`dft_3d` formation energy. If that is too slow or invasive, Paper-002 can be
-stopped as a strong three-format Layer A audit with a documented Layer B blocker.
+The best next move is cautious scale-up of the `matminer_rf` smoke. If feature
+runtime grows too quickly, Paper-002 can be stopped as a strong three-format Layer A
+audit plus a bounded Layer B execution-path result.

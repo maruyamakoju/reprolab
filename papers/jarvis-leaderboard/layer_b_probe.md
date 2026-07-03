@@ -47,10 +47,10 @@ move is a separate JARVIS-specific env rather than mutating the existing one.
 | `cfid` | `contributions/cfid/run.py`, `run.sh` | Not immediate. It imports `lightgbm` and `jarvis`, iterates a broad property list, and expects benchmark zips under `../../dataset/AI/...` rather than the current sparse-checkout benchmark path. |
 | `cfid_chem` | `contributions/cfid_chem/run.py`, `run_chem.py` | Not immediate. It also needs `lightgbm` and JARVIS CFID descriptors, writes full POSCAR directories, and is heavier than the desired first smoke. |
 
-## Decision
+## Decision and follow-up
 
 Treat this as a completed execution-path probe, not a failed reproduction. The
-next productive Layer B move is:
+next productive Layer B move was:
 
 1. create an isolated JARVIS env;
 2. install only the dependencies for `matminer_rf`;
@@ -61,3 +61,6 @@ next productive Layer B move is:
 
 If that proves too slow, stop Paper-002 at the current Layer A result and use the
 Layer B probe as the documented reason.
+
+Follow-up status: a bounded `matminer_rf`-style pre-smoke passed in `env/jarvis`.
+See `layer_b_matminer_rf_smoke.md`.

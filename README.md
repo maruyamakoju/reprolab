@@ -205,8 +205,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] JARVIS Layer B execution-path probe: current shared venv lacks the JARVIS
       runner stack, dependency dry-run succeeds, and public baseline scripts need
       light adaptation before a clean dft_3d smoke (`layer_b_probe.md`)
-- [ ] Next: create an isolated JARVIS env and run a bounded `matminer_rf` smoke, or
-      stop Paper-002 as a strong Layer A audit with documented Layer B blocker
+- [x] JARVIS Layer B bounded pre-smoke: isolated `env/jarvis`, 32 train / 16 test
+      dft_3d formation-energy slice, 273 Matminer features, 100-tree RF, 0 all-NaN
+      feature rows, subset MAE 0.62991474 (`layer_b_matminer_rf_smoke.md`)
+- [ ] Next: scale the `matminer_rf` smoke carefully, or stop Paper-002 as Layer A
+      plus a bounded Layer B execution-path result
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -219,9 +222,9 @@ Layer A result: 14 benchmark pages, 101 total submissions; all reproduce the
 official MAE/ACC/MULTIMAE within displayed rounding, and every CSV id set exactly
 matches the corresponding JSON test split.
 
-Layer B probe: public runners exist but are not one-command fits for the audited
-dft_3d target in the current shared venv. The next clean step is an isolated JARVIS
-env and a small `matminer_rf` wrapper.
+Layer B pre-smoke: public runners exist but are not one-command fits for the audited
+dft_3d target in the shared venv. In an isolated JARVIS env, a bounded
+`matminer_rf`-style CPU smoke passed on a deterministic 32 train / 16 test slice.
 
 Artifacts:
 
@@ -229,8 +232,10 @@ Artifacts:
 - Plan: `papers/jarvis-leaderboard/reproduction_plan.md`
 - Metadata: `papers/jarvis-leaderboard/metadata.yaml`
 - Layer B probe: `papers/jarvis-leaderboard/layer_b_probe.md`
+- Layer B pre-smoke: `papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md`
 - Metric check: `papers/jarvis-leaderboard/metric_check.md`
 - Script: `scripts/jarvis_score.py`
+- Layer B script: `scripts/jarvis_matminer_rf_smoke.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,
