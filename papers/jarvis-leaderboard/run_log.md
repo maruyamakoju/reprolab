@@ -1039,3 +1039,97 @@ output tail:
 ```
 {'metric_files': 14, 'total_submissions': 101, 'smoke': {'script': 'scripts/jarvis_matminer_rf_smoke.py', 'report': 'papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md', 'benchmark': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'train_rows': 32, 'test_rows': 16, 'feature_columns': 273, 'all_nan_feature_rows': 0, 'trees': 100, 'subset_mae': 0.6299147437500001}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 06:58 UTC — paper002 matminer_rf scaled pre-smoke 128x32
+
+```
+$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 128 --test-size 32 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke128\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke128.md
+```
+
+- exit code: **0**  | duration: 33.0s  | raw log: `logs/cmd-20260703-065841.log`
+
+output tail:
+```
+Loading the zipfile...
+Loading completed.
+{
+  "all_nan_feature_rows": 0,
+  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
+  "feature_columns": 273,
+  "first_test_id": "JVASP-38636",
+  "first_train_id": "JVASP-21450",
+  "mae": 0.48987050312499986,
+  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke128\\predictions.csv",
+  "seconds": 29.664026498794556,
+  "test_rows": 32,
+  "train_rows": 128,
+  "trees": 100
+}
+```
+
+### 2026-07-03 06:59 UTC — paper002 matminer_rf scaled pre-smoke 256x64
+
+```
+$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 256 --test-size 64 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke256\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke256.md
+```
+
+- exit code: **0**  | duration: 42.0s  | raw log: `logs/cmd-20260703-065923.log`
+
+output tail:
+```
+Loading the zipfile...
+Loading completed.
+{
+  "all_nan_feature_rows": 0,
+  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
+  "feature_columns": 273,
+  "first_test_id": "JVASP-38636",
+  "first_train_id": "JVASP-21450",
+  "mae": 0.36771290156249997,
+  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke256\\predictions.csv",
+  "seconds": 38.39225888252258,
+  "test_rows": 64,
+  "train_rows": 256,
+  "trees": 100
+}
+```
+
+### 2026-07-03 07:00 UTC — paper002 matminer_rf scaled pre-smoke 512x128
+
+```
+$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 512 --test-size 128 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke512\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke512.md
+```
+
+- exit code: **0**  | duration: 76.9s  | raw log: `logs/cmd-20260703-070016.log`
+
+output tail:
+```
+Loading the zipfile...
+Loading completed.
+{
+  "all_nan_feature_rows": 0,
+  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
+  "feature_columns": 273,
+  "first_test_id": "JVASP-38636",
+  "first_train_id": "JVASP-21450",
+  "mae": 0.28496479140624986,
+  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke512\\predictions.csv",
+  "seconds": 72.81904554367065,
+  "test_rows": 128,
+  "train_rows": 512,
+  "trees": 100
+}
+```
+
+### 2026-07-03 07:02 UTC — verify paper002 matminer_rf 512x128 docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re, yaml; root=Path('papers/jarvis-leaderboard'); meta=yaml.safe_load((root/'metadata.yaml').read_text(encoding='utf-8')); summary=(root/'summary.md').read_text(encoding='utf-8'); plan=(root/'reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=(root/'layer_b_matminer_rf_smoke.md').read_text(encoding='utf-8'); script=Path('scripts/jarvis_matminer_rf_smoke.py').read_text(encoding='utf-8'); files=sorted(root.glob('metric_check*.md')); total=sum(int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files); smoke=meta['layer_b_probe']['smoke']; checks=[len(files)==14,total==101,meta['layer_b_probe']['status']=='bounded_pre_smoke_passed',smoke['train_rows']==512,smoke['test_rows']==128,smoke['feature_columns']==273,smoke['all_nan_feature_rows']==0,abs(smoke['subset_mae']-0.28496479140624986)<1e-15,'0.28496479' in report,'512 train / 128 test' in readme,'512 train rows, 128 test rows' in summary,'jarvis_matminer_rf_smoke.py' in plan,'RandomForestRegressor' in script]; print({'metric_files':len(files),'total_submissions':total,'smoke':smoke,'checks':checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070214.log`
+
+output tail:
+```
+{'metric_files': 14, 'total_submissions': 101, 'smoke': {'script': 'scripts/jarvis_matminer_rf_smoke.py', 'report': 'papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md', 'benchmark': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'train_rows': 512, 'test_rows': 128, 'feature_columns': 273, 'all_nan_feature_rows': 0, 'trees': 100, 'subset_mae': 0.28496479140624986}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True, True]}
+```

@@ -2,7 +2,7 @@
 
 Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
 (101 total submissions) on 2026-07-03. Layer B bounded `matminer_rf` pre-smoke
-passed on a 32 train / 16 test dft_3d slice.
+passed on a 512 train / 128 test dft_3d slice.
 
 ## 0. Why this candidate
 
@@ -138,7 +138,7 @@ Bounded smoke result:
 
 | train rows | test rows | feature columns | all-NaN feature rows | RF trees | subset MAE | report |
 |---:|---:|---:|---:|---:|---:|---|
-| 32 | 16 | 273 | 0 | 100 | 0.62991474 | `layer_b_matminer_rf_smoke.md` |
+| 512 | 128 | 273 | 0 | 100 | 0.28496479 | `layer_b_matminer_rf_smoke.md` |
 
 Scope note: this is not a full leaderboard reproduction and does not claim to
 reproduce the official `matminer_rf` MAE. It proves the Layer B execution path can
@@ -147,8 +147,8 @@ and emit a prediction CSV on a deterministic official-split subset.
 
 ## 8. Next
 
-1. Scale the `matminer_rf` smoke cautiously, for example 256 train / 64 test, only
-   if the feature runtime remains manageable.
+1. Scale the `matminer_rf` smoke cautiously toward the full split only if feature
+   runtime remains manageable.
 2. If runtime is too high, stop at the documented three-format Layer A result plus
    this bounded Layer B pre-smoke.
 3. Add a small leaderboard-resolution analysis if this becomes the main Paper-002

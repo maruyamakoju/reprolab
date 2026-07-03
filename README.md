@@ -205,9 +205,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] JARVIS Layer B execution-path probe: current shared venv lacks the JARVIS
       runner stack, dependency dry-run succeeds, and public baseline scripts need
       light adaptation before a clean dft_3d smoke (`layer_b_probe.md`)
-- [x] JARVIS Layer B bounded pre-smoke: isolated `env/jarvis`, 32 train / 16 test
+- [x] JARVIS Layer B bounded pre-smoke: isolated `env/jarvis`, 512 train / 128 test
       dft_3d formation-energy slice, 273 Matminer features, 100-tree RF, 0 all-NaN
-      feature rows, subset MAE 0.62991474 (`layer_b_matminer_rf_smoke.md`)
+      feature rows, subset MAE 0.28496479 (`layer_b_matminer_rf_smoke.md`)
 - [ ] Next: scale the `matminer_rf` smoke carefully, or stop Paper-002 as Layer A
       plus a bounded Layer B execution-path result
 
@@ -224,7 +224,7 @@ matches the corresponding JSON test split.
 
 Layer B pre-smoke: public runners exist but are not one-command fits for the audited
 dft_3d target in the shared venv. In an isolated JARVIS env, a bounded
-`matminer_rf`-style CPU smoke passed on a deterministic 32 train / 16 test slice.
+`matminer_rf`-style CPU smoke passed on a deterministic 512 train / 128 test slice.
 
 Artifacts:
 
