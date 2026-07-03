@@ -100,5 +100,6 @@ upstream feedback is pending, the same audit template has been applied to
 JARVIS-Leaderboard as Paper-002. Its assembled report is
 `reports/paper-002-jarvis-leaderboard-audit.md`, and the short external packet is
 `reports/paper-002-external_release_packet.md`. Paper-003 scouting has started on
-Matbench v0.1: the RF baseline's saved fold scores reproduce on two seed tasks
-(`papers/matbench/summary.md`).
+Matbench v0.1: the RF baseline's saved fold scores reproduce on two seed tasks,
+and a classification probe found stored `rocauc` behaves like thresholded-label AUC
+for float-prediction submissions (`papers/matbench/summary.md`).

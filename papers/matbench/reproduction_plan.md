@@ -78,11 +78,39 @@ The seed check passed:
 The classification predictions in the RF baseline are stored as hard booleans, so
 the stored ROC-AUC equals balanced accuracy for the checked classification task.
 
-## 6. Next
+## 6. Classification ROC-AUC probe
 
-1. Scan all submission artifacts for classification predictions stored as floats
-   versus booleans, because the Matbench v0.1 scoring order treats those cases
-   differently.
+`scripts/matbench_classification_scan.py` inspected the classification prediction
+types in every local public submission artifact. It found 27 classification
+submission-task records: 16 all-bool, 11 all-float, 0 mixed. In all 27 records,
+stored `rocauc` equals balanced accuracy within numerical precision.
+
+For two small MODNet classification tasks, `scripts/matbench_score.py` also computed
+ROC-AUC using the raw float predictions. Stored fold scores still reproduced exactly,
+but probability ROC-AUC was higher than the stored `rocauc`:
+
+| submission | task | stored rocauc mean | probability rocauc mean | mean gap |
+|---|---|---:|---:|---:|
+| `matbench_v0.1_modnet_v0.1.10` | `matbench_expt_is_metal` | 0.916052 | 0.972546 | 0.056495 |
+| `matbench_v0.1_modnet_v0.1.10` | `matbench_glass` | 0.810676 | 0.932948 | 0.122272 |
+| `matbench_v0.1_modnet_v0.1.12` | `matbench_expt_is_metal` | 0.916052 | 0.972546 | 0.056495 |
+| `matbench_v0.1_modnet_v0.1.12` | `matbench_glass` | 0.960311 | 0.989876 | 0.029565 |
+
+Interpretation: the stored scores are reproducible, but the `rocauc` field appears
+to be thresholded-label AUC for float-prediction submissions because the Matbench
+v0.1 metric loop converts predictions to labels before reaching `rocauc`.
+
+Reports:
+
+- `classification_prediction_scan.md`
+- `classification_auc_probe.md`
+- `layer_a_modnet_0_1_10_probability_auc_probe.md`
+- `layer_a_modnet_0_1_12_probability_auc_probe.md`
+
+## 7. Next
+
+1. Check whether public classification leaderboard views rank by stored `rocauc` or
+   another aggregate.
 2. Broaden Layer A across more low-cost composition tasks before touching large
    structure datasets.
 3. Select one or two runnable source-code submissions for a bounded Layer B smoke.

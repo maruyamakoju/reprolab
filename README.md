@@ -218,8 +218,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench Layer A seed passed: RF-SCM/Magpie `matbench_steels` +
       `matbench_expt_is_metal`, 10 folds checked, max score delta 1.110e-16
       (`papers/matbench/layer_a_score_recompute.md`)
-- [ ] Next: broaden Matbench score recomputation across more low-cost tasks and
-      scan classification submissions for probability-vs-label ROC-AUC behavior
+- [x] Matbench classification ROC-AUC probe: 11/27 classification submission-task
+      records store float predictions, but all stored `rocauc` values equal
+      balanced accuracy; MODNet raw-probability AUC is higher by 0.030-0.122 mean
+      AUC depending on task/version (`papers/matbench/classification_auc_probe.md`)
+- [ ] Next: check classification leaderboard ranking fields, then broaden Matbench
+      score recomputation across more low-cost tasks
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -273,6 +277,11 @@ recomputed all fold scores for `matbench_steels` and `matbench_expt_is_metal`
 from released predictions, official split IDs, and Matminer targets. All 10 checked
 folds match the stored scores to numerical precision (max absolute delta 1.110e-16).
 
+Classification metric probe: 11/27 classification submission-task records store
+float predictions, but every checked stored `rocauc` value equals balanced accuracy.
+For MODNet probability outputs on two small classification tasks, raw-probability
+ROC-AUC is higher than the stored field by 0.030-0.122 mean AUC.
+
 Artifacts:
 
 - Summary: `papers/matbench/summary.md`
@@ -280,7 +289,10 @@ Artifacts:
 - Metadata: `papers/matbench/metadata.yaml`
 - Candidate screen: `papers/matbench/candidate_screen.md`
 - Layer A seed report: `papers/matbench/layer_a_score_recompute.md`
+- Classification AUC probe: `papers/matbench/classification_auc_probe.md`
+- Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Script: `scripts/matbench_score.py`
+- Classification scan script: `scripts/matbench_classification_scan.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

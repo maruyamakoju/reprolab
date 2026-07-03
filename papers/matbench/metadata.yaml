@@ -51,6 +51,28 @@ layer_a_seed:
   folds_checked: 10
   max_abs_stored_vs_recomputed_delta: 1.1102230246251565e-16
 
+classification_auc_probe:
+  status: completed
+  scan_script: scripts/matbench_classification_scan.py
+  scan_report: papers/matbench/classification_prediction_scan.md
+  finding_report: papers/matbench/classification_auc_probe.md
+  classification_submission_task_records: 27
+  all_bool_records: 16
+  all_float_records: 11
+  mixed_records: 0
+  records_where_stored_rocauc_differs_from_balanced_accuracy: 0
+  modnet_probability_auc_probe:
+    modnet_v0_1_10:
+      expt_is_metal_stored_mean: 0.9160515032798
+      expt_is_metal_probability_auc_mean: 0.9725462640508
+      glass_stored_mean: 0.810676338874
+      glass_probability_auc_mean: 0.9329484035962
+    modnet_v0_1_12:
+      expt_is_metal_stored_mean: 0.9160515032798
+      expt_is_metal_probability_auc_mean: 0.9725462640508
+      glass_stored_mean: 0.9603111829242
+      glass_probability_auc_mean: 0.9898761972560001
+
 candidate_screen:
   status: selected
   report: papers/matbench/candidate_screen.md

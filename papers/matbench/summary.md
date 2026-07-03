@@ -25,9 +25,12 @@ IDs, Matminer targets, and Matbench metric formulas are mutually consistent for 
 small regression task and one small classification task.
 
 The classification seed stores hard boolean predictions, so ROC-AUC equals balanced
-accuracy. The next useful audit question is whether other submissions store
-probabilities and, if so, whether the Matbench v0.1 scoring order materially affects
-the recorded ROC-AUC.
+accuracy. A follow-up scan found that 11/27 classification submission-task records
+store float predictions, but every checked stored `rocauc` value is still equal to
+balanced accuracy. For MODNet probability outputs, raw-probability ROC-AUC is higher
+than the stored `rocauc` by 0.030-0.122 mean AUC depending on task/version. This is
+reproducible from the Matbench v0.1 scoring order and is documented in
+`classification_auc_probe.md`.
 
 ## Artifacts
 
@@ -35,5 +38,8 @@ the recorded ROC-AUC.
 - Candidate screen: `candidate_screen.md`
 - Metadata: `metadata.yaml`
 - Layer A seed report: `layer_a_score_recompute.md`
+- Classification AUC probe: `classification_auc_probe.md`
+- Classification prediction scan: `classification_prediction_scan.md`
 - Script: `../../scripts/matbench_score.py`
+- Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Run log: `run_log.md`

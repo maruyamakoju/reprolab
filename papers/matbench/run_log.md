@@ -212,3 +212,166 @@ warning: in the working copy of 'README.md', LF will be replaced by CRLF the nex
 warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/run_command.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 07:37 UTC — paper003 scan classification prediction value types
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_classification_scan.py --report papers\matbench\classification_prediction_scan.md
+```
+
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-073710-821082.log`
+
+output tail:
+```
+{
+  "all_bool": 16,
+  "all_float": 11,
+  "mixed": 0,
+  "records": 27,
+  "rocauc_differs_from_balacc": 0
+}
+```
+
+### 2026-07-03 07:37 UTC — paper003 recompute MODNet 0.1.10 classification scores with probability AUC probe
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_modnet_v0.1.10\results.json.gz --tasks matbench_expt_is_metal matbench_glass --report papers\matbench\layer_a_modnet_0_1_10_probability_auc_probe.md
+```
+
+- exit code: **0**  | duration: 2.7s  | raw log: `logs/cmd-20260703-073735-074125.log`
+
+output tail:
+```
+Fetching matbench_glass.json.gz from https://ml.materialsproject.org/projects/matbench_glass.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_glass.json.gz
+{
+  "folds_checked": 10,
+  "max_abs_delta": 1.1102230246251565e-16,
+  "report": "papers\\matbench\\layer_a_modnet_0_1_10_probability_auc_probe.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_modnet_v0.1.10\\results.json.gz",
+  "tasks": [
+    "matbench_expt_is_metal",
+    "matbench_glass"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_glass.json.gz in MB:   0%|          | 0.0/0.039729 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_glass.json.gz in MB: 0.040959999999999996MB [00:00, ?MB/s]
+```
+
+### 2026-07-03 07:37 UTC — paper003 recompute MODNet 0.1.12 classification scores with probability AUC probe
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_modnet_v0.1.12\results.json.gz --tasks matbench_expt_is_metal matbench_glass --report papers\matbench\layer_a_modnet_0_1_12_probability_auc_probe.md
+```
+
+- exit code: **0**  | duration: 2.3s  | raw log: `logs/cmd-20260703-073742-706595.log`
+
+output tail:
+```
+{
+  "folds_checked": 10,
+  "max_abs_delta": 1.1102230246251565e-16,
+  "report": "papers\\matbench\\layer_a_modnet_0_1_12_probability_auc_probe.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_modnet_v0.1.12\\results.json.gz",
+  "tasks": [
+    "matbench_expt_is_metal",
+    "matbench_glass"
+  ]
+}
+```
+
+### 2026-07-03 07:38 UTC — paper003 summarize MODNet probability AUC gaps
+
+```
+$ .venv\Scripts\python.exe -c import re, statistics as st; from pathlib import Path
+for path in ['papers/matbench/layer_a_modnet_0_1_10_probability_auc_probe.md','papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md']:
+ txt=Path(path).read_text(encoding='utf-8').splitlines(); rows=[]
+ for line in txt:
+  if line.startswith('| matbench_'):
+   parts=[p.strip() for p in line.strip('|').split('|')]
+   rows.append((parts[0], float(parts[5]), float(parts[6])))
+ print(path)
+ for task in sorted(set(r[0] for r in rows)):
+  vals=[(stored, proba) for t, stored, proba in rows if t==task]
+  print(task, {'stored_mean': st.mean(v[0] for v in vals), 'proba_mean': st.mean(v[1] for v in vals), 'gap_mean': st.mean(v[1]-v[0] for v in vals), 'gap_min': min(v[1]-v[0] for v in vals), 'gap_max': max(v[1]-v[0] for v in vals)})
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-073803-782167.log`
+
+output tail:
+```
+papers/matbench/layer_a_modnet_0_1_10_probability_auc_probe.md
+matbench_expt_is_metal {'stored_mean': 0.9160515032798, 'proba_mean': 0.9725462640508, 'gap_mean': 0.05649476077099998, 'gap_min': 0.04937457225999997, 'gap_max': 0.06093117408899995}
+matbench_glass {'stored_mean': 0.810676338874, 'proba_mean': 0.9329484035962, 'gap_mean': 0.12227206472219998, 'gap_min': 0.09534732187499995, 'gap_max': 0.14420176043199995}
+papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md
+matbench_expt_is_metal {'stored_mean': 0.9160515032798, 'proba_mean': 0.9725462640508, 'gap_mean': 0.05649476077099998, 'gap_min': 0.04937457225999997, 'gap_max': 0.06093117408899995}
+matbench_glass {'stored_mean': 0.9603111829242, 'proba_mean': 0.9898761972560001, 'gap_mean': 0.02956501433180001, 'gap_min': 0.02086605424400001, 'gap_max': 0.033387570009000056}
+```
+
+### 2026-07-03 07:39 UTC — paper003 verify classification AUC probe docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_score.py', doraise=True); py_compile.compile('scripts/matbench_classification_scan.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); auc=Path('papers/matbench/classification_auc_probe.md').read_text(encoding='utf-8'); scan=Path('papers/matbench/classification_prediction_scan.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); checks=[meta['classification_auc_probe']['all_float_records']==11, meta['classification_auc_probe']['all_bool_records']==16, '0.122272' in auc, 'Submission/task records scanned: 27' in scan, 'classification_auc_probe.md' in summary]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-073912-032068.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True]}
+```
+
+### 2026-07-03 07:39 UTC — paper003 classification AUC probe git diff whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-073917-368693.log`
+
+output tail:
+```
+papers/matbench/run_log.md:258: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_glass.json.gz in MB: 0.040959999999999996MB [00:00, ?MB/s]
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 07:39 UTC — paper003 classification AUC probe git diff whitespace check rerun
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-073939-713892.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 07:39 UTC — paper003 final classification AUC probe git diff whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-073959-113925.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
