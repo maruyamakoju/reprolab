@@ -1447,3 +1447,16 @@ output tail:
 ```
 {'report_lines': 1394, 'checks': [True, True, True, True]}
 ```
+
+### 2026-07-03 07:27 UTC — verify Paper-002 upstream issue draft
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; draft=Path('reports/paper-002_upstream_issue_draft.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=['Status: draft only; not posted.' in draft,'101/101 checked submissions' in draft,'17/20 95% CIs crossing zero' in draft,'2048 train / 512 test' in draft,'Do not post until the user explicitly asks' in draft,'paper-002_upstream_issue_draft.md' in readme]; print({'draft_lines': len(draft.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-072744.log`
+
+output tail:
+```
+{'draft_lines': 94, 'checks': [True, True, True, True, True, True]}
+```
