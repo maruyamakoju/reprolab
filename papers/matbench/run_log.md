@@ -455,3 +455,61 @@ warning: in the working copy of 'papers/matbench/run_log.md', LF will be replace
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 07:43 UTC — paper003 recompute RF composition-task scores
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_expt_gap matbench_expt_is_metal matbench_glass matbench_steels --report papers\matbench\layer_a_rf_composition_tasks.md
+```
+
+- exit code: **0**  | duration: 2.6s  | raw log: `logs/cmd-20260703-074322-729384.log`
+
+output tail:
+```
+{
+  "folds_checked": 20,
+  "max_abs_delta": 1.1102230246251565e-16,
+  "report": "papers\\matbench\\layer_a_rf_composition_tasks.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_steels"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_expt_gap.json.gz in MB:   0%|          | 0.0/0.0372 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_expt_gap.json.gz in MB: 0.038911999999999995MB [00:00, 38.92MB/s]
+```
+
+### 2026-07-03 07:44 UTC — paper003 verify RF composition-task expansion docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import sys, yaml; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_composition_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_composition']['folds_checked']==20, meta['layer_a_rf_composition']['tasks_checked']==4, 'Fold scores checked: 20' in report, 'matbench_expt_gap' in summary, 'layer_a_rf_composition_tasks.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074412-644366.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True]}
+```
+
+### 2026-07-03 07:44 UTC — paper003 RF composition-task expansion git diff whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-074416-690473.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```

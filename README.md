@@ -228,7 +228,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       (`papers/matbench/classification_leaderboard_metric_scan.md`)
 - [x] Matbench upstream issue draft prepared for the classification `rocauc`
       behavior (`reports/paper-003_upstream_issue_draft.md`; draft only, not posted)
-- [ ] Next: broaden Matbench score recomputation across more low-cost tasks
+- [x] Matbench RF composition-task Layer A expanded: 4 tasks, 20 folds, max
+      stored-vs-recomputed score delta 1.110e-16
+      (`papers/matbench/layer_a_rf_composition_tasks.md`)
+- [ ] Next: select a runnable source-code submission for a bounded Matbench Layer B
+      smoke, or broaden score recomputation to selected structure tasks
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -278,8 +282,10 @@ artifacts. Each submission directory is expected to contain `results.json.gz`,
 `info.json`, and source code or a notebook.
 
 Layer A seed result: for `matbench_v0.1_rf`, `scripts/matbench_score.py`
-recomputed all fold scores for `matbench_steels` and `matbench_expt_is_metal`
-from released predictions, official split IDs, and Matminer targets. All 10 checked
+recomputed all fold scores for the four low-cost composition tasks
+(`matbench_expt_gap`, `matbench_expt_is_metal`, `matbench_glass`,
+`matbench_steels`) from released predictions, official split IDs, and Matminer
+targets. All 20 checked
 folds match the stored scores to numerical precision (max absolute delta 1.110e-16).
 
 Classification metric probe: 11/27 classification submission-task records store
@@ -296,6 +302,7 @@ Artifacts:
 - Metadata: `papers/matbench/metadata.yaml`
 - Candidate screen: `papers/matbench/candidate_screen.md`
 - Layer A seed report: `papers/matbench/layer_a_score_recompute.md`
+- RF composition-task report: `papers/matbench/layer_a_rf_composition_tasks.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:

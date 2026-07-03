@@ -51,6 +51,21 @@ layer_a_seed:
   folds_checked: 10
   max_abs_stored_vs_recomputed_delta: 1.1102230246251565e-16
 
+layer_a_rf_composition:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_composition_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 4
+  folds_checked: 20
+  tasks:
+    - matbench_expt_gap
+    - matbench_expt_is_metal
+    - matbench_glass
+    - matbench_steels
+  max_abs_stored_vs_recomputed_delta: 1.1102230246251565e-16
+
 classification_auc_probe:
   status: completed
   scan_script: scripts/matbench_classification_scan.py

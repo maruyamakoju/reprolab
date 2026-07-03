@@ -1,22 +1,25 @@
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A seed passed.
+Status: candidate selected; Layer A RF composition-task check passed.
 
 ## Result
 
-The first audit slice recomputed stored Matbench v0.1 fold scores from public
+The first audit slice recomputes stored Matbench v0.1 fold scores from public
 prediction artifacts rather than rerunning a model. For the RF-SCM/Magpie baseline
-(`matbench_v0.1_rf`), `scripts/matbench_score.py` checked two tasks:
+(`matbench_v0.1_rf`), `scripts/matbench_score.py` now checks all four low-cost
+composition tasks:
 
 | task | type | folds | max score delta |
 |---|---|---:|---:|
+| `matbench_expt_gap` | regression | 5 | 0 |
 | `matbench_steels` | regression | 5 | 0 |
 | `matbench_expt_is_metal` | classification | 5 | 1.110e-16 |
+| `matbench_glass` | classification | 5 | 1.110e-16 |
 
-Across all 10 checked folds, the max absolute stored-vs-recomputed score delta is
+Across all 20 checked folds, the max absolute stored-vs-recomputed score delta is
 `1.1102230246251565e-16`.
 
-Report: `layer_a_score_recompute.md`.
+Report: `layer_a_rf_composition_tasks.md`.
 
 ## Interpretation
 
@@ -40,6 +43,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Candidate screen: `candidate_screen.md`
 - Metadata: `metadata.yaml`
 - Layer A seed report: `layer_a_score_recompute.md`
+- RF composition-task report: `layer_a_rf_composition_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
