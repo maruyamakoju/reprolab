@@ -96,5 +96,7 @@ verification breaks even when the science is sound.
 ## Next
 
 External handoff packet is prepared in `reports/external_release_packet.md`. While
-upstream feedback is pending, the next useful move is applying the same two-layer
-audit template to a second AI-for-science benchmark.
+upstream feedback is pending, the same audit template has been applied to
+JARVIS-Leaderboard as Paper-002. Its assembled report is
+`reports/paper-002-jarvis-leaderboard-audit.md`, and the short external packet is
+`reports/paper-002-external_release_packet.md`.

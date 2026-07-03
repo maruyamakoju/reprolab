@@ -239,6 +239,7 @@ finds that 17/20 95% CIs include zero.
 Artifacts:
 
 - Assembled report: `reports/paper-002-jarvis-leaderboard-audit.md`
+- External packet: `reports/paper-002-external_release_packet.md`
 - Summary: `papers/jarvis-leaderboard/summary.md`
 - Plan: `papers/jarvis-leaderboard/reproduction_plan.md`
 - Metadata: `papers/jarvis-leaderboard/metadata.yaml`

@@ -1289,3 +1289,16 @@ output tail:
 ```
 {'report_lines': 1394, 'checks': [True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 07:17 UTC — verify Paper-002 external packet
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; packet=Path('reports/paper-002-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); one=Path('reports/one_page_summary.md').read_text(encoding='utf-8'); checks=['101/101 checked submissions' in packet,'17/20 95% CIs' in packet,'Claims to avoid' in packet,'kgcnn_coNGN' in packet,'paper-002-external_release_packet.md' in readme,'paper-002-external_release_packet.md' in one]; print({'packet_lines': len(packet.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-071754.log`
+
+output tail:
+```
+{'packet_lines': 112, 'checks': [True, True, True, True, True, True]}
+```
