@@ -1,6 +1,6 @@
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A RF composition-task check passed.
+Status: candidate selected; Layer A RF composition-task check passed; bounded Layer B TPOT source replay completed.
 
 ## Result
 
@@ -20,6 +20,27 @@ Across all 20 checked folds, the max absolute stored-vs-recomputed score delta i
 `1.1102230246251565e-16`.
 
 Report: `layer_a_rf_composition_tasks.md`.
+
+## Layer B source replay
+
+The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
+notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
+the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
+cleaner, refits the pipeline on each official training fold, predicts the held-out
+folds, and compares against the committed `results.json.gz`.
+
+Outcome: the execution path is runnable in an isolated `env/matbench-tpot`
+environment with `numpy==1.23.5`, `scikit-learn==1.2.2`, `tpot==0.11.7`, and
+`xgboost==1.7.6`, but the submitted predictions are not regenerated exactly. With
+audit seed 0, the five-fold replay has max absolute prediction delta `162.894`,
+mean absolute prediction delta averaged across folds `17.893`, submitted mean MAE
+`79.947`, and replay mean MAE `79.094`.
+
+Interpretation: this is a useful Layer B smoke because the public source path can
+be executed end-to-end. It is not a prediction-identical reproduction; the notebook
+refits stochastic estimators without fixing a random seed.
+
+Report: `layer_b_tpot_steels_replay.md`.
 
 ## Interpretation
 
@@ -47,8 +68,10 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
+- Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
+- Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
 - Run log: `run_log.md`

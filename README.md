@@ -231,8 +231,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench RF composition-task Layer A expanded: 4 tasks, 20 folds, max
       stored-vs-recomputed score delta 1.110e-16
       (`papers/matbench/layer_a_rf_composition_tasks.md`)
-- [ ] Next: select a runnable source-code submission for a bounded Matbench Layer B
-      smoke, or broaden score recomputation to selected structure tasks
+- [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
+      path runs end-to-end from the submitted pickle and helper, but does not
+      regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
+      vs submitted mean MAE 79.947 (`papers/matbench/layer_b_tpot_steels_replay.md`)
+- [ ] Next: assemble the Paper-003 report and decide whether to post the Matbench
+      classification `rocauc` upstream issue draft
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -295,6 +299,12 @@ ROC-AUC is higher than the stored field by 0.030-0.122 mean AUC. The generated
 classification per-task leaderboards display `mean rocauc` as the first metric
 column.
 
+Layer B source replay: `matbench_v0.1_TPOT` for `matbench_steels` can be executed
+from the public notebook artifacts in a pinned TPOT/sklearn environment. It is not
+prediction-identical: the notebook refits stochastic estimators without a submitted
+random seed. With audit seed 0, replay mean MAE is 79.094 vs submitted mean MAE
+79.947.
+
 Artifacts:
 
 - Summary: `papers/matbench/summary.md`
@@ -307,8 +317,10 @@ Artifacts:
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
+- Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
+- Layer B replay script: `scripts/matbench_tpot_replay.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`
 

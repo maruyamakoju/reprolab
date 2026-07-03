@@ -101,7 +101,9 @@ JARVIS-Leaderboard as Paper-002. Its assembled report is
 `reports/paper-002-jarvis-leaderboard-audit.md`, and the short external packet is
 `reports/paper-002-external_release_packet.md`. Paper-003 scouting has started on
 Matbench v0.1: the RF baseline's saved fold scores reproduce on all four low-cost
-composition tasks, and a classification probe found stored `rocauc` behaves like thresholded-label AUC
-for float-prediction submissions while the classification leaderboards display
-`mean rocauc` as the first metric column; an upstream issue draft is prepared
-but not posted (`papers/matbench/summary.md`).
+composition tasks, a classification probe found stored `rocauc` behaves like
+thresholded-label AUC for float-prediction submissions while the classification
+leaderboards display `mean rocauc` first, and a TPOT-Mat source replay runs
+end-to-end but does not regenerate the committed predictions exactly because the
+submitted notebook refits stochastic estimators without a seed. An upstream issue
+draft is prepared but not posted (`papers/matbench/summary.md`).

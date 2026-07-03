@@ -94,7 +94,7 @@ matbench_mp_is_metal bool [False, False, True, True, True] {'accuracy': 0.907977
 ### 2026-07-03 07:32 UTC — paper003 matminer small dataset load probe
 
 ```
-$ env\jarvis\Scripts\python.exe -c from matminer.datasets import load_dataset; 
+$ env\jarvis\Scripts\python.exe -c from matminer.datasets import load_dataset;
 for name in ['matbench_steels','matbench_expt_is_metal']:
  df=load_dataset(name); print(name, df.shape, list(df.columns), df.head(2).to_dict('records'))
 ```
@@ -109,10 +109,10 @@ Fetching matbench_expt_is_metal.json.gz from https://ml.materialsproject.org/pro
 matbench_expt_is_metal (4921, 2) ['composition', 'is_metal'] [{'composition': 'Ag(AuS)2', 'is_metal': True}, {'composition': 'Ag(W3Br7)2', 'is_metal': True}]
 
 Fetching https://ml.materialsproject.org/projects/matbench_steels.json.gz in MB:   0%|          | 0.0/0.008836 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_steels.json.gz in MB: 0.010239999999999999MB [00:00, 10.24MB/s]     
+Fetching https://ml.materialsproject.org/projects/matbench_steels.json.gz in MB: 0.010239999999999999MB [00:00, 10.24MB/s]
 
 Fetching https://ml.materialsproject.org/projects/matbench_expt_is_metal.json.gz in MB:   0%|          | 0.0/0.034623 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_expt_is_metal.json.gz in MB: 0.034816MB [00:00, 22.54MB/s]                 
+Fetching https://ml.materialsproject.org/projects/matbench_expt_is_metal.json.gz in MB: 0.034816MB [00:00, 22.54MB/s]
 ```
 
 ### 2026-07-03 07:32 UTC — paper003 inspect rf result tasks and prediction types rerun after log-name fix
@@ -137,7 +137,7 @@ matbench_mp_is_metal bool [False, False, True, True, True] {'accuracy': 0.907977
 ### 2026-07-03 07:32 UTC — paper003 matminer small dataset load probe rerun after log-name fix
 
 ```
-$ env\jarvis\Scripts\python.exe -c from matminer.datasets import load_dataset; 
+$ env\jarvis\Scripts\python.exe -c from matminer.datasets import load_dataset;
 for name in ['matbench_steels','matbench_expt_is_metal']:
  df=load_dataset(name); print(name, df.shape, list(df.columns), df.head(2).to_dict('records'))
 ```
@@ -510,6 +510,727 @@ warning: in the working copy of 'README.md', LF will be replaced by CRLF the nex
 warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 07:46 UTC — paper003 TPOT pickle load probe
+
+```
+$ env\jarvis\Scripts\python.exe -c import pickle, sklearn; from pathlib import Path; p=Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl'); obj=pickle.load(p.open('rb')); print(type(obj)); print(obj); print('sklearn', sklearn.__version__)
+```
+
+- exit code: **1**  | duration: 1.2s  | raw log: `logs/cmd-20260703-074605-495886.log`
+
+output tail:
+```
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'tpot'
+```
+
+### 2026-07-03 07:46 UTC — paper003 inspect TPOT pickle globals
+
+```
+$ .venv\Scripts\python.exe -c import pickletools; from pathlib import Path; p=Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl'); refs=[]; data=p.read_bytes();
+for op,arg,pos in pickletools.genops(data):
+    if op.name in {'GLOBAL','STACK_GLOBAL'}:
+        refs.append((op.name,arg,pos))
+print('global_refs', len(refs));
+for item in refs[:80]: print(item)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074620-287723.log`
+
+output tail:
+```
+('STACK_GLOBAL', None, 206)
+('STACK_GLOBAL', None, 362)
+('STACK_GLOBAL', None, 380)
+('STACK_GLOBAL', None, 532)
+('STACK_GLOBAL', None, 546)
+('STACK_GLOBAL', None, 7767)
+('STACK_GLOBAL', None, 7821)
+('STACK_GLOBAL', None, 8002)
+('STACK_GLOBAL', None, 8057)
+('STACK_GLOBAL', None, 8755)
+('STACK_GLOBAL', None, 1395868)
+('STACK_GLOBAL', None, 1395944)
+('STACK_GLOBAL', None, 1396371)
+('STACK_GLOBAL', None, 1397066)
+('STACK_GLOBAL', None, 1397097)
+```
+
+### 2026-07-03 07:46 UTC — paper003 grep TPOT pickle module strings
+
+```
+$ rg -a -o [A-Za-z_][A-Za-z0-9_\.]{2,} vendor\matbench\benchmarks\matbench_v0.1_TPOT\tpot_best_pipeline.pkl
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-074628-929700.log`
+
+output tail:
+```
+num_classSL
+num_featureSL
+num_targetSL
+objective
+nameSL
+reg
+squarederrorL
+reg_loss_param
+scale_pos_weightSL
+version
+best_iteration
+best_ntree_limit
+Kdubub
+memory
+hwhxub.
+```
+
+### 2026-07-03 07:46 UTC — paper003 summarize TPOT pickle modules
+
+```
+$ .venv\Scripts\python.exe -c import re; from pathlib import Path; data=Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').read_bytes().decode('latin1', errors='ignore'); words=sorted(set(re.findall(r'[A-Za-z_][A-Za-z0-9_\.]{2,}', data))); keys=['sklearn','tpot','numpy','scipy','xgboost','lightgbm','pandas'];
+for key in keys:
+ print(key, [w for w in words if w.startswith(key) or key in w][:40])
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074634-141130.log`
+
+output tail:
+```
+sklearn ['_sklearn_version', 'sklearn.ensemble._forest', 'sklearn.linear_model._least_angle', 'sklearn.pipeline', 'sklearn.svm._classes', 'sklearn.tree._classes', 'sklearn.tree._tree', 'xgboost.sklearn']
+tpot ['tpot.builtins.one_hot_encoder', 'tpot.builtins.stacking_estimator', 'tpot.builtins.zero_count']
+numpy ['numpy', 'numpy.core.multiarray']
+scipy []
+xgboost ['xgboost.core', 'xgboost.sklearn']
+lightgbm []
+pandas []
+```
+
+### 2026-07-03 07:46 UTC — paper003 check TPOT replay dependency availability
+
+```
+$ env\jarvis\Scripts\python.exe -c import sklearn; print('sklearn', sklearn.__version__);
+try:
+ import xgboost; print('xgboost', xgboost.__version__)
+except Exception as exc:
+ print(type(exc).__name__, exc)
+try:
+ import tpot; print('tpot', tpot.__version__)
+except Exception as exc:
+ print(type(exc).__name__, exc)
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-074650-388907.log`
+
+output tail:
+```
+sklearn 1.9.0
+ModuleNotFoundError No module named 'xgboost'
+ModuleNotFoundError No module named 'tpot'
+```
+
+### 2026-07-03 07:47 UTC — paper003 check jarvis python and pip
+
+```
+$ env\jarvis\Scripts\python.exe -m pip --version
+```
+
+- exit code: **0**  | duration: 0.4s  | raw log: `logs/cmd-20260703-074710-115459.log`
+
+output tail:
+```
+pip 24.0 from C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\pip (python 3.11)
+
+```
+
+### 2026-07-03 07:47 UTC — paper003 install xgboost for TPOT replay
+
+```
+$ env\jarvis\Scripts\python.exe -m pip install xgboost
+```
+
+- exit code: **0**  | duration: 12.1s  | raw log: `logs/cmd-20260703-074715-051876.log`
+
+output tail:
+```
+Collecting xgboost
+  Using cached xgboost-3.2.0-py3-none-win_amd64.whl.metadata (2.1 kB)
+Requirement already satisfied: numpy in c:\users\07013\desktop\0702fable\reprolab\env\jarvis\lib\site-packages (from xgboost) (2.4.6)
+Requirement already satisfied: scipy in c:\users\07013\desktop\0702fable\reprolab\env\jarvis\lib\site-packages (from xgboost) (1.17.1)
+Downloading xgboost-3.2.0-py3-none-win_amd64.whl (101.7 MB)
+   ---------------------------------------- 101.7/101.7 MB 9.3 MB/s eta 0:00:00
+Installing collected packages: xgboost
+Successfully installed xgboost-3.2.0
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 07:47 UTC — paper003 download TPOT source for shim reference
+
+```
+$ env\jarvis\Scripts\python.exe -m pip download --no-deps tpot==0.11.7 -d experiments\matbench_tpot_src
+```
+
+- exit code: **0**  | duration: 1.5s  | raw log: `logs/cmd-20260703-074756-988768.log`
+
+output tail:
+```
+Collecting tpot==0.11.7
+  Downloading TPOT-0.11.7-py3-none-any.whl.metadata (2.0 kB)
+Downloading TPOT-0.11.7-py3-none-any.whl (87 kB)
+   ---------------------------------------- 87.2/87.2 kB 1.2 MB/s eta 0:00:00
+Saved c:\users\07013\desktop\0702fable\reprolab\experiments\matbench_tpot_src\tpot-0.11.7-py3-none-any.whl
+Successfully downloaded tpot
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 07:48 UTC — paper003 load TPOT pickle with minimal stubs
+
+```
+$ env\jarvis\Scripts\python.exe -c import pickle, sys, types; from pathlib import Path; from sklearn.base import BaseEstimator, TransformerMixin
+class StackingEstimator(BaseEstimator, TransformerMixin):
+ def __init__(self, estimator=None): self.estimator=estimator
+class ZeroCount(BaseEstimator, TransformerMixin): pass
+class OneHotEncoder(BaseEstimator, TransformerMixin):
+ def __init__(self, categorical_features='auto', dtype=float, sparse=True, minimum_fraction=None, threshold=10): self.categorical_features=categorical_features; self.dtype=dtype; self.sparse=sparse; self.minimum_fraction=minimum_fraction; self.threshold=threshold
+mods={'tpot':types.ModuleType('tpot'),'tpot.builtins':types.ModuleType('tpot.builtins'),'tpot.builtins.stacking_estimator':types.ModuleType('tpot.builtins.stacking_estimator'),'tpot.builtins.zero_count':types.ModuleType('tpot.builtins.zero_count'),'tpot.builtins.one_hot_encoder':types.ModuleType('tpot.builtins.one_hot_encoder')}
+for k,m in mods.items(): sys.modules[k]=m
+mods['tpot.builtins.stacking_estimator'].StackingEstimator=StackingEstimator; mods['tpot.builtins.zero_count'].ZeroCount=ZeroCount; mods['tpot.builtins.one_hot_encoder'].OneHotEncoder=OneHotEncoder; mods['tpot.builtins'].StackingEstimator=StackingEstimator; mods['tpot.builtins'].ZeroCount=ZeroCount; mods['tpot.builtins'].OneHotEncoder=OneHotEncoder
+obj=pickle.load(Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').open('rb')); print(type(obj)); print(obj)
+```
+
+- exit code: **1**  | duration: 1.3s  | raw log: `logs/cmd-20260703-074838-978326.log`
+
+output tail:
+```
+C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to unpickle estimator LassoLarsCV from version 1.2.2 when using version 1.9.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to unpickle estimator ExtraTreeRegressor from version 1.2.2 when using version 1.9.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "sklearn/tree/_tree.pyx", line 834, in sklearn.tree._tree.Tree.__setstate__
+    node_ndarray = _check_node_ndarray(node_ndarray, expected_dtype=NODE_DTYPE)
+  File "sklearn/tree/_tree.pyx", line 1547, in sklearn.tree._tree._check_node_ndarray
+    raise ValueError(
+ValueError: node array from the pickle has an incompatible dtype:
+- expected: {'names': ['left_child', 'right_child', 'feature', 'threshold', 'impurity', 'n_node_samples', 'weighted_n_node_samples', 'missing_go_to_left'], 'formats': ['<i8', '<i8', '<i8', '<f8', '<f8', '<i8', '<f8', 'u1'], 'offsets': [0, 8, 16, 24, 32, 40, 48, 56], 'itemsize': 64}
+- got     : [('left_child', '<i8'), ('right_child', '<i8'), ('feature', '<i8'), ('threshold', '<f8'), ('impurity', '<f8'), ('n_node_samples', '<i8'), ('weighted_n_node_samples', '<f8')]
+```
+
+### 2026-07-03 07:48 UTC — paper003 check python versions before TPOT env
+
+```
+$ .venv\Scripts\python.exe -c import sys; print(sys.version)
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-074848-713550.log`
+
+output tail:
+```
+3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]
+```
+
+### 2026-07-03 07:48 UTC — paper003 check jarvis python version
+
+```
+$ env\jarvis\Scripts\python.exe -c import sys; print(sys.version)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074852-069091.log`
+
+output tail:
+```
+3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]
+```
+
+### 2026-07-03 07:49 UTC — paper003 create TPOT replay venv
+
+```
+$ .venv\Scripts\python.exe -m venv env\matbench-tpot
+```
+
+- exit code: **0**  | duration: 10.0s  | raw log: `logs/cmd-20260703-074911-081649.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:49 UTC — paper003 install TPOT replay dependencies
+
+```
+$ env\matbench-tpot\Scripts\python.exe -m pip install numpy==1.23.5 scipy scikit-learn==1.2.2 xgboost==1.7.6 pandas==1.5.1
+```
+
+- exit code: **0**  | duration: 61.1s  | raw log: `logs/cmd-20260703-074927-692916.log`
+
+output tail:
+```
+Downloading xgboost-1.7.6-py3-none-win_amd64.whl (70.9 MB)
+   ---------------------------------------- 70.9/70.9 MB 10.4 MB/s eta 0:00:00
+Downloading pandas-1.5.1-cp311-cp311-win_amd64.whl (10.3 MB)
+   ---------------------------------------- 10.3/10.3 MB 10.9 MB/s eta 0:00:00
+Using cached scipy-1.15.3-cp311-cp311-win_amd64.whl (41.2 MB)
+Using cached joblib-1.5.3-py3-none-any.whl (309 kB)
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Using cached pytz-2026.2-py2.py3-none-any.whl (510 kB)
+Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, threadpoolctl, six, numpy, joblib, scipy, python-dateutil, xgboost, scikit-learn, pandas
+Successfully installed joblib-1.5.3 numpy-1.23.5 pandas-1.5.1 python-dateutil-2.9.0.post0 pytz-2026.2 scikit-learn-1.2.2 scipy-1.15.3 six-1.17.0 threadpoolctl-3.6.0 xgboost-1.7.6
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 07:50 UTC — paper003 load TPOT pickle in sklearn 1.2.2 env
+
+```
+$ env\matbench-tpot\Scripts\python.exe -c import pickle, sys, types; from pathlib import Path; from sklearn.base import BaseEstimator, TransformerMixin
+class StackingEstimator(BaseEstimator, TransformerMixin):
+ def __init__(self, estimator=None): self.estimator=estimator
+class ZeroCount(BaseEstimator, TransformerMixin): pass
+class OneHotEncoder(BaseEstimator, TransformerMixin):
+ def __init__(self, categorical_features='auto', dtype=float, sparse=True, minimum_fraction=None, threshold=10): self.categorical_features=categorical_features; self.dtype=dtype; self.sparse=sparse; self.minimum_fraction=minimum_fraction; self.threshold=threshold
+mods={'tpot':types.ModuleType('tpot'),'tpot.builtins':types.ModuleType('tpot.builtins'),'tpot.builtins.stacking_estimator':types.ModuleType('tpot.builtins.stacking_estimator'),'tpot.builtins.zero_count':types.ModuleType('tpot.builtins.zero_count'),'tpot.builtins.one_hot_encoder':types.ModuleType('tpot.builtins.one_hot_encoder')}
+for k,m in mods.items(): sys.modules[k]=m
+mods['tpot.builtins.stacking_estimator'].StackingEstimator=StackingEstimator; mods['tpot.builtins.zero_count'].ZeroCount=ZeroCount; mods['tpot.builtins.one_hot_encoder'].OneHotEncoder=OneHotEncoder; mods['tpot.builtins'].StackingEstimator=StackingEstimator; mods['tpot.builtins'].ZeroCount=ZeroCount; mods['tpot.builtins'].OneHotEncoder=OneHotEncoder
+obj=pickle.load(Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').open('rb')); print(type(obj)); print(obj)
+```
+
+- exit code: **0**  | duration: 13.8s  | raw log: `logs/cmd-20260703-075038-831458.log`
+
+output tail:
+```
+                 StackingEstimator(estimator=ExtraTreesRegressor(max_features=0.9000000000000001,
+                                                                 min_samples_leaf=2,
+                                                                 min_samples_split=3))),
+                ('zerocount', ZeroCount()),
+                ('stackingesti...
+                              feature_types=None, gamma=None, gpu_id=None,
+                              grow_policy=None, importance_type=None,
+                              interaction_constraints=None, learning_rate=0.1,
+                              max_bin=None, max_cat_threshold=None,
+                              max_cat_to_onehot=None, max_delta_step=None,
+                              max_depth=4, max_leaves=None, min_child_weight=7,
+                              missing=nan, monotone_constraints=None,
+                              n_estimators=100, n_jobs=1,
+                              num_parallel_tree=None, predictor=None,
+                              random_state=None, ...))])
+```
+
+### 2026-07-03 07:51 UTC — paper003 list TPOT pipeline steps
+
+```
+$ env\matbench-tpot\Scripts\python.exe -c import pickle, sys, types; from pathlib import Path; from sklearn.base import BaseEstimator, TransformerMixin
+class StackingEstimator(BaseEstimator, TransformerMixin):
+ def __init__(self, estimator=None): self.estimator=estimator
+class ZeroCount(BaseEstimator, TransformerMixin): pass
+class OneHotEncoder(BaseEstimator, TransformerMixin):
+ def __init__(self, categorical_features='auto', dtype=float, sparse=True, minimum_fraction=None, threshold=10): self.categorical_features=categorical_features; self.dtype=dtype; self.sparse=sparse; self.minimum_fraction=minimum_fraction; self.threshold=threshold
+mods={'tpot':types.ModuleType('tpot'),'tpot.builtins':types.ModuleType('tpot.builtins'),'tpot.builtins.stacking_estimator':types.ModuleType('tpot.builtins.stacking_estimator'),'tpot.builtins.zero_count':types.ModuleType('tpot.builtins.zero_count'),'tpot.builtins.one_hot_encoder':types.ModuleType('tpot.builtins.one_hot_encoder')}
+for k,m in mods.items(): sys.modules[k]=m
+mods['tpot.builtins.stacking_estimator'].StackingEstimator=StackingEstimator; mods['tpot.builtins.zero_count'].ZeroCount=ZeroCount; mods['tpot.builtins.one_hot_encoder'].OneHotEncoder=OneHotEncoder; mods['tpot.builtins'].StackingEstimator=StackingEstimator; mods['tpot.builtins'].ZeroCount=ZeroCount; mods['tpot.builtins'].OneHotEncoder=OneHotEncoder
+obj=pickle.load(Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').open('rb'))
+for name, step in obj.steps: print(name, type(step), step.get_params(deep=False) if hasattr(step,'get_params') else '')
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-075109-080051.log`
+
+output tail:
+```
+  If you are loading a serialized model (like pickle in Python, RDS in R) generated by
+  older XGBoost, please export the model by calling `Booster.save_model` from that version
+  first, then load it back in current version. See:
+
+    https://xgboost.readthedocs.io/en/latest/tutorials/saving_model.html
+
+  for more details about differences between saving model and serializing.
+
+stackingestimator-1 <class '__main__.StackingEstimator'> {'estimator': LassoLarsCV(normalize=True)}
+onehotencoder <class '__main__.OneHotEncoder'> {'categorical_features': 'auto', 'dtype': <class 'float'>, 'minimum_fraction': 0.25, 'sparse': False, 'threshold': 10}
+stackingestimator-2 <class '__main__.StackingEstimator'> {'estimator': ExtraTreesRegressor(max_features=0.9000000000000001, min_samples_leaf=2,
+                    min_samples_split=3)}
+zerocount <class '__main__.ZeroCount'> {}
+stackingestimator-3 <class '__main__.StackingEstimator'> {'estimator': LinearSVR(C=0.001, epsilon=1.0, loss='squared_epsilon_insensitive')}
+xgbregressor <class 'xgboost.sklearn.XGBRegressor'> {'objective': 'reg:squarederror', 'base_score': None, 'booster': None, 'callbacks': None, 'colsample_bylevel': None, 'colsample_bynode': None, 'colsample_bytree': None, 'early_stopping_rounds': None, 'enable_categorical': False, 'eval_metric': None, 'feature_types': None, 'gamma': None, 'gpu_id': None, 'grow_policy': None, 'importance_type': None, 'interaction_constraints': None, 'learning_rate': 0.1, 'max_bin': None, 'max_cat_threshold': None, 'max_cat_to_onehot': None, 'max_delta_step': None, 'max_depth': 4, 'max_leaves': None, 'min_child_weight': 7, 'missing': nan, 'monotone_constraints': None, 'n_estimators': 100, 'n_jobs': 1, 'num_parallel_tree': None, 'predictor': None, 'random_state': None, 'reg_alpha': None, 'reg_lambda': None, 'sampling_method': None, 'scale_pos_weight': None, 'subsample': 0.6500000000000001, 'tree_method': None, 'validate_parameters': None, 'verbosity': 0}
+```
+
+### 2026-07-03 07:51 UTC — paper003 install TPOT package source no deps
+
+```
+$ env\matbench-tpot\Scripts\python.exe -m pip install --no-deps tpot==0.11.7
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-075130-531351.log`
+
+output tail:
+```
+Collecting tpot==0.11.7
+  Using cached TPOT-0.11.7-py3-none-any.whl.metadata (2.0 kB)
+Using cached TPOT-0.11.7-py3-none-any.whl (87 kB)
+Installing collected packages: tpot
+Successfully installed tpot-0.11.7
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 07:51 UTC — paper003 normal TPOT pickle load after package install
+
+```
+$ env\matbench-tpot\Scripts\python.exe -c import pickle; from pathlib import Path; obj=pickle.load(Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').open('rb')); print(type(obj)); print(obj.steps)
+```
+
+- exit code: **1**  | duration: 1.0s  | raw log: `logs/cmd-20260703-075136-698627.log`
+
+output tail:
+```
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\tpot\__init__.py", line 27, in <module>
+    from .tpot import TPOTClassifier, TPOTRegressor
+  File "C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\tpot\tpot.py", line 31, in <module>
+    from .base import TPOTBase
+  File "C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\tpot\base.py", line 45, in <module>
+    import deap
+ModuleNotFoundError: No module named 'deap'
+```
+
+### 2026-07-03 07:52 UTC — paper003 install TPOT import dependencies
+
+```
+$ env\matbench-tpot\Scripts\python.exe -m pip install deap update_checker tqdm stopit
+```
+
+- exit code: **0**  | duration: 18.5s  | raw log: `logs/cmd-20260703-075205-317985.log`
+
+output tail:
+```
+Building wheels for collected packages: stopit
+  Building wheel for stopit (pyproject.toml): started
+  Building wheel for stopit (pyproject.toml): finished with status 'done'
+  Created wheel for stopit: filename=stopit-1.1.2-py3-none-any.whl size=12065 sha256=4f26db5e4f4c90da3b289afbf097d1f1d7862d5da4284a6ebff9931f6fc7b9ae
+  Stored in directory: c:\users\07013\appdata\local\pip\cache\wheels\da\77\2d\adbc56bc4db95ad80c6d4e71cd69e2d9d122174904342e3f7f
+Successfully built stopit
+Installing collected packages: stopit, update_checker, pycparser, platformdirs, numpy, colorama, tqdm, cffi, moocore, deap
+  Attempting uninstall: numpy
+    Found existing installation: numpy 1.23.5
+    Uninstalling numpy-1.23.5:
+      Successfully uninstalled numpy-1.23.5
+Successfully installed cffi-2.0.0 colorama-0.4.6 deap-1.4.4 moocore-0.3.1 numpy-2.4.6 platformdirs-4.10.0 pycparser-3.0 stopit-1.1.2 tqdm-4.68.3 update_checker-1.0.0
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 07:52 UTC — paper003 normal TPOT pickle load with deps
+
+```
+$ env\matbench-tpot\Scripts\python.exe -c import pickle, sklearn, tpot; from pathlib import Path; obj=pickle.load(Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').open('rb')); print('sklearn', sklearn.__version__, 'tpot', tpot.__version__); print(type(obj)); print([name for name,_ in obj.steps])
+```
+
+- exit code: **1**  | duration: 2.1s  | raw log: `logs/cmd-20260703-075228-883914.log`
+
+output tail:
+```
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\__init__.py", line 82, in <module>
+    from .base import clone
+  File "C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\base.py", line 17, in <module>
+    from .utils import _IS_32BIT
+  File "C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\utils\__init__.py", line 19, in <module>
+    from .murmurhash import murmurhash3_32
+  File "sklearn\utils\murmurhash.pyx", line 1, in init sklearn.utils.murmurhash
+ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject
+```
+
+### 2026-07-03 07:52 UTC — paper003 restore TPOT replay numpy pin
+
+```
+$ env\matbench-tpot\Scripts\python.exe -m pip install numpy==1.23.5 --force-reinstall
+```
+
+- exit code: **0**  | duration: 6.8s  | raw log: `logs/cmd-20260703-075241-061001.log`
+
+output tail:
+```
+Collecting numpy==1.23.5
+  Using cached numpy-1.23.5-cp311-cp311-win_amd64.whl.metadata (2.3 kB)
+Using cached numpy-1.23.5-cp311-cp311-win_amd64.whl (14.6 MB)
+Installing collected packages: numpy
+  Attempting uninstall: numpy
+    Found existing installation: numpy 2.4.6
+    Uninstalling numpy-2.4.6:
+      Successfully uninstalled numpy-2.4.6
+Successfully installed numpy-1.23.5
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+moocore 0.3.1 requires numpy>=1.24, but you have numpy 1.23.5 which is incompatible.
+
+[notice] A new release of pip is available: 24.0 -> 26.1.2
+[notice] To update, run: C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Scripts\python.exe -m pip install --upgrade pip
+```
+
+### 2026-07-03 07:52 UTC — paper003 normal TPOT import after numpy restore
+
+```
+$ env\matbench-tpot\Scripts\python.exe -c import numpy, sklearn; print('numpy', numpy.__version__, 'sklearn', sklearn.__version__); import tpot; print('tpot', tpot.__version__)
+```
+
+- exit code: **0**  | duration: 2.7s  | raw log: `logs/cmd-20260703-075253-507592.log`
+
+output tail:
+```
+numpy 1.23.5 sklearn 1.2.2
+tpot 0.11.7
+C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\tpot\builtins\__init__.py:36: UserWarning: Warning: optional dependency `torch` is not available. - skipping import of NN models.
+  warnings.warn("Warning: optional dependency `torch` is not available. - skipping import of NN models.")
+```
+
+### 2026-07-03 07:53 UTC — paper003 normal TPOT pickle load final env
+
+```
+$ env\matbench-tpot\Scripts\python.exe -c import pickle, sklearn, tpot, numpy; from pathlib import Path; obj=pickle.load(Path('vendor/matbench/benchmarks/matbench_v0.1_TPOT/tpot_best_pipeline.pkl').open('rb')); print('numpy', numpy.__version__, 'sklearn', sklearn.__version__, 'tpot', tpot.__version__); print(type(obj)); print([name for name,_ in obj.steps])
+```
+
+- exit code: **0**  | duration: 1.1s  | raw log: `logs/cmd-20260703-075305-571856.log`
+
+output tail:
+```
+[16:53:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0fdc6d574b9c0d168-1\xgboost\xgboost-ci-windows\src\learner.cc:553:
+  If you are loading a serialized model (like pickle in Python, RDS in R) generated by
+  older XGBoost, please export the model by calling `Booster.save_model` from that version
+  first, then load it back in current version. See:
+
+    https://xgboost.readthedocs.io/en/latest/tutorials/saving_model.html
+
+  for more details about differences between saving model and serializing.
+
+numpy 1.23.5 sklearn 1.2.2 tpot 0.11.7
+<class 'sklearn.pipeline.Pipeline'>
+['stackingestimator-1', 'onehotencoder', 'stackingestimator-2', 'zerocount', 'stackingestimator-3', 'xgbregressor']
+C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\tpot\builtins\__init__.py:36: UserWarning: Warning: optional dependency `torch` is not available. - skipping import of NN models.
+  warnings.warn("Warning: optional dependency `torch` is not available. - skipping import of NN models.")
+```
+
+### 2026-07-03 07:53 UTC — paper003 compile TPOT replay script
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\matbench_tpot_replay.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075351-529740.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:53 UTC — paper003 replay TPOT steels fold 0
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_tpot_replay.py --folds 0 --report papers\matbench\layer_b_tpot_steels_replay_fold0.md
+```
+
+- exit code: **0**  | duration: 1.5s  | raw log: `logs/cmd-20260703-075357-034937.log`
+
+output tail:
+```
+If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
+
+from sklearn.pipeline import make_pipeline
+
+model = make_pipeline(StandardScaler(with_mean=False), LassoLarsCV())
+
+If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
+
+kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}
+model.fit(X, y, **kwargs)
+
+Set parameter alpha to: original_alpha * np.sqrt(n_samples).
+  warnings.warn(
+C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\svm\_base.py:1244: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  warnings.warn(
+```
+
+### 2026-07-03 07:54 UTC — paper003 replay TPOT steels all folds
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_tpot_replay.py --report papers\matbench\layer_b_tpot_steels_replay.md
+```
+
+- exit code: **0**  | duration: 1.8s  | raw log: `logs/cmd-20260703-075408-416344.log`
+
+output tail:
+```
+If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
+
+from sklearn.pipeline import make_pipeline
+
+model = make_pipeline(StandardScaler(with_mean=False), LassoLarsCV())
+
+If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
+
+kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}
+model.fit(X, y, **kwargs)
+
+Set parameter alpha to: original_alpha * np.sqrt(n_samples).
+  warnings.warn(
+C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\svm\_base.py:1244: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  warnings.warn(
+```
+
+### 2026-07-03 07:54 UTC — paper003 compile seeded TPOT replay script
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\matbench_tpot_replay.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075455-609148.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:55 UTC — paper003 replay TPOT steels all folds seeded
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_tpot_replay.py --report papers\matbench\layer_b_tpot_steels_replay.md --seed 0
+```
+
+- exit code: **0**  | duration: 1.9s  | raw log: `logs/cmd-20260703-075500-370249.log`
+
+output tail:
+```
+If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:
+
+from sklearn.pipeline import make_pipeline
+
+model = make_pipeline(StandardScaler(with_mean=False), LassoLarsCV())
+
+If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:
+
+kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}
+model.fit(X, y, **kwargs)
+
+Set parameter alpha to: original_alpha * np.sqrt(n_samples).
+  warnings.warn(
+C:\Users\07013\Desktop\0702fable\reprolab\env\matbench-tpot\Lib\site-packages\sklearn\svm\_base.py:1244: ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  warnings.warn(
+```
+
+### 2026-07-03 07:57 UTC — paper003 verify TPOT replay docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
+```
+
+- exit code: **1**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075724-036491.log`
+
+output tail:
+```
+  File "<string>", line 1
+    from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ^
+SyntaxError: unterminated string literal (detected at line 1)
+```
+
+### 2026-07-03 07:57 UTC — paper003 verify TPOT replay docs rerun
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed' in report]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075739-651817.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 07:57 UTC — paper003 TPOT replay git diff whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-075744-886128.log`
+
+output tail:
+```
+papers/matbench/run_log.md:1087: trailing whitespace.
++Set parameter alpha to: original_alpha * np.sqrt(n_samples).
+papers/matbench/run_log.md:1127: trailing whitespace.
++Set parameter alpha to: original_alpha * np.sqrt(n_samples).
+papers/matbench/run_log.md:1136: trailing whitespace.
++$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
+papers/matbench/run_log.md:1144: trailing whitespace.
++    from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'matbench_tpot_replay.py' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed:
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 07:58 UTC — paper003 TPOT replay git diff whitespace check rerun
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-075808-299482.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 07:58 UTC — paper003 verify TPOT replay docs final
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_tpot_replay.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); plan=Path('papers/matbench/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=Path('papers/matbench/layer_b_tpot_steels_replay.md').read_text(encoding='utf-8'); checks=[meta['layer_b_tpot_steels']['folds_replayed']==5, abs(meta['layer_b_tpot_steels']['replay_mae_mean']-79.09383529924)<1e-9, 'Layer B source replay' in summary, 'env/matbench-tpot/Scripts/python.exe -m pip install' in plan, 'seed-0 replay mean MAE 79.094' in readme, 'Audit random seed' in report]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075841-802043.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 07:58 UTC — paper003 TPOT replay final whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-075846-206235.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
 ```

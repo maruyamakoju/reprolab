@@ -94,6 +94,23 @@ classification_auc_probe:
       glass_stored_mean: 0.9603111829242
       glass_probability_auc_mean: 0.9898761972560001
 
+layer_b_tpot_steels:
+  status: source_replay_completed_non_identical
+  script: scripts/matbench_tpot_replay.py
+  report: papers/matbench/layer_b_tpot_steels_replay.md
+  environment: env/matbench-tpot
+  submission: matbench_v0.1_TPOT
+  task: matbench_steels
+  folds_replayed: 5
+  audit_random_seed: 0
+  max_abs_prediction_delta: 162.894287109375
+  mean_abs_prediction_delta_mean_across_folds: 17.89280359568
+  submitted_mae_mean: 79.94681065716
+  replay_mae_mean: 79.09383529924
+  max_abs_score_delta: 24.770214843749955
+  max_mae_delta: 5.20293162512
+  interpretation: runnable notebook path, but submitted predictions are not exactly regenerated because the source refits unseeded stochastic estimators
+
 candidate_screen:
   status: selected
   report: papers/matbench/candidate_screen.md

@@ -109,9 +109,57 @@ Reports:
 - `layer_a_modnet_0_1_10_probability_auc_probe.md`
 - `layer_a_modnet_0_1_12_probability_auc_probe.md`
 
-## 7. Next
+## 7. Bounded Layer B source replay
+
+Submission:
+`vendor/matbench/benchmarks/matbench_v0.1_TPOT`
+
+Task:
+`matbench_steels`
+
+Environment setup used:
+
+```bash
+python -m venv env/matbench-tpot
+env/matbench-tpot/Scripts/python.exe -m pip install \
+  numpy==1.23.5 scipy scikit-learn==1.2.2 xgboost==1.7.6 pandas==1.5.1
+env/matbench-tpot/Scripts/python.exe -m pip install \
+  tpot==0.11.7 deap update_checker tqdm stopit
+env/matbench-tpot/Scripts/python.exe -m pip install numpy==1.23.5 --force-reinstall
+```
+
+The final numpy reinstall is needed because the TPOT import dependencies pulled a
+newer numpy that is ABI-incompatible with `scikit-learn==1.2.2`.
+
+Command:
+
+```bash
+python scripts/run_command.py --paper matbench \
+  --note "paper003 replay TPOT steels all folds seeded" -- \
+  env/matbench-tpot/Scripts/python.exe scripts/matbench_tpot_replay.py \
+    --report papers/matbench/layer_b_tpot_steels_replay.md \
+    --seed 0
+```
+
+Result: the notebook execution path is runnable when using an environment close to
+the submitted requirements (`numpy==1.23.5`, `scikit-learn==1.2.2`,
+`tpot==0.11.7`, `xgboost==1.7.6`). The replay loads the submitted TPOT pickle,
+uses the submitted composition-cleaning helper, refits each fold, predicts the
+held-out split, and compares against the committed predictions.
+
+The replay is not prediction-identical. With audit seed 0, max absolute prediction
+delta is `162.894`, the mean absolute prediction delta averaged across folds is
+`17.893`, submitted mean MAE is `79.947`, and replay mean MAE is `79.094`. The
+source notebook does not set a random seed while refitting stochastic estimators,
+so exact prediction regeneration is not expected from the public artifact alone.
+
+Report:
+`layer_b_tpot_steels_replay.md`
+
+## 8. Next
 
 1. Post the upstream issue only if the user explicitly asks.
-2. Broaden Layer A across more low-cost composition tasks before touching large
-   structure datasets.
-3. Select one or two runnable source-code submissions for a bounded Layer B smoke.
+2. Assemble a Paper-003 report that separates the positive score-recompute result,
+   the classification ROC-AUC scoring finding, and the TPOT source-replay limitation.
+3. Optionally broaden Layer A to selected structure tasks if compute/data download
+   cost is acceptable.

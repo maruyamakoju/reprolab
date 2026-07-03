@@ -50,3 +50,7 @@ Report: `layer_a_score_recompute.md`.
   grows.
 - `scripts/run_command.py` originally used second-level raw-log names; two parallel
   commands collided while scouting. It now uses microsecond-level names.
+- The first runnable source-code candidate is `matbench_v0.1_TPOT`. Its notebook
+  path can be replayed for `matbench_steels`, but it refits stochastic estimators
+  without a submitted random seed, so public-source execution does not regenerate
+  the committed predictions exactly.
