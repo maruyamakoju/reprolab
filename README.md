@@ -234,6 +234,7 @@ pages: 29/87 adjacent gaps are <=0.005 and 38/87 are <=0.010 in metric units.
 
 Artifacts:
 
+- Assembled report: `reports/paper-002-jarvis-leaderboard-audit.md`
 - Summary: `papers/jarvis-leaderboard/summary.md`
 - Plan: `papers/jarvis-leaderboard/reproduction_plan.md`
 - Metadata: `papers/jarvis-leaderboard/metadata.yaml`
@@ -244,6 +245,7 @@ Artifacts:
 - Script: `scripts/jarvis_score.py`
 - Layer B script: `scripts/jarvis_matminer_rf_smoke.py`
 - Layer C script: `scripts/jarvis_resolution.py`
+- Report script: `scripts/make_jarvis_report.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

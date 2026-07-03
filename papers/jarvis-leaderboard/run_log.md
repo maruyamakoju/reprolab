@@ -1172,3 +1172,42 @@ output tail:
 ```
 {'metric_files': 14, 'total_submissions': 101, 'layer_c': {'status': 'point_gap_map_completed', 'script': 'scripts/jarvis_resolution.py', 'report': 'papers/jarvis-leaderboard/layer_c_resolution.md', 'reports_checked': 14, 'submissions_checked': 101, 'adjacent_pairs': 87, 'adjacent_gaps_le_0_001': 5, 'adjacent_gaps_le_0_005': 29, 'adjacent_gaps_le_0_010': 38}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 07:04 UTC — verify JARVIS report assembler py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\make_jarvis_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070440.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:04 UTC — assemble Paper-002 JARVIS report
+
+```
+$ .venv\Scripts\python.exe scripts\make_jarvis_report.py
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-070446.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-002-jarvis-leaderboard-audit.md
+```
+
+### 2026-07-03 07:05 UTC — verify Paper-002 assembled report
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; report=Path('reports/paper-002-jarvis-leaderboard-audit.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=['All 101 checked submissions' in report,'Layer B bounded matminer_rf pre-smoke' in report,'Layer C point-gap map' in report,'Metric check - metric_check-spectra-ph_dos' in report,'paper-002-jarvis-leaderboard-audit.md' in readme,'make_jarvis_report.py' in readme]; print({'report_lines': len(report.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070504.log`
+
+output tail:
+```
+{'report_lines': 1270, 'checks': [True, True, True, True, True, True]}
+```
