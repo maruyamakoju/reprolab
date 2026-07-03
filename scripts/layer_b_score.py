@@ -1,14 +1,15 @@
-"""Layer B: score regenerated CHGNet predictions through the Layer A metric path.
+"""Layer B: score regenerated predictions through the Layer A metric path.
 
-Converts relaxed total energies to e_form_per_atom exactly as upstream
-`models/chgnet/join_chgnet_preds.py` does (elemental-reference subtraction via the
-clone's bundled `2023-02-07-mp-elemental-reference-entries.json.gz` — the same data
-`matbench_discovery.energy` loads; replicated here to avoid that module's import-time
-DataFiles side effects), then reuses `compare_metrics.py` functions (build_each_pred,
-independent_metrics, try_upstream_metrics) unchanged. No metric logic is forked.
+Converts relaxed total energies to e_form_per_atom using the same post-processing
+shape as each upstream model path: CHGNet uses elemental-reference subtraction;
+MACE-MP-0 first applies MP2020 corrections to the ML-relaxed structure, then uses
+the same elemental references. Metric scoring reuses `compare_metrics.py`
+functions (build_each_pred, independent_metrics, try_upstream_metrics) unchanged.
+No metric logic is forked.
 
 Usage:
     python scripts/layer_b_score.py \
+        --model chgnet-0.3.0 \
         --preds experiments/layer-b/chgnet/presmoke-run1.jsonl.gz \
                 experiments/layer-b/chgnet/presmoke-run2.jsonl.gz \
         --out papers/matbench-discovery/metric_check-layer-b-chgnet-presmoke.md
@@ -29,9 +30,34 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import compare_metrics as cm  # noqa: E402  (Layer A logic, reused not forked)
 
 REF_ENTRIES = "data/mp/2023-02-07-mp-elemental-reference-entries.json.gz"
-PUBLISHED = "models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz"
-PUB_COL = "e_form_per_atom_chgnet"
-REGEN_COL = "e_form_per_atom_chgnet_regen"
+MODEL_CONFIGS = {
+    "chgnet-0.3.0": dict(
+        label="CHGNet",
+        energy_col="chgnet_energy",
+        pred_file="models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz",
+        pub_col="e_form_per_atom_chgnet",
+        regen_col="e_form_per_atom_chgnet_regen",
+        protocol=(
+            "Generation protocol per upstream `test_chgnet_discovery.py` "
+            "(FIRE, steps<=500, fmax=0.05, relax_cell, FrechetCellFilter)."
+        ),
+        apply_mp2020=False,
+    ),
+    "mace-mp-0": dict(
+        label="MACE-MP-0",
+        energy_col="mace_energy",
+        structure_col="mace_structure",
+        pred_file="models/mace/mace-mp-0/2023-12-11-wbm-IS2RE-FIRE.csv.gz",
+        pub_col="e_form_per_atom_mace",
+        regen_col="e_form_per_atom_mace_regen",
+        protocol=(
+            "Generation protocol per upstream `test_mace_discovery.py` "
+            "(MACE-MP-0 checkpoint, FIRE, steps<=500, fmax=0.05, "
+            "FrechetCellFilter, float64)."
+        ),
+        apply_mp2020=True,
+    ),
+}
 
 
 def load_ref_energies(repo: Path) -> dict[str, float]:
@@ -56,13 +82,41 @@ def read_relax(path: Path) -> pd.DataFrame:
     return df.set_index("material_id")
 
 
+def apply_mp2020_corrections(
+    df_run: pd.DataFrame, repo: Path, energy_col: str, structure_col: str
+) -> pd.Series:
+    """Return ML energies after MP2020 corrections using ML-relaxed structures."""
+    from pymatgen.core import Structure
+    from pymatgen.entries.compatibility import MaterialsProject2020Compatibility
+    from pymatgen.entries.computed_entries import ComputedStructureEntry
+
+    cse_path = repo / "data/wbm/2022-10-19-wbm-computed-structure-entries.jsonl.gz"
+    df_cse = pd.read_json(cse_path, lines=True).set_index("material_id")
+
+    entries: list[ComputedStructureEntry] = []
+    for mat_id, row in df_run.iterrows():
+        cse = ComputedStructureEntry.from_dict(df_cse.loc[mat_id, "computed_structure_entry"])
+        cse._energy = row[energy_col]  # noqa: SLF001
+        cse._structure = Structure.from_dict(row[structure_col])  # noqa: SLF001
+        entries.append(cse)
+
+    processed = MaterialsProject2020Compatibility().process_entries(
+        entries, verbose=True, clean=True
+    )
+    if len(processed) != len(entries):
+        raise ValueError(f"not all entries processed: {len(processed)=} {len(entries)=}")
+    return pd.Series({entry.entry_id: entry.energy for entry in processed})
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default="vendor/matbench-discovery")
+    ap.add_argument("--model", choices=MODEL_CONFIGS, default="chgnet-0.3.0")
     ap.add_argument("--preds", nargs="+", required=True,
                     help="relax output(s); first is scored, second bounds run variance")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
+    cfg = MODEL_CONFIGS[args.model]
 
     repo = (ROOT / args.repo).resolve()
     sys.path.insert(0, str(repo))  # clone-first imports, as in compare_metrics.main
@@ -75,23 +129,33 @@ def main() -> None:
     refs = load_ref_energies(repo)
     formulas = gt.loc[ids, "formula"]
 
-    df_run[REGEN_COL] = [
-        e_form_per_atom(row.chgnet_energy, formulas[mat_id], refs)
-        for mat_id, row in df_run.iterrows()
+    regen_col = cfg["regen_col"]
+    if cfg["apply_mp2020"]:
+        total_energies = apply_mp2020_corrections(
+            df_run, repo, cfg["energy_col"], cfg["structure_col"]
+        )
+    else:
+        total_energies = df_run[cfg["energy_col"]]
+
+    df_run[regen_col] = [
+        e_form_per_atom(total_energies[mat_id], formulas[mat_id], refs)
+        for mat_id in df_run.index
     ]
 
-    pub = pd.read_csv(repo / PUBLISHED).set_index("material_id")[PUB_COL]
+    pub = pd.read_csv(repo / cfg["pred_file"]).set_index("material_id")[cfg["pub_col"]]
 
     # each_pred via the SAME Layer A path for both prediction sets
     gt_sub = gt.loc[ids]
     frames = {}
-    for label, col, series in (("regenerated", REGEN_COL, df_run[REGEN_COL]),
-                               ("published", PUB_COL, pub.loc[ids])):
+    for label, col, series in (
+        ("regenerated", regen_col, df_run[regen_col]),
+        ("published", cfg["pub_col"], pub.loc[ids]),
+    ):
         preds_df = series.rename(col).reset_index()
         frames[label] = cm.build_each_pred(gt_sub, preds_df, col)
 
     # per-structure comparison
-    d_meV = (df_run[REGEN_COL] - pub.loc[ids]) * 1e3
+    d_meV = (df_run[regen_col] - pub.loc[ids]) * 1e3
     cls = {label: (frames[label]["each_pred"] <= cm.STABILITY_THRESHOLD)
            for label in frames}
     agree = (cls["regenerated"] == cls["published"])
@@ -102,13 +166,11 @@ def main() -> None:
                    if len(ids) <= 30
                    else "Worst 15 structures by |Δ| (full data in experiments/)")
     lines = [
-        "# Metric Check — Layer B: CHGNet regenerated predictions "
+        f"# Metric Check — Layer B: {cfg['label']} regenerated predictions "
         f"(n={len(ids)})\n",
         "Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. "
-        "Generation protocol per upstream `test_chgnet_discovery.py` "
-        "(FIRE, steps<=500, fmax=0.05, relax_cell, FrechetCellFilter). "
-        "Scored with `compare_metrics.py` functions unchanged.\n",
-        f"published preds: `{PUBLISHED}` | regenerated: `{args.preds[0]}`\n",
+        f"{cfg['protocol']} Scored with `compare_metrics.py` functions unchanged.\n",
+        f"published preds: `{cfg['pred_file']}` | regenerated: `{args.preds[0]}`\n",
         f"\n## {table_title}\n",
         "| material_id | formula | n_sites | steps | conv | published | regenerated "
         "| Δ meV/atom | stable(pub) | stable(regen) | agree |",
@@ -119,7 +181,7 @@ def main() -> None:
         lines.append(
             f"| {mat_id} | {formulas[mat_id].replace(' ', '')} | {r.n_sites:.0f} "
             f"| {r.n_steps:.0f} | {'y' if r.converged else 'N'} "
-            f"| {pub.loc[mat_id]:.4f} | {r[REGEN_COL]:.4f} | {d_meV[mat_id]:+.1f} "
+            f"| {pub.loc[mat_id]:.4f} | {r[regen_col]:.4f} | {d_meV[mat_id]:+.1f} "
             f"| {'S' if cls['published'][mat_id] else 'U'} "
             f"| {'S' if cls['regenerated'][mat_id] else 'U'} "
             f"| {'✓' if agree[mat_id] else '✗'} |"
@@ -141,8 +203,30 @@ def main() -> None:
         f"| unstable->stable: {flips_us}",
     ]
 
+    flip_ids = [mat_id for mat_id in ids if not bool(agree[mat_id])]
+    if flip_ids:
+        lines += [
+            "\n## Stable/unstable classification flips\n",
+            "| material_id | formula | published each_pred | regenerated each_pred "
+            "| Δe_form meV/atom | direction |",
+            "|---|---|---|---|---|---|",
+        ]
+        for mat_id in flip_ids:
+            pub_stable = bool(cls["published"][mat_id])
+            regen_stable = bool(cls["regenerated"][mat_id])
+            direction = (
+                "stable->unstable" if pub_stable and not regen_stable
+                else "unstable->stable"
+            )
+            lines.append(
+                f"| {mat_id} | {formulas[mat_id].replace(' ', '')} "
+                f"| {frames['published'].loc[mat_id, 'each_pred']:.4f} "
+                f"| {frames['regenerated'].loc[mat_id, 'each_pred']:.4f} "
+                f"| {d_meV[mat_id]:+.1f} | {direction} |"
+            )
+
     if len(runs) > 1:
-        e1, e2 = runs[0]["chgnet_energy"], runs[1]["chgnet_energy"]
+        e1, e2 = runs[0][cfg["energy_col"]], runs[1][cfg["energy_col"]]
         dv = ((e1 - e2) / runs[0]["n_sites"]).abs() * 1e3
         lines += [
             f"- run1-vs-run2 |ΔE|/atom: median {dv.median():.3f} / max {dv.max():.3f} "

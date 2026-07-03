@@ -26,6 +26,13 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   contain the same regime; regenerated e_form still agreed to ≤1.1 meV/atom and
   classification agreement was 100%. Not a defect — an evaluation assumption to state
   when describing Layer B.
+- **MACE-MP-0 prediction post-processing includes MP2020 corrections on the
+  ML-relaxed structure** (`models/mace/join_mace_preds.py`). Scoring raw MACE total
+  energies without replaying this correction step creates false large mismatches
+  (e.g. Ba2I6 was off by ~284 meV/atom in the first two-structure pre-smoke). The
+  final scorer therefore reconstructs `ComputedStructureEntry`s with the MACE-relaxed
+  structures, applies `MaterialsProject2020Compatibility`, and only then converts to
+  formation energy.
 
 ## Findings so far (2026-07-02)
 
@@ -107,6 +114,19 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   command fails before logging (`WinError 2`, `CreateProcess` does not resolve
   forward-slash relative executables). Not an upstream issue; re-run with the absolute
   venv path (as the README commands now do). Noted 2026-07-02 during the ORB run.
+
+- **[interp] MACE-MP-0 Layer B has three large e_form outliers caused by the same
+  MP2020 correction-version drift found in the ground-truth audit.** (Found
+  2026-07-03, second-model Layer B smoke.) The MACE-MP-0 500-structure regeneration
+  passed the smoke thresholds: median |Δe_form| = 0.03 meV/atom and 99.6%
+  classification agreement. Its max |Δ| is large (216.65 meV/atom), but the three
+  structures responsible (`wbm-2-28782`, `wbm-4-28450`, `wbm-4-15908`) are exactly
+  the structures already shown in Layer C to depend on pymatgen MP2020
+  anion-correction assignment behavior. This turns the MACE outliers into an
+  independent confirmation of the correction-drift finding, not evidence of a broad
+  model-relaxation mismatch. Of the two stable/unstable flips, `wbm-2-28782` is the
+  correction-drift outlier and `wbm-3-56172` is a threshold-boundary case
+  (each_pred 0.000→−0.001 eV/atom from Δe_form = −0.1 meV/atom).
 
 ## Open discrepancies
 **None (4 of 4 models).** Layer A reproduced the official YAML exactly for **CHGNet**,

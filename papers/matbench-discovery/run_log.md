@@ -672,3 +672,546 @@ C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd10
 C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   warnings.warn(
 ```
+
+### 2026-07-03 04:52 UTC — layerB mace install mace-torch
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m pip install mace-torch>=0.3.15
+```
+
+- exit code: **0**  | duration: 14.1s  | raw log: `logs/cmd-20260703-045221.log`
+
+output tail:
+```
+Using cached mace_torch-0.3.16-py3-none-any.whl (316 kB)
+Using cached e3nn-0.4.4-py3-none-any.whl (387 kB)
+Using cached opt_einsum_fx-0.1.4-py3-none-any.whl (13 kB)
+Using cached configargparse-1.7.5-py3-none-any.whl (27 kB)
+Using cached h5py-3.16.0-cp311-cp311-win_amd64.whl (3.2 MB)
+Downloading lmdb-2.2.1-cp311-cp311-win_amd64.whl (113 kB)
+Using cached matscipy-1.2.0-cp311-cp311-win_amd64.whl (573 kB)
+Using cached opt_einsum-3.4.0-py3-none-any.whl (71 kB)
+Downloading prettytable-3.18.0-py3-none-any.whl (37 kB)
+Using cached torch_ema-0.3-py3-none-any.whl (5.5 kB)
+Using cached torchmetrics-1.9.0-py3-none-any.whl (983 kB)
+Using cached lightning_utilities-0.15.3-py3-none-any.whl (31 kB)
+Installing collected packages: python-hostlist, prettytable, opt_einsum, lmdb, lightning-utilities, h5py, configargparse, torchmetrics, torch-ema, opt-einsum-fx, matscipy, e3nn, mace-torch
+
+Successfully installed configargparse-1.7.5 e3nn-0.4.4 h5py-3.16.0 lightning-utilities-0.15.3 lmdb-2.2.1 mace-torch-0.3.16 matscipy-1.2.0 opt-einsum-fx-0.1.4 opt_einsum-3.4.0 prettytable-3.18.0 python-hostlist-2.3.0 torch-ema-0.3 torchmetrics-1.9.0
+```
+
+### 2026-07-03 04:52 UTC — layerB mace preflight import cuda checkpoint
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -c import torch; from importlib.metadata import version; from mace.calculators import mace_mp; print('torch', version('torch'), 'cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'cpu'); print('mace-torch', version('mace-torch')); calc=mace_mp(model='https://github.com/ACEsuit/mace-foundations/releases/download/mace_mp_0/2023-12-03-mace-128-L1_epoch-199.model', device='cuda' if torch.cuda.is_available() else 'cpu', default_dtype='float64', enable_cueq=False); print(type(calc).__name__)
+```
+
+- exit code: **0**  | duration: 21.6s  | raw log: `logs/cmd-20260703-045243.log`
+
+output tail:
+```
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+torch 2.11.0+cu128 cuda True NVIDIA GeForce RTX 4090
+mace-torch 0.3.16
+Using Materials Project MACE for MACECalculator with C:\Users\07013\.cache\mace/20231203mace128L1_epoch199model
+Using float64 for MACECalculator, which is slower but more accurate. Recommended for geometry optimization.
+MACECalculator
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\e3nn\o3\_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\mace\calculators\mace.py:226: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  torch.load(f=model_path, map_location=device)
+```
+
+### 2026-07-03 04:54 UTC — layerB mace pre-smoke 2 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_mace_relax.py --limit 2 --out experiments/layer-b/mace-mp-0/presmoke2-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 11.9s  | raw log: `logs/cmd-20260703-045450.log`
+
+output tail:
+```
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+loaded 2 initial structures in 2.2s
+Using Materials Project MACE for MACECalculator with C:\Users\07013\.cache\mace/20231203mace128L1_epoch199model
+Using float64 for MACECalculator, which is slower but more accurate. Recommended for geometry optimization.
+this run: 2 new, 0 resumed, 0 failed
+versions: mace-torch 0.3.16 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: MACE-MP-0 FIRE steps<=500 fmax=0.05 FrechetCellFilter float64 enable_cueq=False
+relaxed 2/2 | failures 0
+s/structure: mean 2.52 | median 2.52 | max 3.88
+converged: 2/2
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\mace-mp-0\presmoke2-run1.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\e3nn\o3\_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\mace\calculators\mace.py:226: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  torch.load(f=model_path, map_location=device)
+```
+
+### 2026-07-03 04:55 UTC — layerB mace score pre-smoke 2
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model mace-mp-0 --preds experiments/layer-b/mace-mp-0/presmoke2-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-mace-mp-0-presmoke2.md
+```
+
+- exit code: **0**  | duration: 4.2s  | raw log: `logs/cmd-20260703-045508.log`
+
+output tail:
+```
+| Accuracy | 0.500 | 0.500 | 1.000 | 1.000 |
+| MAE | 0.045 | 0.045 | 0.112 | 0.112 |
+| RMSE | 0.053 | 0.053 | 0.149 | 0.149 |
+| TP | 0 | 0 | 1 | 1 |
+| FP | 0 | 0 | 0 | 0 |
+| TN | 1 | 1 | 1 | 1 |
+| FN | 1 | 1 | 0 | 0 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-mace-mp-0-presmoke2.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+```
+
+### 2026-07-03 04:56 UTC — layerB mace pre-smoke 2 run2 with structures
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_mace_relax.py --limit 2 --out experiments/layer-b/mace-mp-0/presmoke2-run2.jsonl.gz
+```
+
+- exit code: **0**  | duration: 11.2s  | raw log: `logs/cmd-20260703-045633.log`
+
+output tail:
+```
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+loaded 2 initial structures in 2.2s
+Using Materials Project MACE for MACECalculator with C:\Users\07013\.cache\mace/20231203mace128L1_epoch199model
+Using float64 for MACECalculator, which is slower but more accurate. Recommended for geometry optimization.
+this run: 2 new, 0 resumed, 0 failed
+versions: mace-torch 0.3.16 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: MACE-MP-0 FIRE steps<=500 fmax=0.05 FrechetCellFilter float64 enable_cueq=False
+relaxed 2/2 | failures 0
+s/structure: mean 2.19 | median 2.19 | max 3.26
+converged: 2/2
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\mace-mp-0\presmoke2-run2.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\e3nn\o3\_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\mace\calculators\mace.py:226: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  torch.load(f=model_path, map_location=device)
+```
+
+### 2026-07-03 04:56 UTC — layerB mace score pre-smoke 2 with MP2020 correction
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model mace-mp-0 --preds experiments/layer-b/mace-mp-0/presmoke2-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-mace-mp-0-presmoke2.md
+```
+
+- exit code: **0**  | duration: 23.7s  | raw log: `logs/cmd-20260703-045650.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-mace-mp-0-presmoke2.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+
+  0%|          | 0/2 [00:00<?, ?it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-33636 (BaI3). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+ 50%|█████     | 1/2 [00:00<00:00,  7.06it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-24460 (Er4In5Fe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 2/2 [00:00<00:00, 14.02it/s]
+```
+
+### 2026-07-03 04:57 UTC — layerB mace pre-smoke 20 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_mace_relax.py --limit 20 --out experiments/layer-b/mace-mp-0/presmoke20-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 42.9s  | raw log: `logs/cmd-20260703-045726.log`
+
+output tail:
+```
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+loaded 20 initial structures in 3.8s
+Using Materials Project MACE for MACECalculator with C:\Users\07013\.cache\mace/20231203mace128L1_epoch199model
+Using float64 for MACECalculator, which is slower but more accurate. Recommended for geometry optimization.
+this run: 20 new, 0 resumed, 0 failed
+versions: mace-torch 0.3.16 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: MACE-MP-0 FIRE steps<=500 fmax=0.05 FrechetCellFilter float64 enable_cueq=False
+relaxed 20/20 | failures 0
+s/structure: mean 1.69 | median 1.39 | max 4.71
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\mace-mp-0\presmoke20-run1.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\e3nn\o3\_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\mace\calculators\mace.py:226: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  torch.load(f=model_path, map_location=device)
+```
+
+### 2026-07-03 04:58 UTC — layerB mace score pre-smoke 20 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model mace-mp-0 --preds experiments/layer-b/mace-mp-0/presmoke20-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-mace-mp-0-presmoke20.md
+```
+
+- exit code: **0**  | duration: 24.7s  | raw log: `logs/cmd-20260703-045820.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-32299 (OsAuS2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-24011 (Li4InO5). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28433 (Hf3GaO). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-10472 (PaInRe). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-30414 (NaAu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-17117 (In2Fe3Ru). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 20/20 [00:00<00:00, 105.30it/s]
+```
+
+### 2026-07-03 04:58 UTC — layerB mace pre-smoke 20 run2 variance bound
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_mace_relax.py --limit 20 --out experiments/layer-b/mace-mp-0/presmoke20-run2.jsonl.gz
+```
+
+- exit code: **0**  | duration: 47.0s  | raw log: `logs/cmd-20260703-045859.log`
+
+output tail:
+```
+cuequivariance or cuequivariance_torch is not available. Cuequivariance acceleration will be disabled.
+loaded 20 initial structures in 4.1s
+Using Materials Project MACE for MACECalculator with C:\Users\07013\.cache\mace/20231203mace128L1_epoch199model
+Using float64 for MACECalculator, which is slower but more accurate. Recommended for geometry optimization.
+this run: 20 new, 0 resumed, 0 failed
+versions: mace-torch 0.3.16 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: MACE-MP-0 FIRE steps<=500 fmax=0.05 FrechetCellFilter float64 enable_cueq=False
+relaxed 20/20 | failures 0
+s/structure: mean 1.73 | median 1.36 | max 5.37
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\mace-mp-0\presmoke20-run2.jsonl.gz
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\e3nn\o3\_wigner.py:10: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  _Jd, _W3j_flat, _W3j_indices = torch.load(os.path.join(os.path.dirname(__file__), 'constants.pt'))
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\mace\calculators\mace.py:226: UserWarning: Environment variable TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD detected, since the`weights_only` argument was not explicitly passed to `torch.load`, forcing weights_only=False.
+  torch.load(f=model_path, map_location=device)
+```
+
+### 2026-07-03 04:59 UTC — layerB mace score pre-smoke 20 with variance
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model mace-mp-0 --preds experiments/layer-b/mace-mp-0/presmoke20-run1.jsonl.gz experiments/layer-b/mace-mp-0/presmoke20-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-mace-mp-0-presmoke20.md
+```
+
+- exit code: **0**  | duration: 22.2s  | raw log: `logs/cmd-20260703-045951.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-32299 (OsAuS2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-24011 (Li4InO5). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28433 (Hf3GaO). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-10472 (PaInRe). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-30414 (NaAu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-17117 (In2Fe3Ru). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 20/20 [00:00<00:00, 126.71it/s]
+```
+
+### 2026-07-03 05:01 UTC — layerB mace smoke 500 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_mace_relax.py --out experiments/layer-b/mace-mp-0/smoke500-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 604.9s  | raw log: `logs/cmd-20260703-050107.log`
+
+output tail:
+```
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.95666454440985e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.914837108413709e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.9766483352909804e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.931529629691958e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.931721265075548e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.9516911088077894e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.922714458308905e-13
+  return f(*arrays, *other_args, **kwargs)
+```
+
+### 2026-07-03 05:11 UTC — layerB mace score smoke500 vs published
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model mace-mp-0 --preds experiments/layer-b/mace-mp-0/smoke500-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-mace-mp-0-smoke500.md
+```
+
+- exit code: **0**  | duration: 22.1s  | raw log: `logs/cmd-20260703-051119.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-5675 (Ca6Bi2Os). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-1-9501 (TlCdPt2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-2353 (Al3V3ZnGe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-21973 (V2NiRh2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-2593 (DyAlPt). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-14070 (PrGaRu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 500/500 [00:00<00:00, 1222.06it/s]
+```
+
+### 2026-07-03 05:12 UTC — capture env after MACE Layer B deps
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\capture_env.py
+```
+
+- exit code: **0**  | duration: 0.7s  | raw log: `logs/cmd-20260703-051222.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260703-051223.json
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
+```
+
+### 2026-07-03 05:12 UTC — refresh requirements frozen after MACE deps
+
+```
+$ powershell -NoProfile -Command & 'C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe' -m pip freeze | Set-Content -Encoding ascii 'papers\matbench-discovery\requirements-frozen.txt'
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-051244.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:14 UTC — assemble report after MACE Layer B smoke
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051409.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:14 UTC — verify MACE Layer B scripts py_compile
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051420.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:14 UTC — verify MACE Layer B scripts ruff
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051424.log`
+
+output tail:
+```
+All checks passed!
+```
+
+### 2026-07-03 05:14 UTC — assemble report after verification logs
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051428.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:14 UTC — verify MACE Layer B scripts py_compile after doc update
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051459.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:15 UTC — verify MACE Layer B scripts ruff after doc update
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051505.log`
+
+output tail:
+```
+All checks passed!
+```
+
+### 2026-07-03 05:15 UTC — assemble report after final MACE script checks
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051514.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:15 UTC — layerB mace score smoke500 with flip table
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model mace-mp-0 --preds experiments/layer-b/mace-mp-0/smoke500-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-mace-mp-0-smoke500.md
+```
+
+- exit code: **0**  | duration: 21.3s  | raw log: `logs/cmd-20260703-051544.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-5675 (Ca6Bi2Os). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-1-9501 (TlCdPt2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-2353 (Al3V3ZnGe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-21973 (V2NiRh2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-2593 (DyAlPt). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-14070 (PrGaRu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 500/500 [00:00<00:00, 1319.08it/s]
+```
+
+### 2026-07-03 05:16 UTC — verify layer_b_score chgnet compatibility after flip table
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model chgnet-0.3.0 --preds experiments/layer-b/chgnet/smoke500-run1.jsonl.gz --out logs/chgnet-score-regression-layer_b_score.md
+```
+
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-051650.log`
+
+output tail:
+```
+| Accuracy | 0.866 | 0.866 | 0.866 | 0.866 |
+| MAE | 0.067 | 0.067 | 0.067 | 0.067 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 47 | 47 | 47 | 47 |
+| FP | 47 | 47 | 47 | 47 |
+| TN | 386 | 386 | 386 | 386 |
+| FN | 20 | 20 | 20 | 20 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\chgnet-score-regression-layer_b_score.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+```
+
+### 2026-07-03 05:16 UTC — verify final MACE scorer py_compile
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051659.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:17 UTC — verify final MACE scorer ruff
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051703.log`
+
+output tail:
+```
+All checks passed!
+```
+
+### 2026-07-03 05:17 UTC — assemble report after MACE flip diagnostics
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051707.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:17 UTC — assemble report after summary date and flip wording
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051730.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```

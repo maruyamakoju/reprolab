@@ -1,6 +1,18 @@
 # Layer B Plan — regenerate predictions
 
-Status: **SMOKE PASSED at n=500** (2026-07-02, branch `layer-b-chgnet-smoke`,
+Status: **SECOND-MODEL SMOKE PASSED at n=500** (2026-07-03,
+MACE-MP-0 extension; results in `metric_check-layer-b-mace-mp-0-smoke500.md`).
+MACE-MP-0 relaxed 500/500 structures on RTX 4090, 0 failures, 500/500 converged,
+mean 1.18 s/structure, 10.1 min total GPU. Against the same smoke criteria:
+median |Δe_form| = 0.03 meV/atom (threshold 10), p95 = 0.06, 99.6%
+classification agreement (threshold 95%), 2 flips. The three large e_form outliers
+(max 216.65 meV/atom) are the same MP2020 anion-correction version-drift structures
+identified independently in Layer C (`wbm-2-28782`, `wbm-4-28450`,
+`wbm-4-15908`), so the residual mismatch is concentrated in post-processing
+correction drift rather than broad relaxation disagreement. The other flip
+(`wbm-3-56172`) is a 0.1 meV/atom threshold-boundary case.
+
+Prior status: **CHGNet SMOKE PASSED at n=500** (2026-07-02, branch `layer-b-chgnet-smoke`,
 `v0.2-layer-b-smoke`; results in `metric_check-layer-b-chgnet-smoke500.md`).
 500/500 relaxed on RTX 4090, 0 failures, 477/500 converged within the step cap,
 mean 1.06 s/structure, 9.3 min total GPU. Against the pre-registered §7 thresholds:
@@ -10,8 +22,9 @@ Verdict: **the published CHGNet predictions REPRODUCE from model execution** on 
 subset. Pre-smoke (n=20, two runs) had bounded GPU run-to-run variance at
 ≤0.232 meV/atom, so these deltas are interpretable.
 
-Layer A closed at 4/4 (`v0.1-layer-a`); this plan defines the smallest vertical
-slice of Layer B:
+Layer A closed at 4/4 (`v0.1-layer-a`); this plan originally defined the smallest
+vertical slice of Layer B for CHGNet and was then reused for the MACE-MP-0
+second-model extension:
 
 > model relaxation/inference → prediction CSV → the *same* Layer A metric path.
 

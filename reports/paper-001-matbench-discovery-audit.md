@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-02 08:19 UTC_
+_Generated: 2026-07-03 05:17 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -56,39 +56,60 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
 ## Result — Layer B (GPU, prediction regeneration, n=500)
 
 Beyond re-scoring published predictions, we regenerated predictions from scratch for
-**CHGNet** on a deterministic 500-structure WBM subset (seed-42 sample of
+**two models** on the same deterministic 500-structure WBM subset (seed-42 sample of
 `unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
 relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
-formation energy → scored through the *same* Layer A metric path. All thresholds were
-pre-registered in `layer_b_plan.md` §7 **before** the run.
+formation energy → scored through the *same* Layer A metric path. The CHGNet
+thresholds were pre-registered in `layer_b_plan.md` §7 before the first GPU smoke;
+the MACE-MP-0 extension reused the same subset and acceptance criteria.
 
-- **500/500 relaxed, 0 failures** — RTX 4090, mean 1.06 s/structure (median 0.99,
+- **CHGNet: 500/500 relaxed, 0 failures** — RTX 4090, mean 1.06 s/structure (median 0.99,
   max 6.16), 9.3 min total GPU; 477/500 converged within the 500-step cap (the
   published pipeline ran under the same cap)
-- **median |Δe_form| = 0.03 meV/atom vs published** (pre-registered threshold: ≤10);
+- CHGNet **median |Δe_form| = 0.03 meV/atom vs published** (threshold: ≤10);
   p95 = 0.07, max = 1.08 meV/atom; 100% of structures within 10 meV/atom — despite a
   2023→2026 dependency gap (torch 1.11→2.11, ase 3.22→3.29, chgnet package 0.4.2
   loading the same 0.3.0 weights, 412,525 params verified)
-- **100% stable/unstable classification agreement** (threshold: ≥95%); **zero flips**
+- CHGNet **100% stable/unstable classification agreement** (threshold: ≥95%); **zero flips**
   in either direction
-- Discovery metrics computed from regenerated and published predictions are
+- CHGNet discovery metrics computed from regenerated and published predictions are
   **identical** through both metric implementations (F1 0.584, MAE 0.067,
   TP/FP/TN/FN = 47/47/386/20 on this subset)
 - GPU run-to-run variance bounded first on the 20-structure pre-smoke (two runs):
   median 0.000, max 0.232 meV/atom — far below the threshold, so deltas are
   interpretable
 - Worst structure: wbm-2-42265 (S6Sr3), Δ = +1.1 meV/atom, classification unchanged
+- **MACE-MP-0: 500/500 relaxed, 0 failures, 500/500 converged** — RTX 4090,
+  mean 1.18 s/structure (median 1.04, max 6.99), 10.1 min total GPU; checkpoint
+  `2023-12-03-mace-128-L1_epoch-199.model`, `mace-torch==0.3.16`, float64
+- MACE-MP-0 **median |Δe_form| = 0.03 meV/atom vs published** (threshold: ≤10);
+  p95 = 0.06, mean = 0.95, max = 216.65 meV/atom; 99.4% within 10 meV/atom
+- MACE-MP-0 **99.6% stable/unstable classification agreement** (threshold: ≥95%);
+  1 published-stable→regenerated-unstable flip and 1 unstable→stable flip. The
+  unstable→stable flip is a threshold-boundary case (`wbm-3-56172`: each_pred
+  0.000→−0.001 eV/atom, Δe_form = −0.1 meV/atom); the stable→unstable flip is the
+  correction-drift outlier `wbm-2-28782`.
+- The three large MACE-MP-0 e_form outliers are exactly the three structures already
+  isolated by Layer C as MP2020 anion-correction version-drift cases
+  (wbm-2-28782, wbm-4-28450, wbm-4-15908). Outside that correction edge case, the
+  regenerated MACE predictions match the published CSV at rounding scale. Subset
+  classification metrics match through both implementations (F1 0.655, Precision
+  0.538, Recall 0.836, Accuracy 0.882; TP/FP/TN/FN = 56/48/385/11), while MAE/RMSE
+  differ by 0.001 due to the correction-drift outliers.
 
 **Verdict: the published CHGNet predictions reproduce from model execution** on this
-subset, to well within the published CSV's own rounding scale.
+subset, to well within the published CSV's own rounding scale. **MACE-MP-0 also
+passes the same Layer B smoke criteria**, with the only large deviations tracing to
+the same MP2020 correction-version dependency found independently in the ground-truth
+audit.
 
 ## Scope and limits
 
 Layer A verifies that leaderboard metrics are correctly derived from the *published*
-predictions (4/4 models exact). Layer B regenerates predictions for one model
-(CHGNet) on a 500-structure deterministic subset — a small but valid audit of the
-generation path, not a full leaderboard reproduction. Next steps: additional Layer B
-models (ORB / MACE) or another paper. Full-WBM (257k) regeneration is out of scope
+predictions (4/4 models exact). Layer B regenerates predictions for two models
+(CHGNet and MACE-MP-0) on a 500-structure deterministic subset — a small but valid
+audit of the generation path, not a full leaderboard reproduction. Next steps:
+add ORB v2 or move to another paper. Full-WBM (257k) regeneration is out of scope
 for v0.x.
 
 
@@ -304,9 +325,9 @@ Regenerate CHGNet predictions locally to test the deeper claim:
 
 # Environment
 
-_Captured: 2026-07-02 05:09:27 UTC_
+_Captured: 2026-07-03 05:12:22 UTC_
 
-- **timestamp_utc**: `2026-07-02 05:09:27 UTC`
+- **timestamp_utc**: `2026-07-03 05:12:22 UTC`
 - **platform**: `Windows-10-10.0.26200-SP0`
 - **python_version**: `3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]`
 - **python_executable**: `C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe`
@@ -327,17 +348,21 @@ chgnet==0.4.2
 click==8.4.2
 colorama==0.4.6
 comm==0.2.3
+ConfigArgParse==1.7.5
 contourpy==1.3.3
 cycler==0.12.1
 Cython==3.2.8
 decorator==5.3.1
+e3nn==0.4.4
 executing==2.2.1
 filelock==3.29.0
 fonttools==4.63.0
 fsspec==2026.4.0
 gitdb==4.0.12
 GitPython==3.1.50
+h5py==3.16.0
 idna==3.18
+iniconfig==2.3.0
 ipython==9.15.0
 ipython_pygments_lexers==1.1.1
 ipywidgets==8.1.8
@@ -346,11 +371,15 @@ Jinja2==3.1.6
 joblib==1.5.3
 jupyterlab_widgets==3.0.16
 kiwisolver==1.5.0
+lightning-utilities==0.15.3
+lmdb==2.2.1
 lxml==6.1.1
+mace-torch==0.3.16
 MarkupSafe==3.0.3
 matbench-discovery==1.3.1
 matplotlib==3.11.0
 matplotlib-inline==0.2.2
+matscipy==1.2.0
 monty==2026.5.18
 moyopy==0.13.0
 mpmath==1.3.0
@@ -358,6 +387,8 @@ narwhals==2.23.0
 networkx==3.6.1
 numpy==2.4.6
 nvidia-ml-py3==7.352.0
+opt-einsum-fx==0.1.4
+opt_einsum==3.4.0
 orjson==3.11.9
 packaging==26.2
 palettable==3.3.3
@@ -366,6 +397,8 @@ parso==0.8.7
 pillow==12.3.0
 platformdirs==4.10.0
 plotly==6.8.0
+pluggy==1.6.0
+prettytable==3.18.0
 prompt_toolkit==3.0.52
 protobuf==7.35.1
 psutil==7.2.2
@@ -378,11 +411,14 @@ pymatgen==2026.5.4
 pymatgen-core==2026.5.18
 pymatviz==0.18.0
 pyparsing==3.3.2
+pytest==9.1.1
 python-dateutil==2.9.0.post0
+python_hostlist==2.3.0
 PyYAML==6.0.3
 requests==2.34.2
 ruamel.yaml==0.18.17
 ruamel.yaml.clib==0.2.15
+ruff==0.15.20
 scikit-learn==1.9.0
 scipy==1.17.1
 seaborn==0.13.2
@@ -395,6 +431,8 @@ sympy==1.14.0
 tabulate==0.10.0
 threadpoolctl==3.6.0
 torch==2.11.0+cu128
+torch-ema==0.3
+torchmetrics==1.9.0
 tqdm==4.68.3
 traitlets==5.15.1
 typing-inspection==0.4.2
@@ -520,6 +558,171 @@ published preds: `models/chgnet/chgnet-0.3.0/2023-12-21-wbm-IS2RE.csv.gz` | rege
 | FP | 47 | 47 | 47 | 47 |
 | TN | 386 | 386 | 386 | 386 |
 | FN | 20 | 20 | 20 | 20 |
+
+
+
+## 4. Metric check — metric_check-layer-b-mace-mp-0-presmoke2
+
+# Metric Check — Layer B: MACE-MP-0 regenerated predictions (n=2)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_mace_discovery.py` (MACE-MP-0 checkpoint, FIRE, steps<=500, fmax=0.05, FrechetCellFilter, float64). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/mace/mace-mp-0/2023-12-11-wbm-IS2RE-FIRE.csv.gz` | regenerated: `experiments/layer-b/mace-mp-0/presmoke2-run2.jsonl.gz`
+
+
+## Per-structure: regenerated vs published e_form (eV/atom)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | 8 | 40 | y | -1.7800 | -1.7800 | +0.0 | S | S | ✓ |
+| wbm-3-24460 | Er4Fe2In5 | 11 | 36 | y | -0.2990 | -0.2990 | -0.0 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 2
+- median |Δ| = **0.03 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.03 | p95 |Δ| = 0.04 | max |Δ| = 0.05 meV/atom
+- within 10 meV/atom: 100.0%
+- classification agreement: **100.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 0 | unstable->stable: 0
+
+## Discovery metrics on this subset via the Layer A path (n=2 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Precision | 1.000 | 1.000 | 1.000 | 1.000 |
+| Recall | 1.000 | 1.000 | 1.000 | 1.000 |
+| Accuracy | 1.000 | 1.000 | 1.000 | 1.000 |
+| MAE | 0.112 | 0.112 | 0.112 | 0.112 |
+| RMSE | 0.149 | 0.149 | 0.149 | 0.149 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 0 | 0 | 0 | 0 |
+| TN | 1 | 1 | 1 | 1 |
+| FN | 0 | 0 | 0 | 0 |
+
+
+
+## 4. Metric check — metric_check-layer-b-mace-mp-0-presmoke20
+
+# Metric Check — Layer B: MACE-MP-0 regenerated predictions (n=20)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_mace_discovery.py` (MACE-MP-0 checkpoint, FIRE, steps<=500, fmax=0.05, FrechetCellFilter, float64). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/mace/mace-mp-0/2023-12-11-wbm-IS2RE-FIRE.csv.gz` | regenerated: `experiments/layer-b/mace-mp-0/presmoke20-run1.jsonl.gz`
+
+
+## Per-structure: regenerated vs published e_form (eV/atom)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | 8 | 40 | y | -1.7800 | -1.7800 | +0.0 | S | S | ✓ |
+| wbm-3-24460 | Er4Fe2In5 | 11 | 36 | y | -0.2990 | -0.2990 | -0.0 | U | U | ✓ |
+| wbm-2-29187 | N6Sr2Zn2 | 10 | 106 | y | -0.3802 | -0.3802 | -0.0 | U | U | ✓ |
+| wbm-3-24851 | Fe2Tb1Yb1 | 4 | 16 | y | 0.2958 | 0.2958 | -0.0 | U | U | ✓ |
+| wbm-1-49596 | Er2S6 | 8 | 47 | y | -1.6520 | -1.6520 | +0.0 | S | S | ✓ |
+| wbm-1-38260 | Ca2Fe2O6 | 10 | 34 | y | -2.0778 | -2.0778 | +0.0 | U | U | ✓ |
+| wbm-3-20857 | Cu2Eu2In2 | 6 | 23 | y | -0.2722 | -0.2722 | -0.0 | U | U | ✓ |
+| wbm-2-36510 | Gd1O7Si2Zr1 | 11 | 34 | y | -3.4970 | -3.4970 | +0.0 | U | U | ✓ |
+| wbm-2-31866 | In2Ni2Zn1 | 5 | 31 | y | -0.1191 | -0.1191 | +0.0 | U | U | ✓ |
+| wbm-5-3711 | Ca1Ho1Pb2 | 4 | 22 | y | -0.5654 | -0.5653 | +0.1 | S | S | ✓ |
+| wbm-4-16455 | Cl4H2Mg2 | 8 | 48 | y | -1.1892 | -1.1892 | -0.0 | U | U | ✓ |
+| wbm-4-4335 | B1Ga2Ir2Lu1 | 6 | 17 | y | -0.6088 | -0.6088 | -0.0 | U | U | ✓ |
+| wbm-3-11637 | C2Ge2La4 | 8 | 50 | y | -0.2536 | -0.2536 | +0.0 | U | U | ✓ |
+| wbm-4-32299 | Au1Os1S2 | 4 | 12 | y | -0.4007 | -0.4007 | +0.0 | U | U | ✓ |
+| wbm-2-24011 | In1Li4O5 | 10 | 24 | y | -1.6660 | -1.6660 | +0.0 | U | U | ✓ |
+| wbm-4-28433 | Ga2Hf6O2 | 10 | 20 | y | -1.1019 | -1.1019 | -0.0 | U | U | ✓ |
+| wbm-5-10472 | In2Pa2Re2 | 6 | 26 | y | 0.0966 | 0.0966 | -0.0 | U | U | ✓ |
+| wbm-2-30414 | Au1Na1 | 2 | 9 | y | -0.2849 | -0.2848 | +0.1 | U | U | ✓ |
+| wbm-2-17117 | Fe6In4Ru2 | 12 | 8 | y | 0.2870 | 0.2870 | +0.0 | U | U | ✓ |
+| wbm-1-39713 | Dy2O6Sn2 | 10 | 52 | y | -2.7636 | -2.7637 | -0.1 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 20
+- median |Δ| = **0.02 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.03 | p95 |Δ| = 0.06 | max |Δ| = 0.07 meV/atom
+- within 10 meV/atom: 100.0%
+- classification agreement: **100.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 0 | unstable->stable: 0
+- run1-vs-run2 |ΔE|/atom: median 0.000 / max 0.000 meV/atom (GPU run-to-run variance bound)
+
+## Discovery metrics on this subset via the Layer A path (n=20 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 0.400 | 0.400 | 0.400 | 0.400 |
+| Precision | 0.333 | 0.333 | 0.333 | 0.333 |
+| Recall | 0.500 | 0.500 | 0.500 | 0.500 |
+| Accuracy | 0.850 | 0.850 | 0.850 | 0.850 |
+| MAE | 0.099 | 0.099 | 0.099 | 0.099 |
+| RMSE | 0.126 | 0.126 | 0.126 | 0.126 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 2 | 2 | 2 | 2 |
+| TN | 16 | 16 | 16 | 16 |
+| FN | 1 | 1 | 1 | 1 |
+
+
+
+## 4. Metric check — metric_check-layer-b-mace-mp-0-smoke500
+
+# Metric Check — Layer B: MACE-MP-0 regenerated predictions (n=500)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_mace_discovery.py` (MACE-MP-0 checkpoint, FIRE, steps<=500, fmax=0.05, FrechetCellFilter, float64). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/mace/mace-mp-0/2023-12-11-wbm-IS2RE-FIRE.csv.gz` | regenerated: `experiments/layer-b/mace-mp-0/smoke500-run1.jsonl.gz`
+
+
+## Worst 15 structures by |Δ| (full data in experiments/)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-2-28782 | Br2N6Sr2 | 10 | 79 | y | -1.1176 | -0.9010 | +216.6 | S | U | ✗ |
+| wbm-4-28450 | I2O2Pa2 | 6 | 16 | y | -2.5213 | -2.3950 | +126.3 | U | U | ✓ |
+| wbm-4-15908 | H8Nd2Pt2 | 12 | 46 | y | -0.5421 | -0.6614 | -119.3 | S | S | ✓ |
+| wbm-3-70895 | Cu1Pu2Si1 | 4 | 32 | y | -0.0160 | -0.0159 | +0.1 | U | U | ✓ |
+| wbm-3-4455 | Al1Ge1Tb2 | 4 | 13 | y | -0.6151 | -0.6152 | -0.1 | U | U | ✓ |
+| wbm-3-5167 | Al2Cs2S6Zn2 | 12 | 29 | y | -1.2541 | -1.2540 | +0.1 | S | S | ✓ |
+| wbm-5-3711 | Ca1Ho1Pb2 | 4 | 22 | y | -0.5654 | -0.5653 | +0.1 | S | S | ✓ |
+| wbm-4-18193 | As2Co2Li1Nd1 | 6 | 24 | y | -0.6343 | -0.6342 | +0.1 | U | U | ✓ |
+| wbm-4-35943 | Ho2Ni2Si1 | 5 | 18 | y | -0.6670 | -0.6669 | +0.1 | S | S | ✓ |
+| wbm-2-27095 | Ir2Mg1Zn1 | 4 | 32 | y | -0.2366 | -0.2365 | +0.1 | U | U | ✓ |
+| wbm-4-29557 | Ir2P2Rb2 | 6 | 22 | y | -0.5950 | -0.5949 | +0.1 | S | S | ✓ |
+| wbm-4-2254 | Ag6Al2K4 | 12 | 31 | y | -0.0217 | -0.0218 | -0.1 | U | U | ✓ |
+| wbm-4-31321 | Ir2Rh1Th1 | 4 | 19 | y | -0.6269 | -0.6268 | +0.1 | U | U | ✓ |
+| wbm-1-6032 | Be2Er2Si2 | 6 | 24 | y | -0.5965 | -0.5964 | +0.1 | S | S | ✓ |
+| wbm-1-49747 | Ge2Ni4S6 | 12 | 21 | y | -0.5382 | -0.5381 | +0.1 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 500
+- median |Δ| = **0.03 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.95 | p95 |Δ| = 0.06 | max |Δ| = 216.65 meV/atom
+- within 10 meV/atom: 99.4%
+- classification agreement: **99.6%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 1 | unstable->stable: 1
+
+## Stable/unstable classification flips
+
+| material_id | formula | published each_pred | regenerated each_pred | Δe_form meV/atom | direction |
+|---|---|---|---|---|---|
+| wbm-3-56172 | Co1Cs1Mo2O8 | 0.0000 | -0.0010 | -0.1 | unstable->stable |
+| wbm-2-28782 | Br2N6Sr2 | -0.0010 | 0.2160 | +216.6 | stable->unstable |
+
+## Discovery metrics on this subset via the Layer A path (n=500 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 0.655 | 0.655 | 0.655 | 0.655 |
+| Precision | 0.538 | 0.538 | 0.538 | 0.538 |
+| Recall | 0.836 | 0.836 | 0.836 | 0.836 |
+| Accuracy | 0.882 | 0.882 | 0.882 | 0.882 |
+| MAE | 0.063 | 0.063 | 0.062 | 0.062 |
+| RMSE | 0.109 | 0.109 | 0.108 | 0.108 |
+| TP | 56 | 56 | 56 | 56 |
+| FP | 48 | 48 | 48 | 48 |
+| TN | 385 | 385 | 385 | 385 |
+| FN | 11 | 11 | 11 | 11 |
 
 
 
@@ -912,6 +1115,13 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   contain the same regime; regenerated e_form still agreed to ≤1.1 meV/atom and
   classification agreement was 100%. Not a defect — an evaluation assumption to state
   when describing Layer B.
+- **MACE-MP-0 prediction post-processing includes MP2020 corrections on the
+  ML-relaxed structure** (`models/mace/join_mace_preds.py`). Scoring raw MACE total
+  energies without replaying this correction step creates false large mismatches
+  (e.g. Ba2I6 was off by ~284 meV/atom in the first two-structure pre-smoke). The
+  final scorer therefore reconstructs `ComputedStructureEntry`s with the MACE-relaxed
+  structures, applies `MaterialsProject2020Compatibility`, and only then converts to
+  formation energy.
 
 ## Findings so far (2026-07-02)
 
@@ -994,6 +1204,19 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   forward-slash relative executables). Not an upstream issue; re-run with the absolute
   venv path (as the README commands now do). Noted 2026-07-02 during the ORB run.
 
+- **[interp] MACE-MP-0 Layer B has three large e_form outliers caused by the same
+  MP2020 correction-version drift found in the ground-truth audit.** (Found
+  2026-07-03, second-model Layer B smoke.) The MACE-MP-0 500-structure regeneration
+  passed the smoke thresholds: median |Δe_form| = 0.03 meV/atom and 99.6%
+  classification agreement. Its max |Δ| is large (216.65 meV/atom), but the three
+  structures responsible (`wbm-2-28782`, `wbm-4-28450`, `wbm-4-15908`) are exactly
+  the structures already shown in Layer C to depend on pymatgen MP2020
+  anion-correction assignment behavior. This turns the MACE outliers into an
+  independent confirmation of the correction-drift finding, not evidence of a broad
+  model-relaxation mismatch. Of the two stable/unstable flips, `wbm-2-28782` is the
+  correction-drift outlier and `wbm-3-56172` is a threshold-boundary case
+  (each_pred 0.000→−0.001 eV/atom from Δe_form = −0.1 meV/atom).
+
 ## Open discrepancies
 **None (4 of 4 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
 **SevenNet-0**, **MACE-MP-0**, and **ORB v2** on both `unique_prototypes` and
@@ -1009,84 +1232,84 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 ## 6. Run log (tail)
 
-### 2026-07-02 08:05 UTC — layerC-GT recompute e_above_hull from ppd-mp for 500 subset
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-1-9501 (TlCdPt2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-2353 (Al3V3ZnGe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-21973 (V2NiRh2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-2593 (DyAlPt). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-14070 (PrGaRu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
 
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_gt_hull.py
-```
-
-- exit code: **0**  | duration: 40.9s  | raw log: `logs/cmd-20260702-080524.log`
-
-output tail:
-```
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Hg1 Ir2 Sm3. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Bi2 U6 Pt1. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Hg4 Dy2 Pd2. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ca6 Bi2 Os1. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Cd1 Tl1 Pt2. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ge2 Al3 Zn1 V3. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\phase_diagram.py:774: UserWarning: No suitable PhaseDiagrams found for Ni1 Rh2 V2. Using SLSQP to find decomposition
-  decomp = self.get_decomposition(comp)
+100%|██████████| 500/500 [00:00<00:00, 1319.08it/s]
 ```
 
-### 2026-07-02 08:07 UTC — layerC-GT diagnose 3 outliers (corrections vs hull lookup)
+### 2026-07-03 05:16 UTC — verify layer_b_score chgnet compatibility after flip table
 
 ```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts/layer_c_gt_diagnose.py --ids wbm-2-28782 wbm-4-28450 wbm-4-15908
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model chgnet-0.3.0 --preds experiments/layer-b/chgnet/smoke500-run1.jsonl.gz --out logs/chgnet-score-regression-layer_b_score.md
 ```
 
-- exit code: **0**  | duration: 6.4s  | raw log: `logs/cmd-20260702-080759.log`
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-051650.log`
 
 output tail:
 ```
-  our adjustments: [('MP2020 anion correction (Br)', -1.068)]
-wbm-4-28450 PaIO        
-  e_form summary=-2.574240 ours=-2.447933 delta=+126.307 meV/atom
-  our adjustments: [('MP2020 anion correction (oxide)', -1.374)]
-wbm-4-15908 NdH4Pt      
-  e_form summary=-0.466418 ours=-0.585721 delta=-119.303 meV/atom
-  our adjustments: [('MP2020 anion correction (H)', -1.432)]
+| Accuracy | 0.866 | 0.866 | 0.866 | 0.866 |
+| MAE | 0.067 | 0.067 | 0.067 | 0.067 |
+| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
+| TP | 47 | 47 | 47 | 47 |
+| FP | 47 | 47 | 47 | 47 |
+| TN | 386 | 386 | 386 | 386 |
+| FN | 20 | 20 | 20 | 20 |
+
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\chgnet-score-regression-layer_b_score.md
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28450 (PaIO). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
 ```
 
-### 2026-07-02 08:18 UTC — layerC-GT control: rerun outlier diagnosis under pymatgen 2023.5.10
+### 2026-07-03 05:16 UTC — verify final MACE scorer py_compile
 
 ```
-$ C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Scripts\python.exe scripts/layer_c_gt_diagnose.py --ids wbm-2-28782 wbm-4-28450 wbm-4-15908
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py
 ```
 
-- exit code: **0**  | duration: 8.9s  | raw log: `logs/cmd-20260702-081826.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051659.log`
 
 output tail:
 ```
-  our adjustments: [('MP2020 anion correction (oxide)', -1.374), ('MP2020 anion correction (I)', -0.758)]
-wbm-4-15908 NdH4Pt      
-  e_form summary=-0.466418 ours=-0.466387 delta=+0.031 meV/atom
-  our adjustments: []
-C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
-  warnings.warn(
-C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\composition.py:1217: FutureWarning: gcd is deprecated, and will be removed on 2028-01-01
-Use math.gcd instead.
-  factor = abs(gcd(*(int(i) for i in sym_amt.values())))
-C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\uncertainties\core.py:1024: UserWarning: Using UFloat objects with std_dev==0 may give unexpected results.
-  warn("Using UFloat objects with std_dev==0 may give unexpected results.")
-C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
-  warnings.warn(
-C:\Users\07013\AppData\Local\Temp\claude\C--Users-07013-Desktop-0702fable\cfdd1078-4d5a-454d-b4bd-b545a23fd95e\scratchpad\oldpmg\Lib\site-packages\pymatgen\core\periodic_table.py:209: UserWarning: No electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
-  warnings.warn(
+
+```
+
+### 2026-07-03 05:17 UTC — verify final MACE scorer ruff
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051703.log`
+
+output tail:
+```
+All checks passed!
+```
+
+### 2026-07-03 05:17 UTC — assemble report after MACE flip diagnostics
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051707.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
 ```
 

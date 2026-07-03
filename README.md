@@ -10,11 +10,13 @@ bundled WBM ground truth. **All 4/4 models reproduce the official YAML metrics e
 across both audited subsets — every fraction to 3 decimals and every integer
 confusion-matrix count.
 
-**Layer B:** Regenerated CHGNet predictions from model execution on a deterministic
-500-structure WBM subset (500/500 relaxed, 0 failures, 9.3 min on one RTX 4090).
-The regenerated formation energies match the published predictions with
-**median |Δe_form| = 0.03 meV/atom** (p95 = 0.07, max = 1.08 meV/atom, pre-registered
-threshold: ≤10), **100% stability-classification agreement, and zero flips**.
+**Layer B:** Regenerated predictions from model execution for **two models** on the
+same deterministic 500-structure WBM subset. CHGNet: 500/500 relaxed, 0 failures,
+9.3 min on one RTX 4090, **median |Δe_form| = 0.03 meV/atom** (p95 = 0.07,
+max = 1.08), **100% stability-classification agreement, zero flips**. MACE-MP-0:
+500/500 relaxed, 0 failures, 10.1 min, **median |Δe_form| = 0.03 meV/atom**,
+**99.6% stability-classification agreement**; the three large MACE outliers are the
+same MP2020 correction-drift structures identified in the ground-truth audit.
 
 **Layer C:** Statistical audit of the leaderboard itself (uncertainty is not reported
 upstream). Paired bootstrap (B=2000, exact 32-joint-category multinomial design) puts
@@ -112,7 +114,7 @@ git clone --depth 1 https://github.com/janosh/matbench-discovery \
 python -m venv .venv
 . .venv/Scripts/activate         # Windows;  use  source .venv/bin/activate  on Linux/mac
 pip install matbench-discovery   # brings the official stable_metrics + deps
-# exact versions we ran with (incl. Layer B extras + the ruamel.yaml<0.19 pin):
+# exact versions we ran with (incl. Layer B CHGNet/MACE extras + ruamel.yaml<0.19):
 #   papers/matbench-discovery/requirements-frozen.txt
 
 # 3. snapshot the environment
@@ -141,7 +143,7 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 > `compare_metrics.py` puts the clone first on `sys.path`. See
 > `papers/matbench-discovery/failure_notes.md`.
 
-## Status (2026-07-02)
+## Status (2026-07-03)
 
 - [x] Upstream repo cloned + pinned (`vendor/`, commit `eaa7550`)
 - [x] Evaluation path identified at code level (see reproduction plan)
@@ -160,11 +162,19 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Layer A closed at 4/4 (`v0.1-layer-a`)
 - [x] Layer B pre-smoke passed: 20/20 ids, run-to-run GPU variance ≤0.232 meV/atom
       (`metric_check-layer-b-chgnet-presmoke.md`)
-- [x] **Layer B smoke passed at n=500** (`v0.2-layer-b-smoke`): 500/500 relaxed,
+- [x] **Layer B CHGNet smoke passed at n=500** (`v0.2-layer-b-smoke`):
+      500/500 relaxed,
       0 failures, 9.3 min on RTX 4090 (mean 1.06 s/structure); median |Δe_form| =
       0.03 meV/atom vs published (p95 0.07, max 1.08), 100% classification agreement,
       zero flips; subset-level discovery metrics identical
       (`metric_check-layer-b-chgnet-smoke500.md`)
+- [x] **Layer B second-model smoke passed for MACE-MP-0 at n=500**:
+      500/500 relaxed, 0 failures, 10.1 min on RTX 4090 (mean 1.18 s/structure);
+      median |Δe_form| = 0.03 meV/atom vs published, 99.6% classification agreement
+      (2 flips). Three large e_form outliers (max 216.65 meV/atom) coincide with the
+      MP2020 correction-version drift already isolated in Layer C; outside those,
+      agreement is at CSV-rounding scale. The second flip is a 0.1 meV/atom
+      threshold-boundary case (`metric_check-layer-b-mace-mp-0-smoke500.md`).
 - [x] External-path self-audit: a fresh clone of this public repo, following the
       steps above verbatim (fresh venv + upstream clone + Figshare download),
       reproduces CHGNet Layer A exactly — 22/22 checks, 0 mismatches (run_log.md)
@@ -172,7 +182,7 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       + ranking significance, threshold sensitivity ±100 meV, cross-model error
       correlation / joint-blind-spot quantification, leaderboard-resolution analysis
       (43/59 adjacent pairs closer than one CI width)
-- [ ] Next: Layer B for a second model (ORB / MACE), or Paper-002 — pending external
+- [ ] Next: either extend Layer B to ORB v2 or start Paper-002 — pending external
       feedback
 
 ## Rules
