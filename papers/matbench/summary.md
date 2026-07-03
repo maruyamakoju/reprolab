@@ -39,6 +39,13 @@ artifact. Across all 65 folds, the max stored-vs-recomputed score delta is
 
 Report: `layer_a_rf_all_tasks.md`.
 
+The all-task check was then repeated for the `matbench_v0.1_dummy` submission.
+Across another 65 folds, the max stored-vs-recomputed score delta is
+`3.552713678800501e-15`. The all-task Layer A scope is now 2 submissions, 26
+submission-task pairs, and 130 folds.
+
+Report: `layer_a_dummy_all_tasks.md`.
+
 ## Layer B source replay
 
 `scripts/matbench_submission_inventory.py` scanned 28 Matbench v0.1 submission
@@ -94,6 +101,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - RF small-structure-task report: `layer_a_rf_structure_small_tasks.md`
 - RF medium-structure-task report: `layer_a_rf_structure_medium_tasks.md`
 - RF all-task report: `layer_a_rf_all_tasks.md`
+- Dummy all-task report: `layer_a_dummy_all_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`

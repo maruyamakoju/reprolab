@@ -1866,3 +1866,75 @@ warning: in the working copy of 'reports/one_page_summary.md', LF will be replac
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 09:00 UTC — paper003 recompute Dummy scores for all Matbench tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_dummy\results.json.gz --tasks all --report papers\matbench\layer_a_dummy_all_tasks.md
+```
+
+- exit code: **0**  | duration: 269.2s  | raw log: `logs/cmd-20260703-090021-513062.log`
+
+output tail:
+```
+    "matbench_dielectric",
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_jdft2d",
+    "matbench_log_gvrh",
+    "matbench_log_kvrh",
+    "matbench_mp_e_form",
+    "matbench_mp_gap",
+    "matbench_mp_is_metal",
+    "matbench_perovskites",
+    "matbench_phonons",
+    "matbench_steels"
+  ]
+}
+```
+
+### 2026-07-03 09:05 UTC — paper003 reassemble report with Dummy all-task check
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090524-501589.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 09:05 UTC — paper003 verify Dummy all-task docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_dummy_all_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_dummy_all_tasks']['folds_checked']==65, abs(meta['layer_a_dummy_all_tasks']['max_abs_stored_vs_recomputed_delta']-3.552713678800501e-15)<1e-30, 'Fold scores checked: 65' in report, '130 folds' in summary, 'Layer A Dummy all-task expansion' in assembled, 'Dummy all-task score recomputation' in packet, 'Dummy all-task Layer A completed' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090532-115905.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 09:05 UTC — paper003 Dummy all-task whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-090538-483556.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```

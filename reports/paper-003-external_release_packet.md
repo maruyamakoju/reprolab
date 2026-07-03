@@ -19,7 +19,8 @@ submitted random seed.
 
 - **Layer A:** RF-SCM/Magpie `matbench_v0.1_rf` fold scores reproduce exactly
   across all 13 Matbench v0.1 tasks. Scope: 65 folds, max stored-vs-recomputed
-  score delta `1.776e-15`.
+  score delta `1.776e-15`. The Dummy baseline also reproduces across all 13 tasks:
+  another 65 folds, max delta `3.553e-15`.
 - **Classification metric probe:** 27 classification submission-task records were
   scanned. 11 store float predictions and 16 store booleans; in all 27 records,
   stored `rocauc` equals balanced accuracy within numerical precision. For MODNet
@@ -41,6 +42,7 @@ submitted random seed.
 | Check | Scope | Result |
 |---|---:|---|
 | RF all-task score recomputation | 13 tasks, 65 folds | max delta `1.776e-15` |
+| Dummy all-task score recomputation | 13 tasks, 65 folds | max delta `3.553e-15` |
 | Classification records scanned | 27 submission-task records | 16 bool, 11 float, 0 mixed |
 | Stored `rocauc` differing from balanced accuracy | 27 records | 0 |
 | Classification leaderboard rows checked | 27 displayed rows | all `mean rocauc == mean balanced_accuracy` |
@@ -60,6 +62,7 @@ submitted random seed.
   - `papers/matbench/layer_a_rf_structure_small_tasks.md`
   - `papers/matbench/layer_a_rf_structure_medium_tasks.md`
   - `papers/matbench/layer_a_rf_all_tasks.md`
+  - `papers/matbench/layer_a_dummy_all_tasks.md`
 - Classification reports:
   - `papers/matbench/classification_prediction_scan.md`
   - `papers/matbench/classification_leaderboard_metric_scan.md`
@@ -95,7 +98,7 @@ submitted random seed.
 
 > I ran a ReproLab audit on Matbench v0.1. The positive result is that the checked
 > RF baseline prediction artifacts reproduce their stored fold scores exactly on
-> all 13 tasks / 65 folds.
+> all 13 tasks / 65 folds, and the Dummy baseline does the same over another 65 folds.
 > The main finding is in classification scoring:
 > across 27 classification submission-task records, stored `rocauc` always equals
 > balanced accuracy, and for MODNet probability outputs the raw-probability ROC-AUC
