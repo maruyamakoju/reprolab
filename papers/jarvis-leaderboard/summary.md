@@ -3,6 +3,7 @@
 Status: Layer A metric recomputation has passed for 14 JARVIS-Leaderboard AI
 benchmarks: 6 regression pages, 7 classification pages, and 1 spectra page.
 Layer B has a bounded `matminer_rf` execution-path pre-smoke.
+Layer C has a point-gap map across the checked pages.
 
 ## Result
 
@@ -85,8 +86,16 @@ This is not a full leaderboard regeneration and does not claim the official
 `matminer_rf` MAE. It establishes that the public runner family can be adapted into
 a traceable Layer B execution path without mutating the Paper-001 environment.
 
+## Layer C point-gap map
+
+`scripts/jarvis_resolution.py` parsed the 14 checked metric reports and sorted each
+page by its metric direction. Across 87 adjacent pairs, 5 official gaps are
+<=0.001, 29 are <=0.005, and 38 are <=0.010 in metric units. The closest adjacent
+pair is `kgcnn_coNGN` to `potnet` on dft_3d formation energy: official MAE gap
+0.0002, reproduced gap 0.00016852. Report: `layer_c_resolution.md`.
+
 ## Next
 
 The best next move is cautious scale-up of the `matminer_rf` smoke. If feature
 runtime grows too quickly, Paper-002 can be stopped as a strong three-format Layer A
-audit plus a bounded Layer B execution-path result.
+audit plus a bounded Layer B execution-path result and point-gap map.

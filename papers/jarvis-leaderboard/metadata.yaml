@@ -62,3 +62,14 @@ layer_b_probe:
     trees: 100
     subset_mae: 0.28496479140624986
   recommended_next: scale matminer_rf smoke cautiously or stop at bounded Layer B
+
+layer_c_resolution:
+  status: point_gap_map_completed
+  script: scripts/jarvis_resolution.py
+  report: papers/jarvis-leaderboard/layer_c_resolution.md
+  reports_checked: 14
+  submissions_checked: 101
+  adjacent_pairs: 87
+  adjacent_gaps_le_0_001: 5
+  adjacent_gaps_le_0_005: 29
+  adjacent_gaps_le_0_010: 38

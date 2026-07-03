@@ -1133,3 +1133,42 @@ output tail:
 ```
 {'metric_files': 14, 'total_submissions': 101, 'smoke': {'script': 'scripts/jarvis_matminer_rf_smoke.py', 'report': 'papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md', 'benchmark': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'train_rows': 512, 'test_rows': 128, 'feature_columns': 273, 'all_nan_feature_rows': 0, 'trees': 100, 'subset_mae': 0.28496479140624986}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 07:03 UTC — verify jarvis resolution script py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_resolution.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070310.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:03 UTC — paper002 JARVIS leaderboard resolution analysis
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_resolution.py --out papers\jarvis-leaderboard\layer_c_resolution.md
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070313.log`
+
+output tail:
+```
+{'reports': 14, 'submissions': 101, 'adjacent_pairs': 87, 'out': 'papers\\jarvis-leaderboard\\layer_c_resolution.md'}
+```
+
+### 2026-07-03 07:04 UTC — verify paper002 layerC resolution docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re, yaml; root=Path('papers/jarvis-leaderboard'); meta=yaml.safe_load((root/'metadata.yaml').read_text(encoding='utf-8')); summary=(root/'summary.md').read_text(encoding='utf-8'); plan=(root/'reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); resolution=(root/'layer_c_resolution.md').read_text(encoding='utf-8'); script=Path('scripts/jarvis_resolution.py').read_text(encoding='utf-8'); files=sorted(root.glob('metric_check*.md')); total=sum(int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files); layerc=meta['layer_c_resolution']; checks=[len(files)==14,total==101,layerc['reports_checked']==14,layerc['submissions_checked']==101,layerc['adjacent_pairs']==87,layerc['adjacent_gaps_le_0_005']==29,layerc['adjacent_gaps_le_0_010']==38,'29/87 adjacent gaps' in readme,'Layer C point-gap map' in summary,summary.index('## Layer C point-gap map') < summary.index('## Next'),'layer_c_resolution.md' in plan,'adjacent_pairs' in script,'kgcnn_coNGN to potnet' in resolution]; print({'metric_files':len(files),'total_submissions':total,'layer_c':layerc,'checks':checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070400.log`
+
+output tail:
+```
+{'metric_files': 14, 'total_submissions': 101, 'layer_c': {'status': 'point_gap_map_completed', 'script': 'scripts/jarvis_resolution.py', 'report': 'papers/jarvis-leaderboard/layer_c_resolution.md', 'reports_checked': 14, 'submissions_checked': 101, 'adjacent_pairs': 87, 'adjacent_gaps_le_0_001': 5, 'adjacent_gaps_le_0_005': 29, 'adjacent_gaps_le_0_010': 38}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True, True]}
+```

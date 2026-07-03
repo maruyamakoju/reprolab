@@ -208,8 +208,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] JARVIS Layer B bounded pre-smoke: isolated `env/jarvis`, 512 train / 128 test
       dft_3d formation-energy slice, 273 Matminer features, 100-tree RF, 0 all-NaN
       feature rows, subset MAE 0.28496479 (`layer_b_matminer_rf_smoke.md`)
-- [ ] Next: scale the `matminer_rf` smoke carefully, or stop Paper-002 as Layer A
-      plus a bounded Layer B execution-path result
+- [x] JARVIS leaderboard-resolution map: 87 adjacent pairs across the 14 checked
+      pages; 29 gaps are <=0.005 and 38 are <=0.010 in metric units
+      (`layer_c_resolution.md`)
+- [ ] Next: either scale the `matminer_rf` smoke further or turn the closest
+      JARVIS gaps into a bootstrap/split-sensitivity analysis
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -226,6 +229,9 @@ Layer B pre-smoke: public runners exist but are not one-command fits for the aud
 dft_3d target in the shared venv. In an isolated JARVIS env, a bounded
 `matminer_rf`-style CPU smoke passed on a deterministic 512 train / 128 test slice.
 
+Layer C map: adjacent official point estimates are often close in the checked
+pages: 29/87 adjacent gaps are <=0.005 and 38/87 are <=0.010 in metric units.
+
 Artifacts:
 
 - Summary: `papers/jarvis-leaderboard/summary.md`
@@ -233,9 +239,11 @@ Artifacts:
 - Metadata: `papers/jarvis-leaderboard/metadata.yaml`
 - Layer B probe: `papers/jarvis-leaderboard/layer_b_probe.md`
 - Layer B pre-smoke: `papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md`
+- Layer C resolution map: `papers/jarvis-leaderboard/layer_c_resolution.md`
 - Metric check: `papers/jarvis-leaderboard/metric_check.md`
 - Script: `scripts/jarvis_score.py`
 - Layer B script: `scripts/jarvis_matminer_rf_smoke.py`
+- Layer C script: `scripts/jarvis_resolution.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

@@ -2,7 +2,7 @@
 
 Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
 (101 total submissions) on 2026-07-03. Layer B bounded `matminer_rf` pre-smoke
-passed on a 512 train / 128 test dft_3d slice.
+passed on a 512 train / 128 test dft_3d slice. Layer C point-gap map completed.
 
 ## 0. Why this candidate
 
@@ -145,11 +145,26 @@ reproduce the official `matminer_rf` MAE. It proves the Layer B execution path c
 load official JARVIS structures, compute Matminer features, train the RF baseline,
 and emit a prediction CSV on a deterministic official-split subset.
 
-## 8. Next
+## 8. Layer C point-gap map
+
+`scripts/jarvis_resolution.py` parses the 14 Layer A reports and sorts each page by
+its metric direction. This is not an uncertainty estimate; it is a map of adjacent
+official point-estimate gaps.
+
+Result:
+
+| reports | submissions | adjacent pairs | gaps <= 0.001 | gaps <= 0.005 | gaps <= 0.010 | report |
+|---:|---:|---:|---:|---:|---:|---|
+| 14 | 101 | 87 | 5 | 29 | 38 | `layer_c_resolution.md` |
+
+The closest adjacent pair is `kgcnn_coNGN` to `potnet` on dft_3d formation energy
+(official MAE gap 0.0002; reproduced gap 0.00016852).
+
+## 9. Next
 
 1. Scale the `matminer_rf` smoke cautiously toward the full split only if feature
    runtime remains manageable.
-2. If runtime is too high, stop at the documented three-format Layer A result plus
-   this bounded Layer B pre-smoke.
-3. Add a small leaderboard-resolution analysis if this becomes the main Paper-002
-   target rather than a candidate.
+2. Turn the closest gaps into a bootstrap or split-sensitivity analysis if
+   Paper-002 becomes the main target.
+3. If runtime or uncertainty analysis becomes too broad, stop at Layer A + bounded
+   Layer B + point-gap Layer C map.
