@@ -1773,3 +1773,30 @@ output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
 ```
+
+### 2026-07-03 05:49 UTC — verify external release packet references
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; paths=['reports/paper-001-matbench-discovery-audit.md','reports/one_page_summary.md','README.md','papers/matbench-discovery/metric_check.md','papers/matbench-discovery/metric_check-sevennet.md','papers/matbench-discovery/metric_check-mace-mp-0.md','papers/matbench-discovery/metric_check-orb-v2.md','papers/matbench-discovery/metric_check-layer-b-chgnet-smoke500.md','papers/matbench-discovery/metric_check-layer-b-mace-mp-0-smoke500.md','papers/matbench-discovery/metric_check-layer-b-orb-v2-smoke500-fmax002.md','papers/matbench-discovery/layer_c_statistical_audit.md','papers/matbench-discovery/layer_c_gt_hull_check.md','papers/matbench-discovery/failure_notes.md','papers/matbench-discovery/run_log.md','papers/matbench-discovery/requirements-frozen.txt']; missing=[p for p in paths if not Path(p).exists()]; texts={p:Path(p).read_text(encoding='utf-8') for p in ['README.md','reports/one_page_summary.md','reports/external_release_packet.md']}; stale=[s for s in ['tested patch branch ready','package/update the external report'] if any(s in t for t in texts.values())]; required=['PR #359','PR #360','external_release_packet.md']; absent=[s for s in required if not any(s in t for t in texts.values())]; print(f'paths_checked={len(paths)} missing={missing}'); print(f'stale_markers={stale} absent_required={absent}'); raise SystemExit(1 if missing or stale or absent else 0)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-054901.log`
+
+output tail:
+```
+paths_checked=15 missing=[]
+stale_markers=[] absent_required=[]
+```
+
+### 2026-07-03 05:49 UTC — assemble report after external release packet
+
+```
+$ .venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-054905.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```

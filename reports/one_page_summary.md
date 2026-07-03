@@ -95,5 +95,6 @@ verification breaks even when the science is sound.
 
 ## Next
 
-Package/update the external report, or apply the same two-layer audit to a second
-AI-for-science benchmark. Feedback on which would be more useful is welcome.
+External handoff packet is prepared in `reports/external_release_packet.md`. While
+upstream feedback is pending, the next useful move is applying the same two-layer
+audit template to a second AI-for-science benchmark.

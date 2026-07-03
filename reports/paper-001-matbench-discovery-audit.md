@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-03 05:38 UTC_
+_Generated: 2026-07-03 05:49 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -1511,33 +1511,6 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 ## 6. Run log (tail)
 
-  val = self.func(instance)
-C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
-  val = self.func(instance)
-C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
-  val = self.func(instance)
-
-  0%|          | 0/2 [00:00<?, ?it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-33636 (BaI3). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-
- 50%|█████     | 1/2 [00:00<00:00,  7.09it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-24460 (Er4In5Fe2). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-
-100%|██████████| 2/2 [00:00<00:00, 14.18it/s]
-```
-
-### 2026-07-03 05:35 UTC — capture env after ORB Layer B deps
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\capture_env.py
-```
-
-- exit code: **0**  | duration: 0.9s  | raw log: `logs/cmd-20260703-053557.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260703-053558.json
-wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
 ```
 
 ### 2026-07-03 05:36 UTC — refresh requirements frozen after ORB deps
@@ -1590,5 +1563,32 @@ $ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\mak
 output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:38 UTC — assemble report after ORB failure-note date
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053808.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:49 UTC — verify external release packet references
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; paths=['reports/paper-001-matbench-discovery-audit.md','reports/one_page_summary.md','README.md','papers/matbench-discovery/metric_check.md','papers/matbench-discovery/metric_check-sevennet.md','papers/matbench-discovery/metric_check-mace-mp-0.md','papers/matbench-discovery/metric_check-orb-v2.md','papers/matbench-discovery/metric_check-layer-b-chgnet-smoke500.md','papers/matbench-discovery/metric_check-layer-b-mace-mp-0-smoke500.md','papers/matbench-discovery/metric_check-layer-b-orb-v2-smoke500-fmax002.md','papers/matbench-discovery/layer_c_statistical_audit.md','papers/matbench-discovery/layer_c_gt_hull_check.md','papers/matbench-discovery/failure_notes.md','papers/matbench-discovery/run_log.md','papers/matbench-discovery/requirements-frozen.txt']; missing=[p for p in paths if not Path(p).exists()]; texts={p:Path(p).read_text(encoding='utf-8') for p in ['README.md','reports/one_page_summary.md','reports/external_release_packet.md']}; stale=[s for s in ['tested patch branch ready','package/update the external report'] if any(s in t for t in texts.values())]; required=['PR #359','PR #360','external_release_packet.md']; absent=[s for s in required if not any(s in t for t in texts.values())]; print(f'paths_checked={len(paths)} missing={missing}'); print(f'stale_markers={stale} absent_required={absent}'); raise SystemExit(1 if missing or stale or absent else 0)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-054901.log`
+
+output tail:
+```
+paths_checked=15 missing=[]
+stale_markers=[] absent_required=[]
 ```
 

@@ -52,10 +52,16 @@ comparison thresholds were pre-registered before the GPU runs.
 
 - Upstream issue filed with the stale-md5 / unverified-checksum finding:
   [janosh/matbench-discovery#357](https://github.com/janosh/matbench-discovery/issues/357)
-  (response pending; tested patch branch ready on our fork)
+  and fix submitted as
+  [PR #359](https://github.com/janosh/matbench-discovery/pull/359)
+  (response pending)
 - Upstream issue filed with the ground-truth pymatgen-version-dependence finding:
   [janosh/matbench-discovery#358](https://github.com/janosh/matbench-discovery/issues/358)
+  and docs note submitted as
+  [PR #360](https://github.com/janosh/matbench-discovery/pull/360)
   (response pending)
+- External handoff packet:
+  `reports/external_release_packet.md`
 
 ## Reproducibility findings along the way
 
@@ -191,8 +197,8 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       + ranking significance, threshold sensitivity ±100 meV, cross-model error
       correlation / joint-blind-spot quantification, leaderboard-resolution analysis
       (43/59 adjacent pairs closer than one CI width)
-- [ ] Next: package/update the external report, or start Paper-002 — pending external
-      feedback
+- [x] External release packet added (`reports/external_release_packet.md`)
+- [ ] Next: start Paper-002 candidate selection while waiting for upstream feedback
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,
