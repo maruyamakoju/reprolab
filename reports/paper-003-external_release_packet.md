@@ -50,6 +50,8 @@ submitted random seed.
 - **Layer C resolution:** 180 submission-task rows produce 167 adjacent
   leaderboard pairs. 68 adjacent gaps are no larger than one fold-SE proxy, 87
   are no larger than two, and 6 are exact ties.
+- **Layer C fold bootstrap:** the 25 closest adjacent pairs all have 95%
+  fold-bootstrap CIs including zero; 6 of those are exact stored-score ties.
 
 ## Key numbers
 
@@ -68,6 +70,7 @@ submitted random seed.
 | RFLR source replay | 5 steels folds | max prediction delta `0.0`, max score delta `0.0` |
 | Dummy source replay | 4 composition tasks, 20 folds | 10/10 regression folds exact, 0/10 classification folds exact |
 | Layer C resolution map | 167 adjacent pairs | 68 <= 1 fold-SE proxy, 87 <= 2 |
+| Layer C fold bootstrap | 25 closest adjacent pairs | 25/25 CIs include zero |
 
 ## Evidence map
 
@@ -96,6 +99,7 @@ submitted random seed.
 - Layer B RFLR replay: `papers/matbench/layer_b_rflr_steels_replay.md`
 - Layer B Dummy replay: `papers/matbench/layer_b_dummy_composition_replay.md`
 - Layer C resolution map: `papers/matbench/layer_c_leaderboard_resolution.md`
+- Layer C fold bootstrap: `papers/matbench/layer_c_fold_bootstrap.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
 - Command log: `papers/matbench/run_log.md`
@@ -110,6 +114,7 @@ submitted random seed.
   - `scripts/matbench_rflr_replay.py`
   - `scripts/matbench_dummy_replay.py`
   - `scripts/matbench_leaderboard_resolution.py`
+  - `scripts/matbench_leaderboard_fold_bootstrap.py`
   - `scripts/make_matbench_report.py`
 
 ## Claims to avoid
@@ -140,7 +145,8 @@ submitted random seed.
 > prediction-identical under scikit-learn 1.2.2. A Dummy positive-control replay
 > is exact for checked regression folds and non-identical for stratified
 > classification folds because the notebook did not persist RNG state. Layer C
-> then finds that 68/167 adjacent leaderboard gaps are within one fold-SE proxy.
+> then finds that 68/167 adjacent leaderboard gaps are within one fold-SE proxy,
+> and the 25 closest adjacent pairs all have fold-bootstrap CIs including zero.
 
 ## Next useful moves
 

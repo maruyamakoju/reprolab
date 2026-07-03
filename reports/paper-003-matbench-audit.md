@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 13:45 UTC_
+_Generated: 2026-07-03 13:48 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -134,6 +134,13 @@ the checked records.
 
 Layer C report: `layer_c_leaderboard_resolution.md`.
 
+A fold-bootstrap follow-up checks the 25 closest adjacent pairs from the
+resolution map. All 25 have 95% bootstrap CIs that include zero, and all 25 have
+`P(bootstrapped gap <= 0) >= 0.05`; 6 are exact adjacent ties in the stored fold
+scores.
+
+Layer C bootstrap report: `layer_c_fold_bootstrap.md`.
+
 ## Interpretation
 
 This is a positive seed result: the RF baseline's saved predictions, official split
@@ -175,6 +182,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
 - Layer B Dummy composition replay: `layer_b_dummy_composition_replay.md`
 - Layer C leaderboard resolution: `layer_c_leaderboard_resolution.md`
+- Layer C fold bootstrap: `layer_c_fold_bootstrap.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
@@ -183,6 +191,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B Dummy replay script: `../../scripts/matbench_dummy_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Layer C resolution script: `../../scripts/matbench_leaderboard_resolution.py`
+- Layer C bootstrap script: `../../scripts/matbench_leaderboard_fold_bootstrap.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
 - Submission inventory script: `../../scripts/matbench_submission_inventory.py`
@@ -462,6 +471,19 @@ layer_c_leaderboard_resolution:
   primary_metric_classification: stored rocauc
   classification_metric_caveat: stored rocauc behaves as thresholded-label AUC / balanced accuracy for checked records
   interpretation: leaderboard-resolution screen, not a formal significance test
+
+layer_c_fold_bootstrap:
+  status: completed
+  script: scripts/matbench_leaderboard_fold_bootstrap.py
+  report: papers/matbench/layer_c_fold_bootstrap.md
+  source_resolution_report: papers/matbench/layer_c_leaderboard_resolution.md
+  adjacent_pairs_checked: 25
+  bootstrap_draws_per_pair: 20000
+  rng_seed: 0
+  bootstrap_ci_95_including_zero: 25
+  p_bootstrapped_gap_lte_zero_gte_0_05: 25
+  exact_adjacent_ties_in_checked_set: 6
+  interpretation: all closest adjacent pairs are unresolved under this coarse five-fold bootstrap screen
 
 candidate_screen:
   status: selected
@@ -2070,6 +2092,57 @@ This is a leaderboard-resolution screen, not a formal significance test. It show
 
 
 
+## 7e. Layer C close-pair fold bootstrap
+
+# Matbench v0.1 fold-bootstrap adjacent-pair screen
+
+This is a follow-up to `layer_c_leaderboard_resolution.md`. It takes the closest adjacent leaderboard pairs by gap/fold-SE proxy, then bootstraps the five paired fold-score differences. Positive differences mean the higher-ranked submission remains better under the task's primary metric.
+
+This is a lightweight fold-level uncertainty screen, not a formal statistical test. It has only five folds per pair, and classification uses stored `rocauc`, which behaves as thresholded-label AUC / balanced accuracy for the checked records.
+
+- Adjacent pairs checked: 25
+- Bootstrap draws per pair: 20000
+- RNG seed: 0
+- 95% bootstrap CIs including zero: 25
+- P(bootstrapped gap <= 0) >= 0.05: 25
+- Exact adjacent ties in checked set: 6
+
+## Pair results
+
+| Task | Rank | Better | Worse | Metric | Gap | Gap / SE | CI low | CI high | P(gap <= 0) | CI includes 0 |
+|---|---:|---|---|---|---:|---:|---:|---:|---:|---|
+| matbench_expt_is_metal | 4 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_modnet_v0.1.12 | rocauc | 0 | 0 | 0 | 0 | 1 | yes |
+| matbench_log_gvrh | 4 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_modnet_v0.1.12 | mae | 0 | 0 | 0 | 0 | 1 | yes |
+| matbench_log_kvrh | 3 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_modnet_v0.1.12 | mae | 0 | 0 | 0 | 0 | 1 | yes |
+| matbench_mp_e_form | 11 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_modnet_v0.1.12 | mae | 0 | 0 | 0 | 0 | 1 | yes |
+| matbench_mp_gap | 8 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_modnet_v0.1.12 | mae | 0 | 0 | 0 | 0 | 1 | yes |
+| matbench_perovskites | 10 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_modnet_v0.1.12 | mae | 0 | 0 | 0 | 0 | 1 | yes |
+| matbench_dielectric | 4 | matbench_v0.1_coNGN | matbench_v0.1_automatminer_expressv2020 | mae | 0.00087203 | 0.0433745 | -0.0386628 | 0.0310366 | 0.4255 | yes |
+| matbench_dielectric | 11 | matbench_v0.1_MegNet_kgcnn_v2.1.0 | matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | mae | 0.000941329 | 0.0605722 | -0.0256149 | 0.0274976 | 0.4681 | yes |
+| matbench_expt_gap | 4 | matbench_v0.1_CrabNet | matbench_v0.1_modnet_v0.1.10 | mae | 0.000750008 | 0.0659425 | -0.0183764 | 0.0211091 | 0.4725 | yes |
+| matbench_jdft2d | 8 | matbench_v0.1_DeeperGATGNN | matbench_v0.1_CrabNet | mae | 0.14923 | 0.0721843 | -3.96875 | 3.24105 | 0.45805 | yes |
+| matbench_mp_is_metal | 6 | matbench_v0.1_modnet_v0.1.12 | matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | rocauc | 0.000641083 | 0.110668 | -0.0103745 | 0.00988183 | 0.42745 | yes |
+| matbench_phonons | 1 | matbench_v0.1_MegNet_kgcnn_v2.1.0 | matbench_v0.1_coNGN | mae | 0.126783 | 0.111603 | -2.15202 | 1.43937 | 0.3151 | yes |
+| matbench_dielectric | 6 | matbench_v0.1_Finder_v1.2_structure | matbench_v0.1_Finder_v1.2_composition | mae | 0.000709045 | 0.112774 | -0.0108184 | 0.0107964 | 0.4384 | yes |
+| matbench_jdft2d | 12 | matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | matbench_v0.1_cgcnnv2019 | mae | 0.219754 | 0.113498 | -2.65548 | 4.00417 | 0.48355 | yes |
+| matbench_mp_gap | 2 | matbench_v0.1_DeeperGATGNN | matbench_v0.1_coNGN | mae | 0.000314041 | 0.116606 | -0.00410629 | 0.0054197 | 0.4557 | yes |
+| matbench_perovskites | 2 | matbench_v0.1_alignn | matbench_v0.1_DeeperGATGNN | mae | 4.58128e-05 | 0.11789 | -0.000680917 | 0.000624587 | 0.427 | yes |
+| matbench_glass | 2 | matbench_v0.1_automatminer_expressv2020 | matbench_v0.1_rf | rocauc | 0.00197173 | 0.161961 | -0.0212167 | 0.0204627 | 0.39925 | yes |
+| matbench_expt_gap | 2 | matbench_v0.1_Ax_SAASBO_CrabNet_v1.2.7 | matbench_v0.1_modnet_v0.1.12 | mae | 0.00169891 | 0.172421 | -0.0122981 | 0.0209692 | 0.47005 | yes |
+| matbench_mp_e_form | 8 | matbench_v0.1_cgcnnv2019 | matbench_v0.1_DeeperGATGNN | mae | 0.000237907 | 0.180593 | -0.00200926 | 0.0027376 | 0.41045 | yes |
+| matbench_dielectric | 7 | matbench_v0.1_Finder_v1.2_composition | matbench_v0.1_CrabNet | mae | 0.00298632 | 0.18945 | -0.0284995 | 0.0257243 | 0.3892 | yes |
+| matbench_mp_gap | 7 | matbench_v0.1_Finder_v1.2_structure | matbench_v0.1_modnet_v0.1.10 | mae | 0.000589556 | 0.200367 | -0.00371107 | 0.00643074 | 0.4289 | yes |
+| matbench_dielectric | 12 | matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | matbench_v0.1_alignn | mae | 0.00491146 | 0.207455 | -0.0403924 | 0.0368495 | 0.39215 | yes |
+| matbench_steels | 5 | matbench_v0.1_modnet_v0.1.10 | matbench_v0.1_automatminer_expressv2020 | mae | 1.279 | 0.210305 | -9.01348 | 12.1864 | 0.42925 | yes |
+| matbench_log_gvrh | 8 | matbench_v0.1_MegNet_kgcnn_v2.1.0 | matbench_v0.1_automatminer_expressv2020 | mae | 0.000299287 | 0.227668 | -0.00190315 | 0.00267186 | 0.4104 | yes |
+| matbench_expt_is_metal | 3 | matbench_v0.1_rf | matbench_v0.1_modnet_v0.1.10 | rocauc | 0.000607287 | 0.237515 | -0.00430554 | 0.00468892 | 0.37515 | yes |
+
+## Interpretation
+
+For these closest adjacent pairs, a CI crossing zero means the five-fold score pattern does not stably separate the two neighboring submissions under this coarse fold-bootstrap screen. Exact ties are deterministic ties in the stored fold scores.
+
+
+
 ## 8. Classification ROC-AUC upstream issue draft
 
 # Matbench upstream issue draft - classification ROC-AUC scoring
@@ -2265,83 +2338,6 @@ Thanks for maintaining the benchmark.
 
 ## 9. Run log (tail)
 
-  "max_prediction_delta": 0.5020325203252033,
-  "max_score_delta": 0.044867666278723795,
-  "report": "papers\\matbench\\layer_b_dummy_composition_replay.md",
-  "sklearn": "1.2.2",
-  "tasks": [
-    "matbench_expt_gap",
-    "matbench_expt_is_metal",
-    "matbench_glass",
-    "matbench_steels"
-  ]
-}
-```
-
-### 2026-07-03 13:24 UTC — paper003 update Layer B triage after Dummy replay
-
-```
-$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
-```
-
-- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-132409-222654.log`
-
-output tail:
-```
-  "priorities": {
-    "already replayed": 3,
-    "low": 24,
-    "medium": 1
-  },
-  "report": "papers\\matbench\\layer_b_candidate_triage.md",
-  "submissions": 28,
-  "top_remaining": [
-    "matbench_v0.1_Auto-sklearn",
-    "matbench_v0.1_lattice_xgboost",
-    "matbench_v0.1_gptchem",
-    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7",
-    "matbench_v0.1_Ax_CrabNet_v1.2.1"
-  ]
-}
-```
-
-### 2026-07-03 13:24 UTC — paper003 reassemble report with Dummy replay
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132417-594620.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 13:24 UTC — paper003 verify Dummy replay docs
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_dummy_replay.py', doraise=True); py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); dummy=Path('papers/matbench/layer_b_dummy_composition_replay.md').read_text(encoding='utf-8'); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_dummy_composition']['regression_exact_folds']==10, meta['layer_b_dummy_composition']['classification_exact_folds']==0, 'Regression exact folds: 10 / 10' in dummy, 'Classification exact folds: 0 / 10' in dummy, 'Already replayed: 3' in triage, 'Layer B Dummy composition source replay' in assembled, 'matbench_dummy_replay.py' in summary, 'Dummy source replay' in packet, 'layer_b_dummy_composition_replay.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132426-180745.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True, True, True, True]}
-```
-
-### 2026-07-03 13:24 UTC — paper003 Dummy replay whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132430-591259.log`
-
-output tail:
-```
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
@@ -2416,6 +2412,83 @@ $ git diff --check
 ```
 
 - exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-134545-808119.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:45 UTC — paper003 final reassemble report after Layer C resolution checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134552-212321.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:47 UTC — paper003 Matbench Layer C fold bootstrap close pairs
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_leaderboard_fold_bootstrap.py --report papers\matbench\layer_c_fold_bootstrap.md --pairs 25 --draws 20000 --seed 0
+```
+
+- exit code: **0**  | duration: 4.8s  | raw log: `logs/cmd-20260703-134728-845023.log`
+
+output tail:
+```
+{
+  "ci_includes_zero": 25,
+  "draws": 20000,
+  "exact_adjacent_ties": 6,
+  "p_gap_lte_zero_gte_0_05": 25,
+  "pairs_checked": 25,
+  "report": "papers\\matbench\\layer_c_fold_bootstrap.md",
+  "resolution_report": "C:\\Users\\07013\\Desktop\\0702fable\\reprolab\\papers\\matbench\\layer_c_leaderboard_resolution.md"
+}
+```
+
+### 2026-07-03 13:48 UTC — paper003 reassemble report with Layer C fold bootstrap
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134816-683582.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:48 UTC — paper003 verify Layer C fold bootstrap docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_leaderboard_fold_bootstrap.py', doraise=True); py_compile.compile('scripts/matbench_leaderboard_resolution.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); boot=Path('papers/matbench/layer_c_fold_bootstrap.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_c_fold_bootstrap']['adjacent_pairs_checked']==25, meta['layer_c_fold_bootstrap']['bootstrap_ci_95_including_zero']==25, '95% bootstrap CIs including zero: 25' in boot, 'Layer C close-pair fold bootstrap' in assembled, 'layer_c_fold_bootstrap.md' in summary, 'Layer C fold bootstrap' in packet, 'layer_c_fold_bootstrap.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134824-676175.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:48 UTC — paper003 Layer C fold bootstrap whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134834-723661.log`
 
 output tail:
 ```

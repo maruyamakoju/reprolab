@@ -265,6 +265,8 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench Layer C leaderboard resolution: 167 adjacent pairs, 68 gaps <= one
       fold-SE proxy, 87 gaps <= two, and 6 exact ties
       (`papers/matbench/layer_c_leaderboard_resolution.md`)
+- [x] Matbench Layer C fold bootstrap: 25 closest adjacent pairs checked, 25/25
+      CIs include zero (`papers/matbench/layer_c_fold_bootstrap.md`)
 - [x] Matbench source artifact inventory: 28 submission directories scanned; 11
       direct `run.py` files, 14 notebooks, and only 1 pickle/joblib model artifact
       (`papers/matbench/source_artifact_inventory.md`)
@@ -361,7 +363,8 @@ state was not persisted.
 
 Layer C leaderboard resolution: across 167 adjacent task-level leaderboard pairs,
 68 gaps are no larger than one fold-SE proxy and 87 are no larger than two. This
-is a resolution screen, not a formal significance test.
+is a resolution screen, not a formal significance test. A fold-bootstrap follow-up
+on the 25 closest adjacent pairs finds 25/25 CIs include zero.
 
 Artifacts:
 
@@ -390,6 +393,7 @@ Artifacts:
 - Layer B RFLR steels replay: `papers/matbench/layer_b_rflr_steels_replay.md`
 - Layer B Dummy composition replay: `papers/matbench/layer_b_dummy_composition_replay.md`
 - Layer C leaderboard resolution: `papers/matbench/layer_c_leaderboard_resolution.md`
+- Layer C fold bootstrap: `papers/matbench/layer_c_fold_bootstrap.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
 - All-submission score scan script: `scripts/matbench_all_results_score_scan.py`
@@ -398,6 +402,7 @@ Artifacts:
 - Layer B Dummy replay script: `scripts/matbench_dummy_replay.py`
 - Layer B triage script: `scripts/matbench_layer_b_candidate_triage.py`
 - Layer C resolution script: `scripts/matbench_leaderboard_resolution.py`
+- Layer C bootstrap script: `scripts/matbench_leaderboard_fold_bootstrap.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`
 - Submission inventory script: `scripts/matbench_submission_inventory.py`

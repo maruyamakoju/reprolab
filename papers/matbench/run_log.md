@@ -2802,3 +2802,80 @@ output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
+
+### 2026-07-03 13:47 UTC — paper003 Matbench Layer C fold bootstrap close pairs
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_leaderboard_fold_bootstrap.py --report papers\matbench\layer_c_fold_bootstrap.md --pairs 25 --draws 20000 --seed 0
+```
+
+- exit code: **0**  | duration: 4.8s  | raw log: `logs/cmd-20260703-134728-845023.log`
+
+output tail:
+```
+{
+  "ci_includes_zero": 25,
+  "draws": 20000,
+  "exact_adjacent_ties": 6,
+  "p_gap_lte_zero_gte_0_05": 25,
+  "pairs_checked": 25,
+  "report": "papers\\matbench\\layer_c_fold_bootstrap.md",
+  "resolution_report": "C:\\Users\\07013\\Desktop\\0702fable\\reprolab\\papers\\matbench\\layer_c_leaderboard_resolution.md"
+}
+```
+
+### 2026-07-03 13:48 UTC — paper003 reassemble report with Layer C fold bootstrap
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134816-683582.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:48 UTC — paper003 verify Layer C fold bootstrap docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_leaderboard_fold_bootstrap.py', doraise=True); py_compile.compile('scripts/matbench_leaderboard_resolution.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); boot=Path('papers/matbench/layer_c_fold_bootstrap.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_c_fold_bootstrap']['adjacent_pairs_checked']==25, meta['layer_c_fold_bootstrap']['bootstrap_ci_95_including_zero']==25, '95% bootstrap CIs including zero: 25' in boot, 'Layer C close-pair fold bootstrap' in assembled, 'layer_c_fold_bootstrap.md' in summary, 'Layer C fold bootstrap' in packet, 'layer_c_fold_bootstrap.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134824-676175.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:48 UTC — paper003 Layer C fold bootstrap whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134834-723661.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:48 UTC — paper003 final reassemble report after Layer C fold bootstrap checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134841-449596.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```

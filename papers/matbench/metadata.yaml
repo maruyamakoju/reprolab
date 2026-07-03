@@ -267,6 +267,19 @@ layer_c_leaderboard_resolution:
   classification_metric_caveat: stored rocauc behaves as thresholded-label AUC / balanced accuracy for checked records
   interpretation: leaderboard-resolution screen, not a formal significance test
 
+layer_c_fold_bootstrap:
+  status: completed
+  script: scripts/matbench_leaderboard_fold_bootstrap.py
+  report: papers/matbench/layer_c_fold_bootstrap.md
+  source_resolution_report: papers/matbench/layer_c_leaderboard_resolution.md
+  adjacent_pairs_checked: 25
+  bootstrap_draws_per_pair: 20000
+  rng_seed: 0
+  bootstrap_ci_95_including_zero: 25
+  p_bootstrapped_gap_lte_zero_gte_0_05: 25
+  exact_adjacent_ties_in_checked_set: 6
+  interpretation: all closest adjacent pairs are unresolved under this coarse five-fold bootstrap screen
+
 candidate_screen:
   status: selected
   report: papers/matbench/candidate_screen.md

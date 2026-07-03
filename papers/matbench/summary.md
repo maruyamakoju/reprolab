@@ -126,6 +126,13 @@ the checked records.
 
 Layer C report: `layer_c_leaderboard_resolution.md`.
 
+A fold-bootstrap follow-up checks the 25 closest adjacent pairs from the
+resolution map. All 25 have 95% bootstrap CIs that include zero, and all 25 have
+`P(bootstrapped gap <= 0) >= 0.05`; 6 are exact adjacent ties in the stored fold
+scores.
+
+Layer C bootstrap report: `layer_c_fold_bootstrap.md`.
+
 ## Interpretation
 
 This is a positive seed result: the RF baseline's saved predictions, official split
@@ -167,6 +174,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
 - Layer B Dummy composition replay: `layer_b_dummy_composition_replay.md`
 - Layer C leaderboard resolution: `layer_c_leaderboard_resolution.md`
+- Layer C fold bootstrap: `layer_c_fold_bootstrap.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
@@ -175,6 +183,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B Dummy replay script: `../../scripts/matbench_dummy_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Layer C resolution script: `../../scripts/matbench_leaderboard_resolution.py`
+- Layer C bootstrap script: `../../scripts/matbench_leaderboard_fold_bootstrap.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
 - Submission inventory script: `../../scripts/matbench_submission_inventory.py`
