@@ -6,6 +6,7 @@ and re-runnable. Stdlib only.
 Usage:
     python scripts/run_command.py -- <command> [args...]
     python scripts/run_command.py --note "install attempt" -- pip install matbench-discovery
+    python scripts/run_command.py --paper jarvis-leaderboard -- <command>
 """
 
 from __future__ import annotations
@@ -18,16 +19,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-RUN_LOG = ROOT / "papers" / "matbench-discovery" / "run_log.md"
 RAW_LOGS = ROOT / "logs"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--note", default="", help="short label for this command")
+    parser.add_argument("--paper", default="matbench-discovery",
+                        help="papers/<paper>/run_log.md to append to")
     parser.add_argument("cmd", nargs=argparse.REMAINDER,
                         help="command after `--`")
     args = parser.parse_args()
+    run_log = ROOT / "papers" / args.paper / "run_log.md"
 
     cmd = args.cmd
     if cmd and cmd[0] == "--":
@@ -37,7 +40,7 @@ def main() -> int:
         return 2
 
     RAW_LOGS.mkdir(exist_ok=True)
-    RUN_LOG.parent.mkdir(parents=True, exist_ok=True)
+    run_log.parent.mkdir(parents=True, exist_ok=True)
     started = datetime.now(timezone.utc)
     stamp = started.strftime("%Y%m%d-%H%M%S")
     raw_path = RAW_LOGS / f"cmd-{stamp}.log"
@@ -60,10 +63,10 @@ def main() -> int:
         f"| raw log: `logs/{raw_path.name}`\n\n"
         f"output tail:\n```\n{tail}\n```\n"
     )
-    with RUN_LOG.open("a", encoding="utf-8") as fh:
+    with run_log.open("a", encoding="utf-8") as fh:
         fh.write(entry)
 
-    print(f"exit={proc.returncode} ({dt:.1f}s) -> logged to {RUN_LOG.name}")
+    print(f"exit={proc.returncode} ({dt:.1f}s) -> logged to {run_log}")
     return proc.returncode
 
 

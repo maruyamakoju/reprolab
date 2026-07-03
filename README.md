@@ -198,7 +198,28 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       correlation / joint-blind-spot quantification, leaderboard-resolution analysis
       (43/59 adjacent pairs closer than one CI width)
 - [x] External release packet added (`reports/external_release_packet.md`)
-- [ ] Next: start Paper-002 candidate selection while waiting for upstream feedback
+- [x] Paper-002 candidate selected and first Layer A benchmark completed
+      (`papers/jarvis-leaderboard/metric_check.md`)
+- [ ] Next: decide whether to broaden JARVIS Layer A across more tasks or attempt
+      one tractable Layer B smoke
+
+## Paper-002 Candidate — JARVIS-Leaderboard
+
+Initial target selected while Paper-001 upstream feedback is pending:
+JARVIS-Leaderboard `AI/SinglePropertyPrediction/dft_3d_formation_energy_peratom`.
+The first slice mirrors Paper-001 Layer A: recompute published MAE values directly
+from the public JSON ground truth and CSV prediction zips, before any model execution.
+
+Layer A result: all 15 listed formation-energy submissions reproduce the official
+MAE within displayed rounding; every CSV id set exactly matches the JSON test split
+(5,572/5,572).
+
+Artifacts:
+
+- Plan: `papers/jarvis-leaderboard/reproduction_plan.md`
+- Metadata: `papers/jarvis-leaderboard/metadata.yaml`
+- Metric check: `papers/jarvis-leaderboard/metric_check.md`
+- Script: `scripts/jarvis_score.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,
