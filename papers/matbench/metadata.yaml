@@ -98,6 +98,16 @@ layer_a_rf_medium_structure:
     - matbench_log_kvrh
   max_abs_stored_vs_recomputed_delta: 0.0
 
+layer_a_rf_all_tasks:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_all_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 13
+  folds_checked: 65
+  max_abs_stored_vs_recomputed_delta: 1.7763568394002505e-15
+
 classification_auc_probe:
   status: completed
   scan_script: scripts/matbench_classification_scan.py

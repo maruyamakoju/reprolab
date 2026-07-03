@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 08:47 UTC_
+_Generated: 2026-07-03 08:59 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -37,10 +37,15 @@ Report: `layer_a_rf_structure_small_tasks.md`.
 
 It also covers three medium structure tasks: `matbench_dielectric`,
 `matbench_log_gvrh`, and `matbench_log_kvrh`. Across those 15 folds, the max
-stored-vs-recomputed score delta is `0.0`. In total, the RF baseline has now been
-checked on 9 tasks and 45 folds.
+stored-vs-recomputed score delta is `0.0`.
 
 Report: `layer_a_rf_structure_medium_tasks.md`.
+
+Finally, the same scoring script was run over all 13 tasks in the RF baseline
+artifact. Across all 65 folds, the max stored-vs-recomputed score delta is
+`1.7763568394002505e-15`.
+
+Report: `layer_a_rf_all_tasks.md`.
 
 ## Layer B source replay
 
@@ -96,6 +101,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - RF composition-task report: `layer_a_rf_composition_tasks.md`
 - RF small-structure-task report: `layer_a_rf_structure_small_tasks.md`
 - RF medium-structure-task report: `layer_a_rf_structure_medium_tasks.md`
+- RF all-task report: `layer_a_rf_all_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
@@ -214,6 +220,16 @@ layer_a_rf_medium_structure:
     - matbench_log_gvrh
     - matbench_log_kvrh
   max_abs_stored_vs_recomputed_delta: 0.0
+
+layer_a_rf_all_tasks:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_all_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 13
+  folds_checked: 65
+  max_abs_stored_vs_recomputed_delta: 1.7763568394002505e-15
 
 classification_auc_probe:
   status: completed
@@ -424,6 +440,7 @@ The seed check passed:
 | `matbench_v0.1_rf` composition tasks | 4 | 20 | 1.110e-16 | `layer_a_rf_composition_tasks.md` |
 | `matbench_v0.1_rf` small structure tasks | 2 | 10 | 0.000e+00 | `layer_a_rf_structure_small_tasks.md` |
 | `matbench_v0.1_rf` medium structure tasks | 3 | 15 | 0.000e+00 | `layer_a_rf_structure_medium_tasks.md` |
+| `matbench_v0.1_rf` all tasks | 13 | 65 | 1.776e-15 | `layer_a_rf_all_tasks.md` |
 
 The classification predictions in the RF baseline are stored as hard booleans, so
 the stored ROC-AUC equals balanced accuracy for the checked classification task.
@@ -734,6 +751,205 @@ Report:
 | rmse | 0.145360912566 | 0.150255516099 | 0.138320059166 | 0.00462831988118 |
 | mape | 0.054592530708 | 0.0607661711246 | 0.050921152629 | 0.00348070098442 |
 | max_error | 1.37315631231 | 1.76416363754 | 1.11891531674 | 0.231105610567 |
+
+
+
+## 4e. Layer A RF all-task expansion
+
+# Matbench v0.1 score recomputation
+
+- Results artifact: `vendor/matbench/benchmarks/matbench_v0.1_rf/results.json.gz`
+- Fold scores checked: 65
+- Max absolute stored-vs-recomputed score delta: 1.776e-15
+
+## Fold checks
+
+| Task | Fold | n | Prediction type | Max score delta | Stored rocauc | Probability rocauc |
+|---|---:|---:|---|---:|---:|---:|
+| matbench_dielectric | 0 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 1 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 2 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 3 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 4 | 952 | float | 0.000e+00 |  |  |
+| matbench_expt_gap | 0 | 921 | float | 0.000e+00 |  |  |
+| matbench_expt_gap | 1 | 921 | float | 0.000e+00 |  |  |
+| matbench_expt_gap | 2 | 921 | float | 0.000e+00 |  |  |
+| matbench_expt_gap | 3 | 921 | float | 0.000e+00 |  |  |
+| matbench_expt_gap | 4 | 920 | float | 0.000e+00 |  |  |
+| matbench_expt_is_metal | 0 | 985 | bool | 0.000e+00 | 0.924829110219 |  |
+| matbench_expt_is_metal | 1 | 984 | bool | 0.000e+00 | 0.916632239941 |  |
+| matbench_expt_is_metal | 2 | 984 | bool | 1.110e-16 | 0.909481120383 |  |
+| matbench_expt_is_metal | 3 | 984 | bool | 1.110e-16 | 0.922746426506 |  |
+| matbench_expt_is_metal | 4 | 984 | bool | 1.110e-16 | 0.909605056598 |  |
+| matbench_glass | 0 | 1136 | bool | 0.000e+00 | 0.886006937775 |  |
+| matbench_glass | 1 | 1136 | bool | 0.000e+00 | 0.840239093344 |  |
+| matbench_glass | 2 | 1136 | bool | 1.110e-16 | 0.849521474334 |  |
+| matbench_glass | 3 | 1136 | bool | 1.110e-16 | 0.852619367766 |  |
+| matbench_glass | 4 | 1136 | bool | 0.000e+00 | 0.865116401698 |  |
+| matbench_jdft2d | 0 | 128 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 1 | 127 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 2 | 127 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 3 | 127 | float | 0.000e+00 |  |  |
+| matbench_jdft2d | 4 | 127 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 0 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 1 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 2 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 3 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 4 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 0 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 1 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 2 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 3 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 4 | 2197 | float | 0.000e+00 |  |  |
+| matbench_mp_e_form | 0 | 26551 | float | 1.110e-16 |  |  |
+| matbench_mp_e_form | 1 | 26551 | float | 0.000e+00 |  |  |
+| matbench_mp_e_form | 2 | 26550 | float | 2.220e-16 |  |  |
+| matbench_mp_e_form | 3 | 26550 | float | 1.110e-16 |  |  |
+| matbench_mp_e_form | 4 | 26550 | float | 1.388e-17 |  |  |
+| matbench_mp_gap | 0 | 21223 | float | 1.776e-15 |  |  |
+| matbench_mp_gap | 1 | 21223 | float | 0.000e+00 |  |  |
+| matbench_mp_gap | 2 | 21223 | float | 0.000e+00 |  |  |
+| matbench_mp_gap | 3 | 21222 | float | 1.776e-15 |  |  |
+| matbench_mp_gap | 4 | 21222 | float | 1.776e-15 |  |  |
+| matbench_mp_is_metal | 0 | 21223 | bool | 0.000e+00 | 0.902515493193 |  |
+| matbench_mp_is_metal | 1 | 21223 | bool | 0.000e+00 | 0.896777056389 |  |
+| matbench_mp_is_metal | 2 | 21223 | bool | 0.000e+00 | 0.898733815358 |  |
+| matbench_mp_is_metal | 3 | 21222 | bool | 1.110e-16 | 0.899366668787 |  |
+| matbench_mp_is_metal | 4 | 21222 | bool | 0.000e+00 | 0.898371847031 |  |
+| matbench_perovskites | 0 | 3786 | float | 0.000e+00 |  |  |
+| matbench_perovskites | 1 | 3786 | float | 0.000e+00 |  |  |
+| matbench_perovskites | 2 | 3786 | float | 0.000e+00 |  |  |
+| matbench_perovskites | 3 | 3785 | float | 0.000e+00 |  |  |
+| matbench_perovskites | 4 | 3785 | float | 0.000e+00 |  |  |
+| matbench_phonons | 0 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 1 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 2 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 3 | 253 | float | 0.000e+00 |  |  |
+| matbench_phonons | 4 | 253 | float | 0.000e+00 |  |  |
+| matbench_steels | 0 | 63 | float | 0.000e+00 |  |  |
+| matbench_steels | 1 | 63 | float | 0.000e+00 |  |  |
+| matbench_steels | 2 | 62 | float | 0.000e+00 |  |  |
+| matbench_steels | 3 | 62 | float | 0.000e+00 |  |  |
+| matbench_steels | 4 | 62 | float | 0.000e+00 |  |  |
+
+## Recomputed fold aggregates
+
+### matbench_dielectric
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.419578159259 | 0.52198700518 | 0.304162451401 | 0.0750037451263 |
+| rmse | 1.85382481618 | 2.98323049778 | 0.785044337763 | 0.770049375991 |
+| mape | 0.139968218264 | 0.188632999374 | 0.10574510663 | 0.0288667979365 |
+| max_error | 34.8805599225 | 59.1201445981 | 14.5978573183 | 16.9979726853 |
+
+### matbench_expt_gap
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.446054992487 | 0.481156868621 | 0.434542420557 | 0.0176552424643 |
+| rmse | 0.824300735345 | 0.943523224093 | 0.781867354239 | 0.0601326123053 |
+| mape | 0.369492377556 | 0.43851001849 | 0.304356979438 | 0.0470475962382 |
+| max_error | 6.046496 | 9.5428 | 4.71216 | 1.76997564717 |
+
+### matbench_expt_is_metal
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| accuracy | 0.916681936363 | 0.924873096447 | 0.909552845528 | 0.00641463134 |
+| balanced_accuracy | 0.916658790729 | 0.924829110219 | 0.909481120383 | 0.00640450234832 |
+| f1 | 0.915855162513 | 0.923553719008 | 0.907580477674 | 0.00628063358071 |
+| rocauc | 0.916658790729 | 0.924829110219 | 0.909481120383 | 0.00640450234832 |
+
+### matbench_glass
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| accuracy | 0.895422535211 | 0.919894366197 | 0.884683098592 | 0.0130969823334 |
+| balanced_accuracy | 0.858700654983 | 0.886006937775 | 0.840239093344 | 0.0158041991609 |
+| f1 | 0.927798088561 | 0.944881889764 | 0.919975565058 | 0.00908698827732 |
+| rocauc | 0.858700654983 | 0.886006937775 | 0.840239093344 | 0.0158041991609 |
+
+### matbench_jdft2d
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 50.04399974 | 66.2421301222 | 42.7472945267 | 8.62712887611 |
+| rmse | 112.265975486 | 159.638986052 | 72.7391490957 | 36.7066225573 |
+| mape | 5.23911546788 | 23.7624894676 | 0.43823538542 | 9.26294774418 |
+| max_error | 718.045733692 | 1538.60726856 | 295.743678511 | 453.647322018 |
+
+### matbench_log_gvrh
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.103998778594 | 0.106730986524 | 0.102382766772 | 0.00158833792656 |
+| rmse | 0.154040121902 | 0.160123342295 | 0.149548591245 | 0.00365247845886 |
+| mape | 0.0807614737326 | 0.0832065562181 | 0.0776724866644 | 0.0018807671835 |
+| max_error | 1.15770278575 | 1.69423726872 | 0.904052794872 | 0.284521613255 |
+
+### matbench_log_kvrh
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.0819825484217 | 0.0862696399472 | 0.0783141445137 | 0.00271972565089 |
+| rmse | 0.145360912566 | 0.150255516099 | 0.138320059166 | 0.00462831988118 |
+| mape | 0.054592530708 | 0.0607661711246 | 0.050921152629 | 0.00348070098442 |
+| max_error | 1.37315631231 | 1.76416363754 | 1.11891531674 | 0.231105610567 |
+
+### matbench_mp_e_form
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.116450238243 | 0.117945584401 | 0.115797966884 | 0.000798121161187 |
+| rmse | 0.241940247639 | 0.245915868682 | 0.237323137793 | 0.00335752922832 |
+| mape | 0.679807113796 | 0.933100288396 | 0.506812454973 | 0.149239730501 |
+| max_error | 4.11834095889 | 5.43820297872 | 2.93736137858 | 0.800820896985 |
+
+### matbench_mp_gap
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.345156150814 | 0.351217869437 | 0.341694434699 | 0.00332691657799 |
+| rmse | 0.612501885046 | 0.627629509615 | 0.604668073226 | 0.00785109927504 |
+| mape | 7.63147228584 | 11.9090490977 | 4.35469060744 | 2.68347073039 |
+| max_error | 6.39584315417 | 7.0601086 | 5.92008807086 | 0.418177009281 |
+
+### matbench_mp_is_metal
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| accuracy | 0.905063466294 | 0.907977194553 | 0.902747019743 | 0.00167604998183 |
+| balanced_accuracy | 0.899152976151 | 0.902515493193 | 0.896777056389 | 0.00188589705907 |
+| f1 | 0.88664732113 | 0.890520769101 | 0.883862255233 | 0.00217933157754 |
+| rocauc | 0.899152976151 | 0.902515493193 | 0.896777056389 | 0.00188589705907 |
+
+### matbench_perovskites
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.235500182628 | 0.239509685601 | 0.229107455746 | 0.00344641995434 |
+| rmse | 0.334613028166 | 0.339431954877 | 0.32924887781 | 0.00441961063639 |
+| mape | 0.267833188583 | 0.288835902682 | 0.241102775512 | 0.016844798769 |
+| max_error | 2.557712 | 2.88704 | 2.20832 | 0.218511273338 |
+
+### matbench_phonons
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 67.6126142422 | 82.3862649649 | 58.6036107598 | 8.9899908374 |
+| rmse | 146.276431864 | 172.801458959 | 122.15658115 | 21.4751689658 |
+| mape | 0.118485135116 | 0.134769893668 | 0.104049045388 | 0.00979558791325 |
+| max_error | 1270.68885897 | 2024.7301119 | 861.90049904 | 402.730658047 |
+
+### matbench_steels
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 103.512486062 | 114.63311746 | 85.6694031746 | 11.0367786926 |
+| rmse | 149.383944441 | 196.358570629 | 113.154922817 | 27.4893431478 |
+| mape | 0.0744721297401 | 0.0807437889227 | 0.0653807405884 | 0.0056047478171 |
+| max_error | 594.98156 | 1121.1276 | 362.663 | 278.700159881 |
 
 
 
@@ -1201,64 +1417,8 @@ the classification `rocauc` field.
 
 ## 9. Run log (tail)
 
-output tail:
-```
-{
-  "folds_checked": 10,
-  "max_abs_delta": 0.0,
-  "report": "papers\\matbench\\layer_a_rf_structure_small_tasks.md",
-  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
-  "tasks": [
-    "matbench_jdft2d",
-    "matbench_phonons"
-  ]
-}
-```
-
-### 2026-07-03 08:43 UTC — paper003 reassemble report with RF small structure tasks
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-084342-361222.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 08:43 UTC — paper003 verify RF small structure task docs
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_structure_small_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_small_structure']['folds_checked']==10, meta['layer_a_rf_small_structure']['max_abs_stored_vs_recomputed_delta']==0.0, 'Fold scores checked: 10' in report, 'layer_a_rf_structure_small_tasks.md' in summary, 'Layer A RF small-structure-task expansion' in assembled, '6 tasks, 30 folds' in packet, 'All 30 checked folds' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-084350-844786.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True, True]}
-```
-
-### 2026-07-03 08:43 UTC — paper003 RF small structure whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084355-339443.log`
-
-output tail:
-```
-papers/matbench/run_log.md:1398: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
-papers/matbench/run_log.md:1423: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
-reports/paper-003-matbench-audit.md:1233: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
-reports/paper-003-matbench-audit.md:1258: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+reports/paper-003-matbench-audit.md:1339: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB: 4.175872MB [00:00, 596.64MB/s]
 warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
@@ -1268,13 +1428,13 @@ warning: in the working copy of 'reports/paper-003-external_release_packet.md', 
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
 
-### 2026-07-03 08:44 UTC — paper003 RF small structure whitespace check rerun
+### 2026-07-03 08:48 UTC — paper003 RF medium structure whitespace check rerun
 
 ```
 $ git diff --check
 ```
 
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084430-014323.log`
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084806-240936.log`
 
 output tail:
 ```
@@ -1287,77 +1447,133 @@ warning: in the working copy of 'reports/paper-003-external_release_packet.md', 
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
 
-### 2026-07-03 08:45 UTC — paper003 recompute RF score for medium structure task dielectric
+### 2026-07-03 08:48 UTC — paper003 recompute RF score for perovskites structure task
 
 ```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_dielectric --report papers\matbench\layer_a_rf_structure_medium_dielectric.md
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_perovskites --report papers\matbench\layer_a_rf_structure_perovskites.md
 ```
 
-- exit code: **0**  | duration: 5.9s  | raw log: `logs/cmd-20260703-084517-451272.log`
+- exit code: **0**  | duration: 6.3s  | raw log: `logs/cmd-20260703-084843-371636.log`
 
 output tail:
 ```
-Fetching matbench_dielectric.json.gz from https://ml.materialsproject.org/projects/matbench_dielectric.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_dielectric.json.gz
+Fetching matbench_perovskites.json.gz from https://ml.materialsproject.org/projects/matbench_perovskites.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_perovskites.json.gz
 {
   "folds_checked": 5,
   "max_abs_delta": 0.0,
-  "report": "papers\\matbench\\layer_a_rf_structure_medium_dielectric.md",
+  "report": "papers\\matbench\\layer_a_rf_structure_perovskites.md",
   "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
   "tasks": [
-    "matbench_dielectric"
+    "matbench_perovskites"
   ]
 }
 
-Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB:   0%|          | 0.0/3.608015 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB: 3.608576MB [00:00, 515.46MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_perovskites.json.gz in MB:   0%|          | 0.0/4.193112 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_perovskites.json.gz in MB: 4.194304MB [00:00, 699.07MB/s]
 ```
 
-### 2026-07-03 08:45 UTC — paper003 recompute RF scores for elastic structure tasks
+### 2026-07-03 08:48 UTC — paper003 recompute RF score for MP is-metal structure task
 
 ```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_log_gvrh matbench_log_kvrh --report papers\matbench\layer_a_rf_structure_medium_elastic.md
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_is_metal --report papers\matbench\layer_a_rf_structure_mp_is_metal.md
 ```
 
-- exit code: **0**  | duration: 10.8s  | raw log: `logs/cmd-20260703-084532-537007.log`
+- exit code: **0**  | duration: 88.3s  | raw log: `logs/cmd-20260703-084856-760101.log`
 
 output tail:
 ```
-  "folds_checked": 10,
-  "max_abs_delta": 0.0,
-  "report": "papers\\matbench\\layer_a_rf_structure_medium_elastic.md",
-  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
-  "tasks": [
-    "matbench_log_gvrh",
-    "matbench_log_kvrh"
-  ]
-}
-
-Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB:   0%|          | 0.0/4.166214 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB: 4.16768MB [00:00, 520.81MB/s]
-
-Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB:   0%|          | 0.0/4.174386999999999 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB: 4.175872MB [00:00, 596.64MB/s]
-```
-
-### 2026-07-03 08:45 UTC — paper003 recompute RF scores for medium structure tasks
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_dielectric matbench_log_gvrh matbench_log_kvrh --report papers\matbench\layer_a_rf_structure_medium_tasks.md
-```
-
-- exit code: **0**  | duration: 9.4s  | raw log: `logs/cmd-20260703-084550-571465.log`
-
-output tail:
-```
+Fetching matbench_mp_is_metal.json.gz from https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_is_metal.json.gz
 {
-  "folds_checked": 15,
-  "max_abs_delta": 0.0,
-  "report": "papers\\matbench\\layer_a_rf_structure_medium_tasks.md",
+  "folds_checked": 5,
+  "max_abs_delta": 1.1102230246251565e-16,
+  "report": "papers\\matbench\\layer_a_rf_structure_mp_is_metal.md",
   "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
   "tasks": [
+    "matbench_mp_is_metal"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB:   0%|          | 0.0/136.69807799999998 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB:  62%|######1   | 84.373504/136.69807799999998 [00:00<00:00, 836.51MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB: 136.699904MB [00:00, 790.03MB/s]
+```
+
+### 2026-07-03 08:50 UTC — paper003 recompute RF score for MP gap structure task
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_gap --report papers\matbench\layer_a_rf_structure_mp_gap.md
+```
+
+- exit code: **0**  | duration: 89.5s  | raw log: `logs/cmd-20260703-085031-613357.log`
+
+output tail:
+```
+Fetching matbench_mp_gap.json.gz from https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_gap.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 1.7763568394002505e-15,
+  "report": "papers\\matbench\\layer_a_rf_structure_mp_gap.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_mp_gap"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB:   0%|          | 0.0/137.068566 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB:  57%|#####7    | 78.405632/137.068566 [00:00<00:00, 782.56MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB: 137.070592MB [00:00, 755.19MB/s]
+```
+
+### 2026-07-03 08:52 UTC — paper003 recompute RF score for MP formation-energy structure task
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_e_form --report papers\matbench\layer_a_rf_structure_mp_e_form.md
+```
+
+- exit code: **0**  | duration: 107.4s  | raw log: `logs/cmd-20260703-085212-513183.log`
+
+output tail:
+```
+Fetching matbench_mp_e_form.json.gz from https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_e_form.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 2.220446049250313e-16,
+  "report": "papers\\matbench\\layer_a_rf_structure_mp_e_form.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_mp_e_form"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:   0%|          | 0.0/166.734239 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:  48%|####8     | 80.621568/166.734239 [00:00<00:00, 805.50MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:  99%|#########9| 165.60537599999998/166.734239 [00:00<00:00, 826.86MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB: 166.735872MB [00:00, 805.27MB/s]
+```
+
+### 2026-07-03 08:54 UTC — paper003 recompute RF scores for all Matbench tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks all --report papers\matbench\layer_a_rf_all_tasks.md
+```
+
+- exit code: **0**  | duration: 268.1s  | raw log: `logs/cmd-20260703-085411-612968.log`
+
+output tail:
+```
     "matbench_dielectric",
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_jdft2d",
     "matbench_log_gvrh",
-    "matbench_log_kvrh"
+    "matbench_log_kvrh",
+    "matbench_mp_e_form",
+    "matbench_mp_gap",
+    "matbench_mp_is_metal",
+    "matbench_perovskites",
+    "matbench_phonons",
+    "matbench_steels"
   ]
 }
 ```

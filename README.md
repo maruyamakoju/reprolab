@@ -238,6 +238,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       `matbench_log_gvrh`, `matbench_log_kvrh`, 15 folds, max
       stored-vs-recomputed score delta 0
       (`papers/matbench/layer_a_rf_structure_medium_tasks.md`)
+- [x] Matbench RF all-task Layer A completed: 13 tasks, 65 folds, max
+      stored-vs-recomputed score delta 1.776e-15
+      (`papers/matbench/layer_a_rf_all_tasks.md`)
 - [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
@@ -304,8 +307,8 @@ recomputed all fold scores for the four low-cost composition tasks
 `matbench_steels`) plus two small structure tasks (`matbench_jdft2d`,
 `matbench_phonons`) and three medium structure tasks (`matbench_dielectric`,
 `matbench_log_gvrh`, `matbench_log_kvrh`) from released predictions, official split
-IDs, and Matminer targets. All 45 checked folds match the stored scores to
-numerical precision (max absolute delta 1.110e-16).
+IDs, and Matminer targets. The same check now passes on all 13 RF tasks and 65
+folds, with max absolute delta 1.776e-15.
 
 Classification metric probe: 11/27 classification submission-task records store
 float predictions, but every checked stored `rocauc` value equals balanced accuracy.
@@ -332,6 +335,7 @@ Artifacts:
 - RF composition-task report: `papers/matbench/layer_a_rf_composition_tasks.md`
 - RF small-structure-task report: `papers/matbench/layer_a_rf_structure_small_tasks.md`
 - RF medium-structure-task report: `papers/matbench/layer_a_rf_structure_medium_tasks.md`
+- RF all-task report: `papers/matbench/layer_a_rf_all_tasks.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:

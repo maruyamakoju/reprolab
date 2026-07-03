@@ -1663,3 +1663,206 @@ warning: in the working copy of 'reports/one_page_summary.md', LF will be replac
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 08:48 UTC — paper003 recompute RF score for perovskites structure task
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_perovskites --report papers\matbench\layer_a_rf_structure_perovskites.md
+```
+
+- exit code: **0**  | duration: 6.3s  | raw log: `logs/cmd-20260703-084843-371636.log`
+
+output tail:
+```
+Fetching matbench_perovskites.json.gz from https://ml.materialsproject.org/projects/matbench_perovskites.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_perovskites.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_perovskites.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_perovskites"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_perovskites.json.gz in MB:   0%|          | 0.0/4.193112 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_perovskites.json.gz in MB: 4.194304MB [00:00, 699.07MB/s]
+```
+
+### 2026-07-03 08:48 UTC — paper003 recompute RF score for MP is-metal structure task
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_is_metal --report papers\matbench\layer_a_rf_structure_mp_is_metal.md
+```
+
+- exit code: **0**  | duration: 88.3s  | raw log: `logs/cmd-20260703-084856-760101.log`
+
+output tail:
+```
+Fetching matbench_mp_is_metal.json.gz from https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_is_metal.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 1.1102230246251565e-16,
+  "report": "papers\\matbench\\layer_a_rf_structure_mp_is_metal.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_mp_is_metal"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB:   0%|          | 0.0/136.69807799999998 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB:  62%|######1   | 84.373504/136.69807799999998 [00:00<00:00, 836.51MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB: 136.699904MB [00:00, 790.03MB/s]
+```
+
+### 2026-07-03 08:50 UTC — paper003 recompute RF score for MP gap structure task
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_gap --report papers\matbench\layer_a_rf_structure_mp_gap.md
+```
+
+- exit code: **0**  | duration: 89.5s  | raw log: `logs/cmd-20260703-085031-613357.log`
+
+output tail:
+```
+Fetching matbench_mp_gap.json.gz from https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_gap.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 1.7763568394002505e-15,
+  "report": "papers\\matbench\\layer_a_rf_structure_mp_gap.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_mp_gap"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB:   0%|          | 0.0/137.068566 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB:  57%|#####7    | 78.405632/137.068566 [00:00<00:00, 782.56MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB: 137.070592MB [00:00, 755.19MB/s]
+```
+
+### 2026-07-03 08:52 UTC — paper003 recompute RF score for MP formation-energy structure task
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_e_form --report papers\matbench\layer_a_rf_structure_mp_e_form.md
+```
+
+- exit code: **0**  | duration: 107.4s  | raw log: `logs/cmd-20260703-085212-513183.log`
+
+output tail:
+```
+Fetching matbench_mp_e_form.json.gz from https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_e_form.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 2.220446049250313e-16,
+  "report": "papers\\matbench\\layer_a_rf_structure_mp_e_form.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_mp_e_form"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:   0%|          | 0.0/166.734239 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:  48%|####8     | 80.621568/166.734239 [00:00<00:00, 805.50MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:  99%|#########9| 165.60537599999998/166.734239 [00:00<00:00, 826.86MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB: 166.735872MB [00:00, 805.27MB/s]
+```
+
+### 2026-07-03 08:54 UTC — paper003 recompute RF scores for all Matbench tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks all --report papers\matbench\layer_a_rf_all_tasks.md
+```
+
+- exit code: **0**  | duration: 268.1s  | raw log: `logs/cmd-20260703-085411-612968.log`
+
+output tail:
+```
+    "matbench_dielectric",
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_jdft2d",
+    "matbench_log_gvrh",
+    "matbench_log_kvrh",
+    "matbench_mp_e_form",
+    "matbench_mp_gap",
+    "matbench_mp_is_metal",
+    "matbench_perovskites",
+    "matbench_phonons",
+    "matbench_steels"
+  ]
+}
+```
+
+### 2026-07-03 08:59 UTC — paper003 reassemble report with RF all-task check
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-085926-858524.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:59 UTC — paper003 verify RF all-task docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_all_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_all_tasks']['folds_checked']==65, abs(meta['layer_a_rf_all_tasks']['max_abs_stored_vs_recomputed_delta']-1.7763568394002505e-15)<1e-30, 'Fold scores checked: 65' in report, 'all 13 tasks' in summary, 'Layer A RF all-task expansion' in assembled, '13 tasks, 65 folds' in packet, 'RF all-task Layer A completed' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-085934-454140.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 08:59 UTC — paper003 RF all-task whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-085938-617788.log`
+
+output tail:
+```
+reports/paper-003-matbench-audit.md:1472: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_perovskites.json.gz in MB: 4.194304MB [00:00, 699.07MB/s]
+reports/paper-003-matbench-audit.md:1498: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB: 136.699904MB [00:00, 790.03MB/s]
+reports/paper-003-matbench-audit.md:1524: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB: 137.070592MB [00:00, 755.19MB/s]
+reports/paper-003-matbench-audit.md:1551: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB: 166.735872MB [00:00, 805.27MB/s]
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:59 UTC — paper003 RF all-task whitespace check rerun
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-085949-814424.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
