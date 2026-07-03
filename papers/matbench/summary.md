@@ -56,6 +56,7 @@ max error match exactly. All 135 classification folds in the scan have stored
 
 Report: `layer_a_all_submission_score_scan.md`.
 Exception probe: `layer_a_gn_oa_mape_probe.md`.
+Draft issue: `../../reports/paper-003_gn_oa_mape_issue_draft.md`.
 
 ## Layer B source replay
 
@@ -115,12 +116,13 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Dummy all-task report: `layer_a_dummy_all_tasks.md`
 - All-submission score scan: `layer_a_all_submission_score_scan.md`
 - GN-OA MAPE exception probe: `layer_a_gn_oa_mape_probe.md`
+- GN-OA MAPE issue draft: `../../reports/paper-003_gn_oa_mape_issue_draft.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
 - Source artifact inventory: `source_artifact_inventory.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
-- Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
+- Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`

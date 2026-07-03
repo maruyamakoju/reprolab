@@ -250,6 +250,8 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       (`papers/matbench/layer_a_all_submission_score_scan.md`)
 - [x] Matbench GN-OA MAPE exception isolated: MAE/RMSE/max error match, stored
       MAPE only differs (`papers/matbench/layer_a_gn_oa_mape_probe.md`)
+- [x] Matbench GN-OA MAPE upstream issue draft prepared
+      (`reports/paper-003_gn_oa_mape_issue_draft.md`; draft only, not posted)
 - [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
@@ -260,8 +262,7 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,
       `reports/paper-003-external_release_packet.md`)
-- [ ] Next: decide whether to post the Matbench classification `rocauc` upstream
-      issue draft
+- [ ] Next: decide whether to post the Matbench upstream issue drafts
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -352,13 +353,14 @@ Artifacts:
 - Dummy all-task report: `papers/matbench/layer_a_dummy_all_tasks.md`
 - All-submission score scan: `papers/matbench/layer_a_all_submission_score_scan.md`
 - GN-OA MAPE exception probe: `papers/matbench/layer_a_gn_oa_mape_probe.md`
+- GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
-- Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
+- Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
 - All-submission score scan script: `scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `scripts/matbench_tpot_replay.py`

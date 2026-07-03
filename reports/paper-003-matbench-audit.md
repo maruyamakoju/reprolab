@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 09:25 UTC_
+_Generated: 2026-07-03 13:10 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -64,6 +64,7 @@ max error match exactly. All 135 classification folds in the scan have stored
 
 Report: `layer_a_all_submission_score_scan.md`.
 Exception probe: `layer_a_gn_oa_mape_probe.md`.
+Draft issue: `../../reports/paper-003_gn_oa_mape_issue_draft.md`.
 
 ## Layer B source replay
 
@@ -123,12 +124,13 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Dummy all-task report: `layer_a_dummy_all_tasks.md`
 - All-submission score scan: `layer_a_all_submission_score_scan.md`
 - GN-OA MAPE exception probe: `layer_a_gn_oa_mape_probe.md`
+- GN-OA MAPE issue draft: `../../reports/paper-003_gn_oa_mape_issue_draft.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
 - Source artifact inventory: `source_artifact_inventory.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
-- Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
+- Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
@@ -280,6 +282,7 @@ layer_a_all_submission_score_scan:
   classification_folds_checked: 135
   classification_folds_rocauc_equal_balanced_accuracy: 135
   exception_probe: papers/matbench/layer_a_gn_oa_mape_probe.md
+  exception_issue_draft: reports/paper-003_gn_oa_mape_issue_draft.md
 
 classification_auc_probe:
   status: completed
@@ -1690,7 +1693,7 @@ The replay mirrors the notebook path: load the pickled TPOT pipeline, load Matbe
 
 
 
-## 8. Upstream issue draft
+## 8. Classification ROC-AUC upstream issue draft
 
 # Matbench upstream issue draft - classification ROC-AUC scoring
 
@@ -1807,94 +1810,84 @@ the classification `rocauc` field.
 
 
 
+## 8b. GN-OA MAPE upstream issue draft
+
+# Matbench upstream issue draft - GN-OA MAPE exception
+
+Status: draft only; not posted.
+
+Target repo: https://github.com/materialsproject/matbench
+
+Suggested title:
+
+> `matbench_v0.1_GN-OA` stored MAPE for `matbench_mp_e_form` appears inconsistent with Matbench MAPE
+
+## Draft body
+
+Hi Matbench maintainers,
+
+I am running an independent reproducibility audit of Matbench v0.1 leaderboard
+artifacts. The broad result is positive: scanning the public `results.json.gz`
+artifacts across 28 submissions, 180 submission-task records, and 900 folds, I
+found that 179/180 submission-task records reproduce their stored fold scores to
+numerical precision with the Matbench v0.1 scoring path.
+
+The only score-recompute exception I found is narrow: `matbench_v0.1_GN-OA` on
+`matbench_mp_e_form`, and only for MAPE. The same predictions and official split
+IDs reproduce MAE, RMSE, and max error exactly or to floating-point precision, so
+this does not look like a prediction-ID alignment problem.
+
+### Observation
+
+Using the Matbench v0.1 MAPE path, which masks targets with
+`abs(y_true) > 1e-5`, the stored and recomputed values differ on all five folds:
+
+| Fold | Stored MAPE | Recomputed Matbench MAPE | Delta | Other regression metrics |
+|---:|---:|---:|---:|---|
+| 0 | 12.5887409438 | 0.420116236715 | 12.1686247071 | match |
+| 1 | 7.94659210396 | 0.137819988807 | 7.80877211515 | match |
+| 2 | 9.26331433818 | 0.149750183903 | 9.11356415428 | match |
+| 3 | 11.8881843898 | 0.236287007689 | 11.6518973821 | match |
+| 4 | 12.1946455981 | 0.201616727224 | 11.9930288708 | match |
+
+### Checks that did not explain the stored values
+
+- Recomputing MAE, RMSE, and max error from the same fold predictions matches the
+  stored values, which supports the official validation IDs being aligned.
+- A simple unmasked MAPE is not the stored formula either. It is infinite on all
+  five folds because the `matbench_mp_e_form` test targets contain exact zeros.
+- Sweeping small denominator thresholds did not reproduce the stored MAPE values.
+
+### Suggested handling
+
+Could you confirm whether the stored GN-OA MAPE values for `matbench_mp_e_form`
+were computed with a submission-specific formula, or whether this is a historical
+stored-score inconsistency that should be corrected or annotated?
+
+I have not opened a PR because the right treatment of historical leaderboard
+artifacts is a maintainer policy decision. The issue is intentionally scoped to
+this one submission/task/metric exception.
+
+Thanks for maintaining the benchmark.
+
+## Local evidence files
+
+- `papers/matbench/layer_a_all_submission_score_scan.md`
+- `papers/matbench/layer_a_gn_oa_mape_probe.md`
+- `scripts/matbench_all_results_score_scan.py`
+- `scripts/matbench_score.py`
+
+## Guardrails
+
+- Do not post until the user explicitly asks.
+- If posting, link the public ReproLab commit containing the scripts/reports.
+- Keep this issue separate from the classification `rocauc` draft unless the user
+  explicitly asks to combine them.
+
+
+
 ## 9. Run log (tail)
 
-```
-  "submission_task_records": 10,
-  "submissions": 2,
-  "tasks_seen": {
-    "matbench_dielectric": 1,
-    "matbench_jdft2d": 1,
-    "matbench_log_gvrh": 1,
-    "matbench_log_kvrh": 1,
-    "matbench_mp_e_form": 1,
-    "matbench_mp_gap": 1,
-    "matbench_mp_is_metal": 1,
-    "matbench_perovskites": 1,
-    "matbench_phonons": 1,
-    "matbench_steels": 1
-  }
-}
-```
-
-### 2026-07-03 09:13 UTC — paper003 scan all Matbench submission scores
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_all_results_score_scan.py --report papers\matbench\layer_a_all_submission_score_scan.md
-```
-
-- exit code: **1**  | duration: 281.7s  | raw log: `logs/cmd-20260703-091316-197235.log`
-
-output tail:
-```
-    "matbench_dielectric": 16,
-    "matbench_expt_gap": 12,
-    "matbench_expt_is_metal": 7,
-    "matbench_glass": 7,
-    "matbench_jdft2d": 16,
-    "matbench_log_gvrh": 16,
-    "matbench_log_kvrh": 16,
-    "matbench_mp_e_form": 18,
-    "matbench_mp_gap": 16,
-    "matbench_mp_is_metal": 13,
-    "matbench_perovskites": 16,
-    "matbench_phonons": 16,
-    "matbench_steels": 11
-  }
-}
-```
-
-### 2026-07-03 09:18 UTC — paper003 inspect GN-OA stored vs recomputed metrics
-
-```
-$ env\jarvis\Scripts\python.exe -c import gzip,json,math; from pathlib import Path; import sys; sys.path.insert(0,'scripts'); import matbench_score as ms; meta=ms.read_json(ms.METADATA_PATH); val=ms.read_json(ms.VALIDATION_PATH)['splits']; res=ms.read_json(Path('vendor/matbench/benchmarks/matbench_v0.1_GN-OA/results.json.gz')); truth=ms.load_truth('matbench_mp_e_form', meta); task=res['tasks']['matbench_mp_e_form']['results'];
-for fold_key, fold in sorted(task.items()):
- ids=val['matbench_mp_e_form'][fold_key]['test']; y_true=[truth[i] for i in ids]; y_pred=[fold['data'][i] for i in ids]; rec=ms.regression_scores(y_true,y_pred); stored={k:float(v) for k,v in fold['scores'].items()}; print(fold_key); print(' stored', stored); print(' recomputed', rec); print(' delta', {k: stored[k]-rec[k] for k in rec})
-```
-
-- exit code: **0**  | duration: 101.1s  | raw log: `logs/cmd-20260703-091817-507438.log`
-
-output tail:
-```
- stored {'mae': 0.02447261946306292, 'mape': 7.946592103960418, 'max_error': 1.9404605745495607, 'rmse': 0.06155955374830743}
- recomputed {'mae': 0.02447261946306292, 'rmse': 0.06155955374830743, 'mape': 0.1378199888074734, 'max_error': 1.9404605745495607}
- delta {'mae': 0.0, 'rmse': 0.0, 'mape': 7.808772115152944, 'max_error': 0.0}
-fold_2
- stored {'mae': 0.024890881301123925, 'mape': 9.26331433818309, 'max_error': 2.415037930315695, 'rmse': 0.06479287427553128}
- recomputed {'mae': 0.024890881301123928, 'rmse': 0.06479287427553128, 'mape': 0.14975018390270012, 'max_error': 2.415037930315695}
- delta {'mae': -3.469446951953614e-18, 'rmse': 0.0, 'mape': 9.11356415428039, 'max_error': 0.0}
-fold_3
- stored {'mae': 0.024886031335372344, 'mape': 11.888184389789986, 'max_error': 2.1704877171063526, 'rmse': 0.06322060324313321}
- recomputed {'mae': 0.024886031335372347, 'rmse': 0.06322060324313321, 'mape': 0.2362870076890531, 'max_error': 2.1704877171063526}
- delta {'mae': -3.469446951953614e-18, 'rmse': 0.0, 'mape': 11.651897382100932, 'max_error': 0.0}
-fold_4
- stored {'mae': 0.02498503808917608, 'mape': 12.194645598056068, 'max_error': 1.7973616971756918, 'rmse': 0.06583117785444022}
- recomputed {'mae': 0.024985038089176084, 'rmse': 0.06583117785444023, 'mape': 0.2016167272238903, 'max_error': 1.7973616971756918}
- delta {'mae': -3.469446951953614e-18, 'rmse': -1.3877787807814457e-17, 'mape': 11.993028870832179, 'max_error': 0.0}
-```
-
-### 2026-07-03 09:20 UTC — paper003 reassemble report with all-submission scan
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-092056-233694.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
 
 ### 2026-07-03 09:21 UTC — paper003 verify all-submission scan docs
 
@@ -1968,5 +1961,91 @@ fold_1 stored 7.946592103960418 thresholds [(0, 11623467173.323946, 26532), (1e-
 fold_2 stored 9.26331433818309 thresholds [(0, 7675763341.431668, 26531), (1e-12, 0.14975018390270012, 26528), (1e-10, 0.14975018390270012, 26528), (1e-08, 0.14975018390270012, 26528), (1e-06, 0.14975018390270012, 26528), (1e-05, 0.14975018390270012, 26528), (0.0001, 0.14317462268710246, 26527), (0.001, 0.12889036323996245, 26507), (0.01, 0.08372506558387922, 26339)]
 fold_3 stored 11.888184389789986 thresholds [(0, 10207211548.549372, 26532), (1e-12, 0.7612213581581823, 26527), (1e-10, 0.7612213581581823, 26527), (1e-08, 0.7612213581581823, 26527), (1e-06, 0.2362870076890531, 26526), (1e-05, 0.2362870076890531, 26526), (0.0001, 0.2257906424938835, 26524), (0.001, 0.11558689634065783, 26507), (0.01, 0.0769429070645547, 26330)]
 fold_4 stored 12.194645598056068 thresholds [(0, 6340327997.301482, 26531), (1e-12, 0.6087244811242674, 26527), (1e-10, 0.6087244811242674, 26527), (1e-08, 0.6087244811242674, 26527), (1e-06, 0.6087244811242674, 26527), (1e-05, 0.2016167272238903, 26526), (0.0001, 0.17111811656954143, 26524), (0.001, 0.11711666268586597, 26501), (0.01, 0.07597983109866668, 26346)]
+```
+
+### 2026-07-03 09:25 UTC — paper003 reassemble report with GN-OA MAPE probe
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-092544-470397.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 09:25 UTC — paper003 verify GN-OA MAPE probe docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); probe=Path('papers/matbench/layer_a_gn_oa_mape_probe.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_all_submission_score_scan']['exception_probe']=='papers/matbench/layer_a_gn_oa_mape_probe.md', 'Stored MAPE' in probe, 'Exception probe' in summary, 'GN-OA MAPE exception probe' in assembled, 'unmasked MAPE' in packet, 'GN-OA MAPE exception isolated' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-092552-659141.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 09:26 UTC — paper003 GN-OA MAPE probe whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-092600-978570.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:10 UTC — paper003 reassemble report with GN-OA MAPE issue draft
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131029-508070.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:10 UTC — paper003 verify GN-OA MAPE issue draft docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); draft=Path('reports/paper-003_gn_oa_mape_issue_draft.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_all_submission_score_scan']['exception_issue_draft']=='reports/paper-003_gn_oa_mape_issue_draft.md', 'Status: draft only; not posted.' in draft, 'matbench_v0.1_GN-OA' in draft, 'GN-OA MAPE upstream issue draft' in assembled, 'Classification ROC-AUC upstream issue draft' in assembled, 'paper-003_gn_oa_mape_issue_draft.md' in summary, 'paper-003_gn_oa_mape_issue_draft.md' in packet, 'paper-003_gn_oa_mape_issue_draft.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.5s  | raw log: `logs/cmd-20260703-131036-766426.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:10 UTC — paper003 GN-OA MAPE issue draft whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-131040-093620.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
 

@@ -2164,3 +2164,59 @@ warning: in the working copy of 'papers/matbench/summary.md', LF will be replace
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 13:10 UTC — paper003 reassemble report with GN-OA MAPE issue draft
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131029-508070.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:10 UTC — paper003 verify GN-OA MAPE issue draft docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); draft=Path('reports/paper-003_gn_oa_mape_issue_draft.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_all_submission_score_scan']['exception_issue_draft']=='reports/paper-003_gn_oa_mape_issue_draft.md', 'Status: draft only; not posted.' in draft, 'matbench_v0.1_GN-OA' in draft, 'GN-OA MAPE upstream issue draft' in assembled, 'Classification ROC-AUC upstream issue draft' in assembled, 'paper-003_gn_oa_mape_issue_draft.md' in summary, 'paper-003_gn_oa_mape_issue_draft.md' in packet, 'paper-003_gn_oa_mape_issue_draft.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.5s  | raw log: `logs/cmd-20260703-131036-766426.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:10 UTC — paper003 GN-OA MAPE issue draft whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-131040-093620.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:10 UTC — paper003 final reassemble report after GN-OA MAPE issue draft checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131045-583375.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```

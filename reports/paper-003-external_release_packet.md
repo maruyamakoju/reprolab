@@ -80,7 +80,8 @@ submitted random seed.
   - `papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md`
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B replay: `papers/matbench/layer_b_tpot_steels_replay.md`
-- Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
+- Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
+- GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
 - Command log: `papers/matbench/run_log.md`
 - Core scripts:
   - `scripts/matbench_score.py`
@@ -122,7 +123,9 @@ submitted random seed.
 
 1. Share the classification `rocauc` issue draft with Matbench maintainers after
    user approval.
-2. If maintainers confirm intended behavior, update wording/docs so classification
+2. Share the GN-OA MAPE issue draft separately after user approval, since it is a
+   narrow stored-score exception rather than the classification metric behavior.
+3. If maintainers confirm intended behavior, update wording/docs so classification
    leaderboards do not imply probability ROC-AUC when labels were used.
-3. If deeper Layer B is needed, choose submissions with fixed seeds or saved
+4. If deeper Layer B is needed, choose submissions with fixed seeds or saved
    fold-level model artifacts before attempting larger structure tasks.
