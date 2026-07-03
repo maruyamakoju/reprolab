@@ -36,6 +36,19 @@ rounding.
 
 Report: `classification_prediction_scan.md`.
 
+## Leaderboard display scan
+
+`scripts/matbench_leaderboard_metric_scan.py` inspected the three generated
+classification per-task leaderboard markdown tables. Each table uses `mean rocauc`
+as the first displayed metric column, and all displayed rows have `mean rocauc`
+equal to `mean balanced_accuracy`.
+
+| classification leaderboard tables | displayed algorithm rows | rows with displayed mean rocauc != mean balanced_accuracy |
+|---:|---:|---:|
+| 3 | 27 | 0 |
+
+Report: `classification_leaderboard_metric_scan.md`.
+
 ## Probability-AUC spot check
 
 For two small MODNet classification tasks, the script reproduced stored fold scores
@@ -61,6 +74,6 @@ exactly. It is an interpretation issue for classification metrics: a field named
 `rocauc` can represent AUC of thresholded labels rather than AUC of submitted
 probability scores.
 
-The next step is to check whether any public leaderboard view ranks classification
-tasks by the stored `rocauc` field, and to decide whether this should become an
-upstream issue or a report note.
+The classification per-task leaderboards display `mean rocauc` as the main metric
+column, so this should become either an upstream issue or a clearly scoped report
+note.

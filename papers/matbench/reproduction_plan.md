@@ -103,14 +103,14 @@ v0.1 metric loop converts predictions to labels before reaching `rocauc`.
 Reports:
 
 - `classification_prediction_scan.md`
+- `classification_leaderboard_metric_scan.md`
 - `classification_auc_probe.md`
 - `layer_a_modnet_0_1_10_probability_auc_probe.md`
 - `layer_a_modnet_0_1_12_probability_auc_probe.md`
 
 ## 7. Next
 
-1. Check whether public classification leaderboard views rank by stored `rocauc` or
-   another aggregate.
+1. Prepare an upstream issue draft for the classification `rocauc` behavior.
 2. Broaden Layer A across more low-cost composition tasks before touching large
    structure datasets.
 3. Select one or two runnable source-code submissions for a bounded Layer B smoke.

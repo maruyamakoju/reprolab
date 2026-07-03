@@ -61,6 +61,11 @@ classification_auc_probe:
   all_float_records: 11
   mixed_records: 0
   records_where_stored_rocauc_differs_from_balanced_accuracy: 0
+  leaderboard_scan_script: scripts/matbench_leaderboard_metric_scan.py
+  leaderboard_scan_report: papers/matbench/classification_leaderboard_metric_scan.md
+  classification_leaderboard_tables: 3
+  classification_leaderboard_rows: 27
+  displayed_rocauc_rows_differing_from_balanced_accuracy: 0
   modnet_probability_auc_probe:
     modnet_v0_1_10:
       expt_is_metal_stored_mean: 0.9160515032798

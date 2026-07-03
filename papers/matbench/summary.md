@@ -27,6 +27,8 @@ small regression task and one small classification task.
 The classification seed stores hard boolean predictions, so ROC-AUC equals balanced
 accuracy. A follow-up scan found that 11/27 classification submission-task records
 store float predictions, but every checked stored `rocauc` value is still equal to
+balanced accuracy. The three classification per-task leaderboard tables also display
+`mean rocauc` as the first metric column, with all 27 displayed rows equal to mean
 balanced accuracy. For MODNet probability outputs, raw-probability ROC-AUC is higher
 than the stored `rocauc` by 0.030-0.122 mean AUC depending on task/version. This is
 reproducible from the Matbench v0.1 scoring order and is documented in
@@ -40,6 +42,8 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer A seed report: `layer_a_score_recompute.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
+- Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
 - Script: `../../scripts/matbench_score.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
+- Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
 - Run log: `run_log.md`

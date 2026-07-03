@@ -375,3 +375,52 @@ warning: in the working copy of 'papers/matbench/run_log.md', LF will be replace
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 07:41 UTC — paper003 scan classification leaderboard displayed metrics
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_leaderboard_metric_scan.py --report papers\matbench\classification_leaderboard_metric_scan.md
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074135-020342.log`
+
+output tail:
+```
+{
+  "displayed_rocauc_differs_from_balacc": 0,
+  "rows": 27,
+  "tasks": 3
+}
+```
+
+### 2026-07-03 07:42 UTC — paper003 verify classification leaderboard metric scan docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/matbench_score.py','scripts/matbench_classification_scan.py','scripts/matbench_leaderboard_metric_scan.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); auc=Path('papers/matbench/classification_auc_probe.md').read_text(encoding='utf-8'); lb=Path('papers/matbench/classification_leaderboard_metric_scan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['classification_auc_probe']['classification_leaderboard_rows']==27, meta['classification_auc_probe']['displayed_rocauc_rows_differing_from_balanced_accuracy']==0, 'Leaderboard display scan' in auc, 'Displayed algorithm rows scanned: 27' in lb, 'matbench_leaderboard_metric_scan.py' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074211-109770.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True]}
+```
+
+### 2026-07-03 07:42 UTC — paper003 classification leaderboard metric scan git diff whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-074215-092055.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/classification_auc_probe.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```

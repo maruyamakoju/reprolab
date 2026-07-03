@@ -222,8 +222,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       records store float predictions, but all stored `rocauc` values equal
       balanced accuracy; MODNet raw-probability AUC is higher by 0.030-0.122 mean
       AUC depending on task/version (`papers/matbench/classification_auc_probe.md`)
-- [ ] Next: check classification leaderboard ranking fields, then broaden Matbench
-      score recomputation across more low-cost tasks
+- [x] Matbench classification leaderboard display scan: all 3 classification
+      per-task tables put `mean rocauc` first, and all 27 displayed rows have
+      `mean rocauc == mean balanced_accuracy`
+      (`papers/matbench/classification_leaderboard_metric_scan.md`)
+- [ ] Next: draft a Matbench upstream issue for the classification `rocauc`
+      behavior, then broaden score recomputation across more low-cost tasks
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -280,7 +284,9 @@ folds match the stored scores to numerical precision (max absolute delta 1.110e-
 Classification metric probe: 11/27 classification submission-task records store
 float predictions, but every checked stored `rocauc` value equals balanced accuracy.
 For MODNet probability outputs on two small classification tasks, raw-probability
-ROC-AUC is higher than the stored field by 0.030-0.122 mean AUC.
+ROC-AUC is higher than the stored field by 0.030-0.122 mean AUC. The generated
+classification per-task leaderboards display `mean rocauc` as the first metric
+column.
 
 Artifacts:
 
@@ -291,8 +297,11 @@ Artifacts:
 - Layer A seed report: `papers/matbench/layer_a_score_recompute.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
+- Classification leaderboard metric scan:
+  `papers/matbench/classification_leaderboard_metric_scan.md`
 - Script: `scripts/matbench_score.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
+- Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,
