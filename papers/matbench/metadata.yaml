@@ -180,12 +180,15 @@ layer_b_candidate_triage:
   script: scripts/matbench_layer_b_candidate_triage.py
   report: papers/matbench/layer_b_candidate_triage.md
   submissions_checked: 28
-  already_replayed: matbench_v0.1_TPOT
-  next_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
-  next_candidate_task: matbench_steels
-  next_candidate_priority: high
-  next_candidate_score: 78
-  positive_control_candidate: matbench_v0.1_dummy
+  already_replayed:
+    - matbench_v0.1_TPOT
+    - matbench_v0.1_RFLR
+  selected_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
+  selected_candidate_task: matbench_steels
+  selected_candidate_priority_before_replay: high
+  selected_candidate_score: 78
+  selected_candidate_replay_result: prediction_identical
+  remaining_positive_control_candidate: matbench_v0.1_dummy
   medium_priority_candidates: 1
   low_priority_candidates: 24
 
@@ -205,6 +208,24 @@ layer_b_tpot_steels:
   max_abs_score_delta: 24.770214843749955
   max_mae_delta: 5.20293162512
   interpretation: runnable notebook path, but submitted predictions are not exactly regenerated because the source refits unseeded stochastic estimators
+
+layer_b_rflr_steels:
+  status: source_replay_prediction_identical
+  script: scripts/matbench_rflr_replay.py
+  report: papers/matbench/layer_b_rflr_steels_replay.md
+  environment: env/matbench-tpot
+  sklearn_version: 1.2.2
+  submission: matbench_v0.1_RFLR
+  task: matbench_steels
+  folds_replayed: 5
+  max_abs_prediction_delta: 0.0
+  max_abs_score_delta: 0.0
+  version_sensitivity_check:
+    environment: env/jarvis
+    sklearn_version: 1.9.0
+    max_abs_prediction_delta: 108.58666666666704
+    max_abs_score_delta: 22.306666666666843
+  interpretation: notebook source path regenerates committed predictions exactly under the checked sklearn 1.2.2 environment
 
 candidate_screen:
   status: selected

@@ -1,6 +1,6 @@
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT source replay and candidate triage completed.
+Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT and RFLR source replays completed.
 
 ## Result
 
@@ -75,6 +75,15 @@ positive-control candidate if an exact low-novelty source replay is needed.
 
 Triage report: `layer_b_candidate_triage.md`.
 
+The RFLR replay then mirrors the submitted notebook's regex composition featurizer
+and `RandomForestRegressor(n_estimators=30, random_state=1)`. Under
+`env/matbench-tpot` with scikit-learn `1.2.2`, it regenerates all five submitted
+folds exactly: max prediction delta `0.0` and max score delta `0.0`. A logged
+control run under `env/jarvis` with scikit-learn `1.9.0` was runnable but
+non-identical, so this source replay is environment-sensitive.
+
+RFLR replay report: `layer_b_rflr_steels_replay.md`.
+
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
 the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
@@ -132,10 +141,12 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Source artifact inventory: `source_artifact_inventory.md`
 - Layer B candidate triage: `layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
+- Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
+- Layer B RFLR replay script: `../../scripts/matbench_rflr_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`

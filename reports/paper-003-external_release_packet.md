@@ -35,10 +35,10 @@ submitted random seed.
 - **Leaderboard display check:** all three classification per-task leaderboard
   tables put `mean rocauc` first, and all 27 displayed rows have `mean rocauc`
   equal to mean balanced accuracy.
-- **Layer B:** TPOT-Mat `matbench_steels` source replay runs from the submitted
-  notebook artifacts in a pinned TPOT/sklearn environment. It is not
-  prediction-identical: with audit seed 0, replay mean MAE is 79.094 vs submitted
-  mean MAE 79.947.
+- **Layer B:** two `matbench_steels` source paths run. TPOT-Mat runs from the
+  submitted notebook artifacts but is not prediction-identical. RFLR mirrors the
+  submitted regex featurizer plus `RandomForestRegressor(n_estimators=30,
+  random_state=1)` and is prediction-identical under scikit-learn 1.2.2.
 - **Source inventory:** 28 submission directories scanned; 11 have direct
   `run.py` files, 14 have notebooks, and only one has a pickle/joblib model
   artifact. This supports treating TPOT-Mat as the bounded Layer B candidate.
@@ -58,8 +58,9 @@ submitted random seed.
 | Classification leaderboard rows checked | 27 displayed rows | all `mean rocauc == mean balanced_accuracy` |
 | MODNet probability-AUC gap | 4 submission/task probes | mean gap 0.029565-0.122272 |
 | Source artifact inventory | 28 submission directories | 1 pickle/joblib model artifact |
-| Layer B candidate triage | 28 submissions | next nontrivial CPU target `matbench_v0.1_RFLR` |
+| Layer B candidate triage | 28 submissions | selected `matbench_v0.1_RFLR`, now replayed exactly |
 | TPOT source replay | 5 steels folds | runnable, non-identical predictions |
+| RFLR source replay | 5 steels folds | max prediction delta `0.0`, max score delta `0.0` |
 
 ## Evidence map
 
@@ -85,6 +86,7 @@ submitted random seed.
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B replay: `papers/matbench/layer_b_tpot_steels_replay.md`
+- Layer B RFLR replay: `papers/matbench/layer_b_rflr_steels_replay.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
 - Command log: `papers/matbench/run_log.md`
@@ -96,6 +98,7 @@ submitted random seed.
   - `scripts/matbench_submission_inventory.py`
   - `scripts/matbench_layer_b_candidate_triage.py`
   - `scripts/matbench_tpot_replay.py`
+  - `scripts/matbench_rflr_replay.py`
   - `scripts/make_matbench_report.py`
 
 ## Claims to avoid
@@ -121,9 +124,9 @@ submitted random seed.
 > The main finding is in classification scoring:
 > across 27 classification submission-task records, stored `rocauc` always equals
 > balanced accuracy, and for MODNet probability outputs the raw-probability ROC-AUC
-> is higher by up to 0.122 mean AUC. I also ran a bounded TPOT-Mat source replay:
-> the notebook path is executable, but it does not regenerate committed predictions
-> exactly because it refits stochastic estimators without a submitted seed.
+> is higher by up to 0.122 mean AUC. I also ran two bounded source replays on
+> `matbench_steels`: TPOT-Mat is executable but non-identical, while RFLR is
+> prediction-identical under scikit-learn 1.2.2.
 
 ## Next useful moves
 
@@ -134,6 +137,5 @@ submitted random seed.
 3. If maintainers confirm intended behavior, update wording/docs so classification
    leaderboards do not imply probability ROC-AUC when labels were used.
 4. If deeper Layer B is needed, choose submissions with fixed seeds or saved
-   fold-level model artifacts before attempting larger structure tasks. The next
-   bounded CPU target is `matbench_v0.1_RFLR`; `matbench_v0.1_dummy` is a
-   positive-control option.
+   fold-level model artifacts before attempting larger structure tasks.
+   `matbench_v0.1_dummy` is the remaining positive-control option.

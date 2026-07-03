@@ -27,6 +27,10 @@ LOW_COST_TASKS = {
     "matbench_phonons",
 }
 LARGE_MP_TASKS = {"matbench_mp_e_form", "matbench_mp_gap", "matbench_mp_is_metal"}
+REPLAYED_SUBMISSIONS = {
+    "matbench_v0.1_TPOT": "Already used for the first bounded Layer B replay; runnable but not prediction-identical.",
+    "matbench_v0.1_RFLR": "Already replayed after triage; prediction-identical in `layer_b_rflr_steels_replay.md`.",
+}
 
 SEED_TOKENS = ("random_state", "np.random.seed", "torch.manual_seed", "manual_seed", "random.seed", "seed=")
 FIT_TOKENS = (".fit(", "fit(")
@@ -194,7 +198,7 @@ def score(row: dict[str, Any]) -> tuple[int, list[str]]:
 
 
 def priority(row: dict[str, Any]) -> str:
-    if row["name"] == "matbench_v0.1_TPOT":
+    if row["name"] in REPLAYED_SUBMISSIONS:
         return "already replayed"
     if row["name"] == "matbench_v0.1_dummy":
         return "positive-control candidate"
@@ -207,10 +211,8 @@ def priority(row: dict[str, Any]) -> str:
 
 def recommendation(row: dict[str, Any]) -> str:
     name = row["name"]
-    if name == "matbench_v0.1_TPOT":
-        return "Already used for the first bounded Layer B replay."
-    if name == "matbench_v0.1_RFLR":
-        return "Best next nontrivial CPU replay target: one steels task, simple deps, seed signal."
+    if name in REPLAYED_SUBMISSIONS:
+        return REPLAYED_SUBMISSIONS[name]
     if name == "matbench_v0.1_dummy":
         return "Use as an exact-source positive control if a low-novelty replay is useful."
     if name == "matbench_v0.1_lattice_xgboost":
@@ -244,7 +246,7 @@ def write_report(path: Path, rows: list[dict[str, Any]]) -> None:
     next_rows = [
         row
         for row in rows
-        if row["name"] != "matbench_v0.1_TPOT"
+        if row["priority"] != "already replayed"
         and (
             row["priority"] in {"high", "positive-control candidate"}
             or (
@@ -258,7 +260,7 @@ def write_report(path: Path, rows: list[dict[str, Any]]) -> None:
     lines = [
         "# Matbench v0.1 Layer B candidate triage",
         "",
-        "This ranks public Matbench v0.1 submission artifacts for the next bounded source replay after the TPOT-Mat smoke. The score is a triage heuristic, not a claim about scientific quality.",
+        "This ranks public Matbench v0.1 submission artifacts for bounded source replays. The score is a triage heuristic, not a claim about scientific quality.",
         "",
         f"- Submissions checked: {len(rows)}",
         f"- High-priority candidates: {counts['high']}",
@@ -269,11 +271,11 @@ def write_report(path: Path, rows: list[dict[str, Any]]) -> None:
         "",
         "## Decision",
         "",
-        "`matbench_v0.1_RFLR` is the best next nontrivial bounded CPU replay target. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, a notebook source path, and seed/fit/predict signals. It has no saved fold-level model artifact, so prediction identity is not guaranteed, but it is the cleanest next source-execution probe.",
+        "`matbench_v0.1_RFLR` was selected as the best next nontrivial bounded CPU replay target after TPOT-Mat. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook source, and seed/fit/predict signals. The follow-up replay is prediction-identical in `layer_b_rflr_steels_replay.md`.",
         "",
         "`matbench_v0.1_dummy` is the best positive-control replay target if an exact source-path check is needed, but it has low novelty. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.",
         "",
-        "## Next candidates",
+        "## Next remaining candidates",
         "",
         "| Rank | Submission | Tasks | Score | Priority | Evidence | Recommendation |",
         "|---:|---|---|---:|---|---|---|",
@@ -340,7 +342,7 @@ def main() -> int:
     print(json.dumps({
         "submissions": len(ranked),
         "report": str(args.report),
-        "top_non_tpot": [row["name"] for row in ranked if row["name"] != "matbench_v0.1_TPOT"][:5],
+        "top_remaining": [row["name"] for row in ranked if row["priority"] != "already replayed"][:5],
         "priorities": dict(Counter(row["priority"] for row in ranked)),
     }, indent=2, sort_keys=True))
     return 0

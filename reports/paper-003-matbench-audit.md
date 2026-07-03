@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 13:15 UTC_
+_Generated: 2026-07-03 13:20 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -8,7 +8,7 @@ _Generated: 2026-07-03 13:15 UTC_
 
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT source replay and candidate triage completed.
+Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT and RFLR source replays completed.
 
 ## Result
 
@@ -83,6 +83,15 @@ positive-control candidate if an exact low-novelty source replay is needed.
 
 Triage report: `layer_b_candidate_triage.md`.
 
+The RFLR replay then mirrors the submitted notebook's regex composition featurizer
+and `RandomForestRegressor(n_estimators=30, random_state=1)`. Under
+`env/matbench-tpot` with scikit-learn `1.2.2`, it regenerates all five submitted
+folds exactly: max prediction delta `0.0` and max score delta `0.0`. A logged
+control run under `env/jarvis` with scikit-learn `1.9.0` was runnable but
+non-identical, so this source replay is environment-sensitive.
+
+RFLR replay report: `layer_b_rflr_steels_replay.md`.
+
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
 the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
@@ -140,10 +149,12 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Source artifact inventory: `source_artifact_inventory.md`
 - Layer B candidate triage: `layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
+- Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
+- Layer B RFLR replay script: `../../scripts/matbench_rflr_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
@@ -338,12 +349,15 @@ layer_b_candidate_triage:
   script: scripts/matbench_layer_b_candidate_triage.py
   report: papers/matbench/layer_b_candidate_triage.md
   submissions_checked: 28
-  already_replayed: matbench_v0.1_TPOT
-  next_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
-  next_candidate_task: matbench_steels
-  next_candidate_priority: high
-  next_candidate_score: 78
-  positive_control_candidate: matbench_v0.1_dummy
+  already_replayed:
+    - matbench_v0.1_TPOT
+    - matbench_v0.1_RFLR
+  selected_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
+  selected_candidate_task: matbench_steels
+  selected_candidate_priority_before_replay: high
+  selected_candidate_score: 78
+  selected_candidate_replay_result: prediction_identical
+  remaining_positive_control_candidate: matbench_v0.1_dummy
   medium_priority_candidates: 1
   low_priority_candidates: 24
 
@@ -363,6 +377,24 @@ layer_b_tpot_steels:
   max_abs_score_delta: 24.770214843749955
   max_mae_delta: 5.20293162512
   interpretation: runnable notebook path, but submitted predictions are not exactly regenerated because the source refits unseeded stochastic estimators
+
+layer_b_rflr_steels:
+  status: source_replay_prediction_identical
+  script: scripts/matbench_rflr_replay.py
+  report: papers/matbench/layer_b_rflr_steels_replay.md
+  environment: env/matbench-tpot
+  sklearn_version: 1.2.2
+  submission: matbench_v0.1_RFLR
+  task: matbench_steels
+  folds_replayed: 5
+  max_abs_prediction_delta: 0.0
+  max_abs_score_delta: 0.0
+  version_sensitivity_check:
+    environment: env/jarvis
+    sklearn_version: 1.9.0
+    max_abs_prediction_delta: 108.58666666666704
+    max_abs_score_delta: 22.306666666666843
+  interpretation: notebook source path regenerates committed predictions exactly under the checked sklearn 1.2.2 environment
 
 candidate_screen:
   status: selected
@@ -1693,34 +1725,33 @@ note.
 
 # Matbench v0.1 Layer B candidate triage
 
-This ranks public Matbench v0.1 submission artifacts for the next bounded source replay after the TPOT-Mat smoke. The score is a triage heuristic, not a claim about scientific quality.
+This ranks public Matbench v0.1 submission artifacts for bounded source replays. The score is a triage heuristic, not a claim about scientific quality.
 
 - Submissions checked: 28
-- High-priority candidates: 1
+- High-priority candidates: 0
 - Medium-priority candidates: 1
 - Low-priority candidates: 24
-- Already replayed: 1
+- Already replayed: 2
 - Positive-control candidates: 1
 
 ## Decision
 
-`matbench_v0.1_RFLR` is the best next nontrivial bounded CPU replay target. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, a notebook source path, and seed/fit/predict signals. It has no saved fold-level model artifact, so prediction identity is not guaranteed, but it is the cleanest next source-execution probe.
+`matbench_v0.1_RFLR` was selected as the best next nontrivial bounded CPU replay target after TPOT-Mat. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook source, and seed/fit/predict signals. The follow-up replay is prediction-identical in `layer_b_rflr_steels_replay.md`.
 
 `matbench_v0.1_dummy` is the best positive-control replay target if an exact source-path check is needed, but it has low novelty. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.
 
-## Next candidates
+## Next remaining candidates
 
 | Rank | Submission | Tasks | Score | Priority | Evidence | Recommendation |
 |---:|---|---|---:|---|---|---|
-| 1 | matbench_v0.1_RFLR | matbench_steels | 78 | high | one task, all low-cost tasks, notebook, seed signal, fit/predict path, CPU deps | Best next nontrivial CPU replay target: one steels task, simple deps, seed signal. |
-| 2 | matbench_v0.1_dummy | matbench_dielectric, matbench_expt_gap, matbench_expt_is_metal, +10 more | 0 | positive-control candidate | 13 tasks, some low-cost tasks, large MP task, notebook, fit/predict path, CPU deps | Use as an exact-source positive control if a low-novelty replay is useful. |
+| 1 | matbench_v0.1_dummy | matbench_dielectric, matbench_expt_gap, matbench_expt_is_metal, +10 more | 0 | positive-control candidate | 13 tasks, some low-cost tasks, large MP task, notebook, fit/predict path, CPU deps | Use as an exact-source positive control if a low-novelty replay is useful. |
 
 ## Full ranking
 
 | Submission | Algorithm | Tasks | Source | Saved models | Score | Priority | Recommendation |
 |---|---|---:|---|---|---:|---|---|
-| matbench_v0.1_TPOT | TPOT-Mat | 1 | Matbench_steel_TPOT.ipynb, utils.py | tpot_best_pipeline.pkl | 93 | already replayed | Already used for the first bounded Layer B replay. |
-| matbench_v0.1_RFLR | RF-Regex Steels | 1 | Matbench_Steels_RFLR.ipynb |  | 78 | high | Best next nontrivial CPU replay target: one steels task, simple deps, seed signal. |
+| matbench_v0.1_TPOT | TPOT-Mat | 1 | Matbench_steel_TPOT.ipynb, utils.py | tpot_best_pipeline.pkl | 93 | already replayed | Already used for the first bounded Layer B replay; runnable but not prediction-identical. |
+| matbench_v0.1_RFLR | RF-Regex Steels | 1 | Matbench_Steels_RFLR.ipynb |  | 78 | already replayed | Already replayed after triage; prediction-identical in `layer_b_rflr_steels_replay.md`. |
 | matbench_v0.1_Auto-sklearn | AutoML-Mat | 1 | environment.yml, notebook.ipynb |  | 46 | medium | Defer for now; Auto-sklearn environment conflicts make this a poor next smoke. |
 | matbench_v0.1_lattice_xgboost | Lattice-XGBoost | 1 | notebook.ipynb |  | 28 | low | Bounded one-task baseline, but large MP e_form data and notebook-only source. |
 | matbench_v0.1_gptchem | gptchem | 4 | run_experiments_classification.py, run_experiments_regression.py |  | 21 | low | Defer for now; source path depends on external repository or service state. |
@@ -1780,6 +1811,44 @@ The replay mirrors the notebook path: load the pickled TPOT pipeline, load Matbe
 | 2 | 250 | 62 | 95.1945800781 | 17.3075896232 | 78.2786392704 | 78.4412038495 | 0.162564579133 |
 | 3 | 250 | 62 | 122.348510742 | 20.5586784117 | 77.9676911385 | 75.5824372322 | 2.38525390625 |
 | 4 | 250 | 62 | 59.8782958984 | 16.3402532762 | 71.5360627205 | 74.4317926222 | 2.89572990171 |
+
+
+
+## 7b. Layer B RFLR steels source replay
+
+# Matbench v0.1 RFLR steels source replay
+
+- Submission: `matbench_v0.1_RFLR` / `RF-Regex Steels`
+- Task: `matbench_steels`
+- Source artifacts used: `Matbench_Steels_RFLR.ipynb`, `results.json.gz`
+- Python environment: `env/matbench-tpot`
+- scikit-learn version: `1.2.2`
+- Model: `RandomForestRegressor(n_estimators=30, random_state=1)`
+- Folds replayed: 5
+- Max absolute prediction delta vs submitted artifact: 0.000e+00
+- Max absolute score delta vs submitted artifact: 0.000e+00
+
+## Method
+
+The replay mirrors the submitted notebook: convert each steel composition string into 13 fixed element-fraction columns with the notebook regex, fit a 30-tree scikit-learn random forest with `random_state=1` on each official training fold, predict the held-out fold, then compare with the committed `results.json.gz` predictions and stored scores.
+
+## Fold comparison
+
+| Fold | Train n | Test n | Max prediction delta | Mean prediction delta | Submitted MAE | Replay MAE | MAE delta | Max score delta |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 249 | 63 | 0 | 0 | 97.5403703704 | 97.5403703704 | 0 | 0 |
+| 1 | 249 | 63 | 0 | 0 | 86.2788888889 | 86.2788888889 | 0 | 0 |
+| 2 | 250 | 62 | 0 | 0 | 79.5098924731 | 79.5098924731 | 0 | 0 |
+| 3 | 250 | 62 | 0 | 0 | 94.5817204301 | 94.5817204301 | 0 | 0 |
+| 4 | 250 | 62 | 0 | 0 | 95.0371505376 | 95.0371505376 | 0 | 0 |
+
+## Interpretation
+
+The source replay is prediction-identical to the submitted artifact.
+
+## Version note
+
+A logged control run in env/jarvis with scikit-learn 1.9.0 was runnable but non-identical (max prediction delta 108.587, max score delta 22.307). The prediction-identical replay above uses scikit-learn 1.2.2.
 
 
 
@@ -1978,74 +2047,156 @@ Thanks for maintaining the benchmark.
 
 ## 9. Run log (tail)
 
+
+### 2026-07-03 13:15 UTC — paper003 final reassemble report after Layer B triage verification
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131543-521759.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:17 UTC — paper003 replay RFLR steels source
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_rflr_replay.py --report papers\matbench\layer_b_rflr_steels_replay.md
+```
+
+- exit code: **0**  | duration: 3.3s  | raw log: `logs/cmd-20260703-131751-195964.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 108.58666666666704,
+  "max_score_delta": 22.306666666666843,
+  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
+  "sklearn": "1.9.0"
+}
+```
+
+### 2026-07-03 13:18 UTC — paper003 replay RFLR steels source in TPOT sklearn env
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report logs\rflr_steels_replay_tpot_env.md
+```
+
+- exit code: **0**  | duration: 11.7s  | raw log: `logs/cmd-20260703-131812-413748.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 0.0,
+  "max_score_delta": 0.0,
+  "report": "logs\\rflr_steels_replay_tpot_env.md",
+  "sklearn": "1.2.2"
+}
+```
+
+### 2026-07-03 13:18 UTC — paper003 replay RFLR steels source exact sklearn env
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_rflr_steels_replay.md
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-131842-817474.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 0.0,
+  "max_score_delta": 0.0,
+  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
+  "sklearn": "1.2.2"
+}
+```
+
+### 2026-07-03 13:19 UTC — paper003 update Layer B triage after RFLR replay
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+```
+
+- exit code: **0**  | duration: 5.0s  | raw log: `logs/cmd-20260703-131932-610260.log`
+
+output tail:
+```
+    "already replayed": 2,
+    "low": 24,
+    "medium": 1,
+    "positive-control candidate": 1
+  },
+  "report": "papers\\matbench\\layer_b_candidate_triage.md",
+  "submissions": 28,
+  "top_remaining": [
     "matbench_v0.1_Auto-sklearn",
+    "matbench_v0.1_lattice_xgboost",
+    "matbench_v0.1_gptchem",
     "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7",
-    "matbench_v0.1_Ax_CrabNet_v1.2.1",
-    "matbench_v0.1_Ax_SAASBO_CrabNet_v1.2.7"
+    "matbench_v0.1_Ax_CrabNet_v1.2.1"
   ]
 }
 ```
 
-### 2026-07-03 13:13 UTC — paper003 rerun Matbench Layer B triage after token fix
+### 2026-07-03 13:20 UTC — paper003 regenerate RFLR replay with version note
 
 ```
-$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_rflr_steels_replay.md --extra-note A logged control run in env/jarvis with scikit-learn 1.9.0 was runnable but non-identical (max prediction delta 108.587, max score delta 22.307). The prediction-identical replay above uses scikit-learn 1.2.2.
 ```
 
-- exit code: **0**  | duration: 4.5s  | raw log: `logs/cmd-20260703-131354-426011.log`
+- exit code: **0**  | duration: 1.3s  | raw log: `logs/cmd-20260703-132030-835145.log`
 
 output tail:
 ```
-    "high": 1,
-    "low": 24,
-    "medium": 1,
-    "positive-control candidate": 1
-  },
-  "report": "papers\\matbench\\layer_b_candidate_triage.md",
-  "submissions": 28,
-  "top_non_tpot": [
-    "matbench_v0.1_RFLR",
-    "matbench_v0.1_Auto-sklearn",
-    "matbench_v0.1_lattice_xgboost",
-    "matbench_v0.1_gptchem",
-    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7"
-  ]
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 0.0,
+  "max_score_delta": 0.0,
+  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
+  "sklearn": "1.2.2"
 }
 ```
 
-### 2026-07-03 13:14 UTC — paper003 reassemble report with Layer B candidate triage
+### 2026-07-03 13:20 UTC — paper003 reassemble report with RFLR replay
 
 ```
 $ .venv\Scripts\python.exe scripts\make_matbench_report.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131441-046795.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132037-680777.log`
 
 output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
 
-### 2026-07-03 13:14 UTC — paper003 verify Layer B candidate triage docs
+### 2026-07-03 13:20 UTC — paper003 verify RFLR replay docs
 
 ```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_candidate_triage']['next_nontrivial_cpu_replay_candidate']=='matbench_v0.1_RFLR', 'matbench_v0.1_RFLR' in triage, 'Layer B candidate triage' in assembled, 'matbench_layer_b_candidate_triage.py' in summary, 'layer_b_candidate_triage.md' in packet, 'layer_b_candidate_triage.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_rflr_replay.py', doraise=True); py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); rflr=Path('papers/matbench/layer_b_rflr_steels_replay.md').read_text(encoding='utf-8'); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_rflr_steels']['max_abs_prediction_delta']==0.0, meta['layer_b_rflr_steels']['sklearn_version']=='1.2.2', 'Max absolute prediction delta vs submitted artifact: 0.000e+00' in rflr, 'Version note' in rflr, 'Already replayed: 2' in triage, 'Layer B RFLR steels source replay' in assembled, 'matbench_rflr_replay.py' in summary, 'RFLR source replay' in packet, 'layer_b_rflr_steels_replay.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131448-708024.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132048-083620.log`
 
 output tail:
 ```
-{'checks': [True, True, True, True, True, True]}
+{'checks': [True, True, True, True, True, True, True, True, True]}
 ```
 
-### 2026-07-03 13:14 UTC — paper003 Layer B candidate triage whitespace check
+### 2026-07-03 13:20 UTC — paper003 RFLR replay whitespace check
 
 ```
 $ git diff --check
 ```
 
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-131452-731743.log`
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132052-572641.log`
 
 output tail:
 ```
@@ -2054,88 +2205,6 @@ warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be repl
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 13:14 UTC — paper003 final reassemble report after Layer B triage checks
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131457-031263.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 13:15 UTC — paper003 rerun Matbench Layer B triage after candidate filter
-
-```
-$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
-```
-
-- exit code: **0**  | duration: 4.7s  | raw log: `logs/cmd-20260703-131517-887598.log`
-
-output tail:
-```
-    "high": 1,
-    "low": 24,
-    "medium": 1,
-    "positive-control candidate": 1
-  },
-  "report": "papers\\matbench\\layer_b_candidate_triage.md",
-  "submissions": 28,
-  "top_non_tpot": [
-    "matbench_v0.1_RFLR",
-    "matbench_v0.1_Auto-sklearn",
-    "matbench_v0.1_lattice_xgboost",
-    "matbench_v0.1_gptchem",
-    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7"
-  ]
-}
-```
-
-### 2026-07-03 13:15 UTC — paper003 final reassemble report after Layer B triage filter
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131526-670192.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 13:15 UTC — paper003 verify Layer B candidate triage after filter
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); checks=[meta['layer_b_candidate_triage']['next_nontrivial_cpu_replay_candidate']=='matbench_v0.1_RFLR', '| 1 | matbench_v0.1_RFLR |' in triage, '| 2 | matbench_v0.1_dummy |' in triage, 'matbench_v0.1_Auto-sklearn | matbench_steels | 46 | medium' not in triage, 'Layer B candidate triage' in assembled]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131534-097192.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True]}
-```
-
-### 2026-07-03 13:15 UTC — paper003 Layer B candidate triage final whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-131537-880091.log`
-
-output tail:
-```
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
 ```
 

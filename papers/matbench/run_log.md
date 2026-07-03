@@ -2413,3 +2413,181 @@ output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
+
+### 2026-07-03 13:17 UTC — paper003 replay RFLR steels source
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_rflr_replay.py --report papers\matbench\layer_b_rflr_steels_replay.md
+```
+
+- exit code: **0**  | duration: 3.3s  | raw log: `logs/cmd-20260703-131751-195964.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 108.58666666666704,
+  "max_score_delta": 22.306666666666843,
+  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
+  "sklearn": "1.9.0"
+}
+```
+
+### 2026-07-03 13:18 UTC — paper003 replay RFLR steels source in TPOT sklearn env
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report logs\rflr_steels_replay_tpot_env.md
+```
+
+- exit code: **0**  | duration: 11.7s  | raw log: `logs/cmd-20260703-131812-413748.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 0.0,
+  "max_score_delta": 0.0,
+  "report": "logs\\rflr_steels_replay_tpot_env.md",
+  "sklearn": "1.2.2"
+}
+```
+
+### 2026-07-03 13:18 UTC — paper003 replay RFLR steels source exact sklearn env
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_rflr_steels_replay.md
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-131842-817474.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 0.0,
+  "max_score_delta": 0.0,
+  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
+  "sklearn": "1.2.2"
+}
+```
+
+### 2026-07-03 13:19 UTC — paper003 update Layer B triage after RFLR replay
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+```
+
+- exit code: **0**  | duration: 5.0s  | raw log: `logs/cmd-20260703-131932-610260.log`
+
+output tail:
+```
+    "already replayed": 2,
+    "low": 24,
+    "medium": 1,
+    "positive-control candidate": 1
+  },
+  "report": "papers\\matbench\\layer_b_candidate_triage.md",
+  "submissions": 28,
+  "top_remaining": [
+    "matbench_v0.1_Auto-sklearn",
+    "matbench_v0.1_lattice_xgboost",
+    "matbench_v0.1_gptchem",
+    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7",
+    "matbench_v0.1_Ax_CrabNet_v1.2.1"
+  ]
+}
+```
+
+### 2026-07-03 13:20 UTC — paper003 regenerate RFLR replay with version note
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_rflr_steels_replay.md --extra-note A logged control run in env/jarvis with scikit-learn 1.9.0 was runnable but non-identical (max prediction delta 108.587, max score delta 22.307). The prediction-identical replay above uses scikit-learn 1.2.2.
+```
+
+- exit code: **0**  | duration: 1.3s  | raw log: `logs/cmd-20260703-132030-835145.log`
+
+output tail:
+```
+{
+  "folds_replayed": 5,
+  "max_prediction_delta": 0.0,
+  "max_score_delta": 0.0,
+  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
+  "sklearn": "1.2.2"
+}
+```
+
+### 2026-07-03 13:20 UTC — paper003 reassemble report with RFLR replay
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132037-680777.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:20 UTC — paper003 verify RFLR replay docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_rflr_replay.py', doraise=True); py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); rflr=Path('papers/matbench/layer_b_rflr_steels_replay.md').read_text(encoding='utf-8'); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_rflr_steels']['max_abs_prediction_delta']==0.0, meta['layer_b_rflr_steels']['sklearn_version']=='1.2.2', 'Max absolute prediction delta vs submitted artifact: 0.000e+00' in rflr, 'Version note' in rflr, 'Already replayed: 2' in triage, 'Layer B RFLR steels source replay' in assembled, 'matbench_rflr_replay.py' in summary, 'RFLR source replay' in packet, 'layer_b_rflr_steels_replay.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132048-083620.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:20 UTC — paper003 RFLR replay whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132052-572641.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:20 UTC — paper003 final reassemble report after RFLR replay checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132056-502016.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:21 UTC — paper003 RFLR replay final whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132119-924595.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
+```
