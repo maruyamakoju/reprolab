@@ -213,8 +213,13 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       (`layer_c_resolution.md`)
 - [x] JARVIS paired bootstrap on the 20 closest adjacent pairs: 17/20 95% CIs
       include zero under fixed-test-set resampling (`layer_c_bootstrap.md`)
-- [ ] Next: either scale the `matminer_rf` smoke further or package the JARVIS
-      findings for external review
+- [x] Paper-003 candidate selected: Matbench v0.1, with public `results.json.gz`,
+      `info.json`, and source/notebook artifacts in the official repo
+- [x] Matbench Layer A seed passed: RF-SCM/Magpie `matbench_steels` +
+      `matbench_expt_is_metal`, 10 folds checked, max score delta 1.110e-16
+      (`papers/matbench/layer_a_score_recompute.md`)
+- [ ] Next: broaden Matbench score recomputation across more low-cost tasks and
+      scan classification submissions for probability-vs-label ROC-AUC behavior
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -255,6 +260,27 @@ Artifacts:
 - Layer C script: `scripts/jarvis_resolution.py`
 - Layer C bootstrap script: `scripts/jarvis_bootstrap.py`
 - Report script: `scripts/make_jarvis_report.py`
+
+## Paper-003 Candidate — Matbench v0.1
+
+Initial target selected while Paper-001/Paper-002 upstream feedback is pending:
+Matbench v0.1, using the official repository's committed leaderboard submission
+artifacts. Each submission directory is expected to contain `results.json.gz`,
+`info.json`, and source code or a notebook.
+
+Layer A seed result: for `matbench_v0.1_rf`, `scripts/matbench_score.py`
+recomputed all fold scores for `matbench_steels` and `matbench_expt_is_metal`
+from released predictions, official split IDs, and Matminer targets. All 10 checked
+folds match the stored scores to numerical precision (max absolute delta 1.110e-16).
+
+Artifacts:
+
+- Summary: `papers/matbench/summary.md`
+- Plan: `papers/matbench/reproduction_plan.md`
+- Metadata: `papers/matbench/metadata.yaml`
+- Candidate screen: `papers/matbench/candidate_screen.md`
+- Layer A seed report: `papers/matbench/layer_a_score_recompute.md`
+- Script: `scripts/matbench_score.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

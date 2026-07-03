@@ -1,0 +1,58 @@
+# ReproLab Paper-003 candidate - Matbench v0.1
+paper:
+  title: "Benchmarking Materials Property Prediction Methods: The Matbench Test Set and Automatminer Reference Algorithm"
+  venue: npj Computational Materials
+  volume_article: 6, 138
+  year: 2020
+  doi: https://doi.org/10.1038/s41524-020-00406-3
+
+benchmark:
+  name: Matbench v0.1
+  repo: https://github.com/materialsproject/matbench
+  repo_commit_pinned: 936176db18ca4cd7b38cbd957c017a5bac770c6b
+  website: https://matbench.materialsproject.org
+  docs_submission: https://matbench.materialsproject.org/How%20To%20Use/3submit/
+  benchmark_info: https://matbench.materialsproject.org/Benchmark%20Info/matbench_v0.1/
+  license: modified BSD license file in upstream repo
+  domain: materials property prediction benchmarks
+  tasks: 13
+
+artifact_model:
+  required_submission_files:
+    - results.json.gz
+    - info.json
+    - source code or notebook
+  local_submission_root: vendor/matbench/benchmarks
+  seed_submission: matbench_v0.1_rf
+  seed_results: vendor/matbench/benchmarks/matbench_v0.1_rf/results.json.gz
+
+task_under_audit:
+  layer_a_seed_tasks:
+    - matbench_steels
+    - matbench_expt_is_metal
+  metrics_regression:
+    - mae
+    - rmse
+    - mape
+    - max_error
+  metrics_classification:
+    - accuracy
+    - balanced_accuracy
+    - f1
+    - rocauc
+
+layer_a_seed:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_score_recompute.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 2
+  folds_checked: 10
+  max_abs_stored_vs_recomputed_delta: 1.1102230246251565e-16
+
+candidate_screen:
+  status: selected
+  report: papers/matbench/candidate_screen.md
+  reason: public results.json.gz artifacts, info.json metadata, and source files are committed for many leaderboard submissions
+  main_risk: full all-task verification can require loading large structure datasets

@@ -42,7 +42,7 @@ def main() -> int:
     RAW_LOGS.mkdir(exist_ok=True)
     run_log.parent.mkdir(parents=True, exist_ok=True)
     started = datetime.now(timezone.utc)
-    stamp = started.strftime("%Y%m%d-%H%M%S")
+    stamp = started.strftime("%Y%m%d-%H%M%S-%f")
     raw_path = RAW_LOGS / f"cmd-{stamp}.log"
 
     t0 = time.time()

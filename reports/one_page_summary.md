@@ -99,4 +99,6 @@ External handoff packet is prepared in `reports/external_release_packet.md`. Whi
 upstream feedback is pending, the same audit template has been applied to
 JARVIS-Leaderboard as Paper-002. Its assembled report is
 `reports/paper-002-jarvis-leaderboard-audit.md`, and the short external packet is
-`reports/paper-002-external_release_packet.md`.
+`reports/paper-002-external_release_packet.md`. Paper-003 scouting has started on
+Matbench v0.1: the RF baseline's saved fold scores reproduce on two seed tasks
+(`papers/matbench/summary.md`).
