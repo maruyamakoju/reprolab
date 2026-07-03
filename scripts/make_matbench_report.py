@@ -45,6 +45,7 @@ def main() -> None:
         section("5d. MODNet v0.1.10 probability-AUC probe", PAPER / "layer_a_modnet_0_1_10_probability_auc_probe.md"),
         section("5e. MODNet v0.1.12 probability-AUC probe", PAPER / "layer_a_modnet_0_1_12_probability_auc_probe.md"),
         section("6. Source artifact inventory", PAPER / "source_artifact_inventory.md"),
+        section("6b. Layer B candidate triage", PAPER / "layer_b_candidate_triage.md"),
         section("7. Layer B TPOT steels source replay", PAPER / "layer_b_tpot_steels_replay.md"),
         section("8. Classification ROC-AUC upstream issue draft", ROOT / "reports" / "paper-003_upstream_issue_draft.md"),
         section("8b. GN-OA MAPE upstream issue draft", ROOT / "reports" / "paper-003_gn_oa_mape_issue_draft.md"),

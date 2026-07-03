@@ -175,6 +175,20 @@ source_artifact_inventory:
   pickle_or_joblib_model_artifacts: 1
   best_bounded_replay_candidate: matbench_v0.1_TPOT
 
+layer_b_candidate_triage:
+  status: completed
+  script: scripts/matbench_layer_b_candidate_triage.py
+  report: papers/matbench/layer_b_candidate_triage.md
+  submissions_checked: 28
+  already_replayed: matbench_v0.1_TPOT
+  next_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
+  next_candidate_task: matbench_steels
+  next_candidate_priority: high
+  next_candidate_score: 78
+  positive_control_candidate: matbench_v0.1_dummy
+  medium_priority_candidates: 1
+  low_priority_candidates: 24
+
 layer_b_tpot_steels:
   status: source_replay_completed_non_identical
   script: scripts/matbench_tpot_replay.py

@@ -259,6 +259,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench source artifact inventory: 28 submission directories scanned; 11
       direct `run.py` files, 14 notebooks, and only 1 pickle/joblib model artifact
       (`papers/matbench/source_artifact_inventory.md`)
+- [x] Matbench Layer B candidate triage: next nontrivial bounded CPU target is
+      `matbench_v0.1_RFLR`; positive-control target is `matbench_v0.1_dummy`
+      (`papers/matbench/layer_b_candidate_triage.md`)
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,
       `reports/paper-003-external_release_packet.md`)
@@ -337,6 +340,10 @@ prediction-identical: the notebook refits stochastic estimators without a submit
 random seed. With audit seed 0, replay mean MAE is 79.094 vs submitted mean MAE
 79.947.
 
+Layer B candidate triage: after TPOT-Mat, `matbench_v0.1_RFLR` is the next
+nontrivial bounded CPU replay target; `matbench_v0.1_dummy` is the best
+positive-control target.
+
 Artifacts:
 
 - Assembled report: `reports/paper-003-matbench-audit.md`
@@ -359,11 +366,13 @@ Artifacts:
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
+- Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
 - All-submission score scan script: `scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `scripts/matbench_tpot_replay.py`
+- Layer B triage script: `scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`
 - Submission inventory script: `scripts/matbench_submission_inventory.py`

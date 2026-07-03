@@ -42,6 +42,9 @@ submitted random seed.
 - **Source inventory:** 28 submission directories scanned; 11 have direct
   `run.py` files, 14 have notebooks, and only one has a pickle/joblib model
   artifact. This supports treating TPOT-Mat as the bounded Layer B candidate.
+- **Layer B candidate triage:** after TPOT-Mat, the best next nontrivial bounded
+  CPU replay target is `matbench_v0.1_RFLR` on `matbench_steels`; the best
+  low-novelty positive control is `matbench_v0.1_dummy`.
 
 ## Key numbers
 
@@ -55,6 +58,7 @@ submitted random seed.
 | Classification leaderboard rows checked | 27 displayed rows | all `mean rocauc == mean balanced_accuracy` |
 | MODNet probability-AUC gap | 4 submission/task probes | mean gap 0.029565-0.122272 |
 | Source artifact inventory | 28 submission directories | 1 pickle/joblib model artifact |
+| Layer B candidate triage | 28 submissions | next nontrivial CPU target `matbench_v0.1_RFLR` |
 | TPOT source replay | 5 steels folds | runnable, non-identical predictions |
 
 ## Evidence map
@@ -79,6 +83,7 @@ submitted random seed.
   - `papers/matbench/layer_a_modnet_0_1_10_probability_auc_probe.md`
   - `papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md`
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
+- Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
@@ -89,6 +94,7 @@ submitted random seed.
   - `scripts/matbench_classification_scan.py`
   - `scripts/matbench_leaderboard_metric_scan.py`
   - `scripts/matbench_submission_inventory.py`
+  - `scripts/matbench_layer_b_candidate_triage.py`
   - `scripts/matbench_tpot_replay.py`
   - `scripts/make_matbench_report.py`
 
@@ -128,4 +134,6 @@ submitted random seed.
 3. If maintainers confirm intended behavior, update wording/docs so classification
    leaderboards do not imply probability ROC-AUC when labels were used.
 4. If deeper Layer B is needed, choose submissions with fixed seeds or saved
-   fold-level model artifacts before attempting larger structure tasks.
+   fold-level model artifacts before attempting larger structure tasks. The next
+   bounded CPU target is `matbench_v0.1_RFLR`; `matbench_v0.1_dummy` is a
+   positive-control option.

@@ -2220,3 +2220,196 @@ output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
+
+### 2026-07-03 13:13 UTC — paper003 triage next Matbench Layer B candidates
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+```
+
+- exit code: **0**  | duration: 5.6s  | raw log: `logs/cmd-20260703-131307-844257.log`
+
+output tail:
+```
+  "priorities": {
+    "already replayed": 1,
+    "low": 26,
+    "positive-control candidate": 1
+  },
+  "report": "papers\\matbench\\layer_b_candidate_triage.md",
+  "submissions": 28,
+  "top_non_tpot": [
+    "matbench_v0.1_RFLR",
+    "matbench_v0.1_Auto-sklearn",
+    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7",
+    "matbench_v0.1_Ax_CrabNet_v1.2.1",
+    "matbench_v0.1_Ax_SAASBO_CrabNet_v1.2.7"
+  ]
+}
+```
+
+### 2026-07-03 13:13 UTC — paper003 rerun Matbench Layer B triage after token fix
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+```
+
+- exit code: **0**  | duration: 4.5s  | raw log: `logs/cmd-20260703-131354-426011.log`
+
+output tail:
+```
+    "high": 1,
+    "low": 24,
+    "medium": 1,
+    "positive-control candidate": 1
+  },
+  "report": "papers\\matbench\\layer_b_candidate_triage.md",
+  "submissions": 28,
+  "top_non_tpot": [
+    "matbench_v0.1_RFLR",
+    "matbench_v0.1_Auto-sklearn",
+    "matbench_v0.1_lattice_xgboost",
+    "matbench_v0.1_gptchem",
+    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7"
+  ]
+}
+```
+
+### 2026-07-03 13:14 UTC — paper003 reassemble report with Layer B candidate triage
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131441-046795.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:14 UTC — paper003 verify Layer B candidate triage docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_candidate_triage']['next_nontrivial_cpu_replay_candidate']=='matbench_v0.1_RFLR', 'matbench_v0.1_RFLR' in triage, 'Layer B candidate triage' in assembled, 'matbench_layer_b_candidate_triage.py' in summary, 'layer_b_candidate_triage.md' in packet, 'layer_b_candidate_triage.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131448-708024.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:14 UTC — paper003 Layer B candidate triage whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-131452-731743.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:14 UTC — paper003 final reassemble report after Layer B triage checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131457-031263.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:15 UTC — paper003 rerun Matbench Layer B triage after candidate filter
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+```
+
+- exit code: **0**  | duration: 4.7s  | raw log: `logs/cmd-20260703-131517-887598.log`
+
+output tail:
+```
+    "high": 1,
+    "low": 24,
+    "medium": 1,
+    "positive-control candidate": 1
+  },
+  "report": "papers\\matbench\\layer_b_candidate_triage.md",
+  "submissions": 28,
+  "top_non_tpot": [
+    "matbench_v0.1_RFLR",
+    "matbench_v0.1_Auto-sklearn",
+    "matbench_v0.1_lattice_xgboost",
+    "matbench_v0.1_gptchem",
+    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7"
+  ]
+}
+```
+
+### 2026-07-03 13:15 UTC — paper003 final reassemble report after Layer B triage filter
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131526-670192.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:15 UTC — paper003 verify Layer B candidate triage after filter
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); checks=[meta['layer_b_candidate_triage']['next_nontrivial_cpu_replay_candidate']=='matbench_v0.1_RFLR', '| 1 | matbench_v0.1_RFLR |' in triage, '| 2 | matbench_v0.1_dummy |' in triage, 'matbench_v0.1_Auto-sklearn | matbench_steels | 46 | medium' not in triage, 'Layer B candidate triage' in assembled]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131534-097192.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True]}
+```
+
+### 2026-07-03 13:15 UTC — paper003 Layer B candidate triage final whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-131537-880091.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:15 UTC — paper003 final reassemble report after Layer B triage verification
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131543-521759.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```

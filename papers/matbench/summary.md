@@ -1,6 +1,6 @@
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A RF composition-task check passed; bounded Layer B TPOT source replay completed.
+Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT source replay and candidate triage completed.
 
 ## Result
 
@@ -66,6 +66,15 @@ notebook sources, and only one pickle/joblib model artifact. `matbench_v0.1_TPOT
 stands out as the best bounded replay candidate because it has one small task, a
 notebook, a submitted helper, and a pickled TPOT pipeline.
 
+After the TPOT replay, `scripts/matbench_layer_b_candidate_triage.py` ranked all
+28 submissions for the next bounded source replay. It identifies
+`matbench_v0.1_RFLR` as the best next nontrivial CPU target: one
+`matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook
+source, and seed/fit/predict signals. `matbench_v0.1_dummy` is the best
+positive-control candidate if an exact low-novelty source replay is needed.
+
+Triage report: `layer_b_candidate_triage.md`.
+
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
 the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
@@ -121,11 +130,13 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
 - Source artifact inventory: `source_artifact_inventory.md`
+- Layer B candidate triage: `layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
+- Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
 - Submission inventory script: `../../scripts/matbench_submission_inventory.py`
