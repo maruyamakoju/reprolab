@@ -78,9 +78,9 @@ full descriptor/data-directory generation. Details are in `layer_b_probe.md`.
 
 An isolated JARVIS env was then created under `env/jarvis`, with `jarvis-tools` and
 `matminer` installed. `scripts/jarvis_matminer_rf_smoke.py` ran a bounded CPU smoke
-on the official dft_3d formation-energy split: 1024 train rows, 256 test rows, 273
+on the official dft_3d formation-energy split: 2048 train rows, 512 test rows, 273
 Matminer feature columns, 100-tree random forest, 0 all-NaN feature rows, subset
-MAE 0.26783845. Report: `layer_b_matminer_rf_smoke.md`.
+MAE 0.24470625. Report: `layer_b_matminer_rf_smoke.md`.
 
 This is not a full leaderboard regeneration and does not claim the official
 `matminer_rf` MAE. It establishes that the public runner family can be adapted into

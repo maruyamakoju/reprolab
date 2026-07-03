@@ -8,14 +8,14 @@ leaderboard reproduction and not a claim to reproduce the official
 
 ## Result
 
-- Train rows: 1024
-- Test rows: 256
+- Train rows: 2048
+- Test rows: 512
 - Feature columns: 273
 - All-NaN feature rows: 0
 - Random forest trees: 100
-- Subset MAE: 0.26783845
-- Runtime seconds: 103.6
-- Prediction CSV: `experiments\jarvis-leaderboard\matminer_rf_smoke1024\predictions.csv`
+- Subset MAE: 0.24470625
+- Runtime seconds: 205.3
+- Prediction CSV: `experiments\jarvis-leaderboard\matminer_rf_smoke2048\predictions.csv`
 
 ## Scope
 

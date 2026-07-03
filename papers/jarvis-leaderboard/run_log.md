@@ -1381,3 +1381,69 @@ output tail:
 ```
 {'draft_lines': 74, 'checks': [True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 07:22 UTC — paper002 matminer_rf scaled pre-smoke 2048x512
+
+```
+$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 2048 --test-size 512 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke2048\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke2048.md
+```
+
+- exit code: **0**  | duration: 208.6s  | raw log: `logs/cmd-20260703-072239.log`
+
+output tail:
+```
+Loading the zipfile...
+Loading completed.
+{
+  "all_nan_feature_rows": 0,
+  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
+  "feature_columns": 273,
+  "first_test_id": "JVASP-38636",
+  "first_train_id": "JVASP-21450",
+  "mae": 0.2447062484375,
+  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke2048\\predictions.csv",
+  "seconds": 205.348641872406,
+  "test_rows": 512,
+  "train_rows": 2048,
+  "trees": 100
+}
+```
+
+### 2026-07-03 07:26 UTC — verify paper002 matminer_rf 2048x512 docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import yaml; meta=yaml.safe_load(Path('papers/jarvis-leaderboard/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md').read_text(encoding='utf-8'); summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); plan=Path('papers/jarvis-leaderboard/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); packet=Path('reports/paper-002-external_release_packet.md').read_text(encoding='utf-8'); draft=Path('reports/paper-002_outreach_draft.md').read_text(encoding='utf-8'); smoke=meta['layer_b_probe']['smoke']; checks=[smoke['train_rows']==2048,smoke['test_rows']==512,smoke['feature_columns']==273,smoke['all_nan_feature_rows']==0,abs(smoke['subset_mae']-0.2447062484375)<1e-15,'2048' in report,'0.24470625' in report,'2048 train / 512 test' in readme,'2048 train rows, 512 test rows' in summary,'2048 | 512' in plan,'2048 train / 512 test' in packet,'2048 train / 512 test' in draft,not Path('papers/jarvis-leaderboard/layer_b_matminer_rf_smoke2048.md').exists()]; print({'smoke': smoke, 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-072646.log`
+
+output tail:
+```
+{'smoke': {'script': 'scripts/jarvis_matminer_rf_smoke.py', 'report': 'papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md', 'benchmark': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'train_rows': 2048, 'test_rows': 512, 'feature_columns': 273, 'all_nan_feature_rows': 0, 'trees': 100, 'subset_mae': 0.2447062484375}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 07:26 UTC — reassemble Paper-002 report after 2048x512 smoke
+
+```
+$ .venv\Scripts\python.exe scripts\make_jarvis_report.py
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-072651.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-002-jarvis-leaderboard-audit.md
+```
+
+### 2026-07-03 07:26 UTC — verify Paper-002 assembled report after 2048x512 smoke
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; report=Path('reports/paper-002-jarvis-leaderboard-audit.md').read_text(encoding='utf-8'); checks=['2048 train rows, 512 test rows' in report,'0.24470625' in report,'matminer_rf_smoke2048' in report,'17/20 closest adjacent-pair 95% CIs include zero' in report]; print({'report_lines': len(report.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-072657.log`
+
+output tail:
+```
+{'report_lines': 1394, 'checks': [True, True, True, True]}
+```

@@ -34,9 +34,9 @@ are <=0.010 in metric units. For the 20 closest adjacent pairs, a paired bootstr
 over the fixed public test rows gives 17/20 95% CIs crossing zero.
 
 I also verified a bounded Layer B execution path in an isolated JARVIS environment:
-a `matminer_rf`-style CPU smoke on a deterministic 1024 train / 256 test dft_3d
+a `matminer_rf`-style CPU smoke on a deterministic 2048 train / 512 test dft_3d
 formation-energy slice completed with 273 Matminer features, 0 all-NaN feature
-rows, and subset MAE 0.26783845. This is explicitly not a full leaderboard
+rows, and subset MAE 0.24470625. This is explicitly not a full leaderboard
 regeneration and not a claim to reproduce the official `matminer_rf` MAE.
 
 Short packet:
