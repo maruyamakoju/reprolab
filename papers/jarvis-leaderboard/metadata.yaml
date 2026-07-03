@@ -29,3 +29,9 @@ layer_a_seed_models:
   kgcnn_coGN: 0.0271
   alignn_model: 0.0331
   matminer_rf: 0.096
+
+layer_a_expanded_tasks:
+  total_benchmarks: 6
+  total_submissions: 79
+  all_match_official_rounding: true
+  all_csv_ids_match_json_test_split: true

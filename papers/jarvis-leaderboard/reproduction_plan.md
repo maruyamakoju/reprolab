@@ -1,7 +1,7 @@
 # Reproduction Plan - JARVIS-Leaderboard (Paper-002 candidate)
 
-Status: Layer A for the selected benchmark passed for all 15 submissions listed in
-the pinned docs page on 2026-07-03.
+Status: Layer A passed for 6 selected JARVIS-Leaderboard AI single-property
+prediction benchmarks (79 total submissions) on 2026-07-03.
 
 ## 0. Why this candidate
 
@@ -66,6 +66,19 @@ python scripts/run_command.py --paper jarvis-leaderboard \
 Every submission matched the official page within displayed rounding, and every CSV
 id set exactly matched the JSON `test` split (5,572 rows).
 
+The same Layer A path was then extended to 5 additional JARVIS pages. Aggregate:
+79/79 submissions pass, with exact CSV-vs-JSON test id agreement in every checked
+submission.
+
+| benchmark property | submissions | test rows | report |
+|---|---:|---:|---|
+| formation_energy_peratom | 15 | 5,572 | `metric_check.md` |
+| ehull | 11 | 5,537 | `metric_check-ehull.md` |
+| optb88vdw_bandgap | 14 | 5,572 | `metric_check-optb88vdw_bandgap.md` |
+| optb88vdw_total_energy | 14 | 5,572 | `metric_check-optb88vdw_total_energy.md` |
+| bulk_modulus_kv | 12 | 1,968 | `metric_check-bulk_modulus_kv.md` |
+| slme | 13 | 906 | `metric_check-slme.md` |
+
 Closest adjacent official gaps in the selected leaderboard are small:
 
 - `kgcnn_coNGN` vs `potnet`: 0.0002 MAE
@@ -77,7 +90,8 @@ be the natural Layer C analogue.
 
 ## 6. Next
 
-1. Decide whether to broaden Layer A across more JARVIS tasks.
+1. Decide whether to broaden Layer A across a different JARVIS task family
+   (classification or spectra), not just more single-property MAE pages.
 2. Check whether a Layer B model-execution smoke is practical for one tractable
    baseline.
 3. Add a small leaderboard-resolution analysis if this becomes the main Paper-002

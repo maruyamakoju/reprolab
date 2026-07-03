@@ -163,3 +163,268 @@ output tail:
 ```
 
 ```
+
+### 2026-07-03 05:59 UTC — verify jarvis sparse helper py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_score.py scripts\jarvis_sparse.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-055907.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:59 UTC — paper002 sparse checkout five additional JARVIS tasks
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_sparse.py --vendor vendor\jarvis_leaderboard --benchmarks AI-SinglePropertyPrediction-ehull-dft_3d-test-mae AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae AI-SinglePropertyPrediction-slme-dft_3d-test-mae
+```
+
+- exit code: **0**  | duration: 1.3s  | raw log: `logs/cmd-20260703-055912.log`
+
+output tail:
+```
+AI-SinglePropertyPrediction-ehull-dft_3d-test-mae: 28 paths (11 contribution CSVs)
+AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae: 36 paths (15 contribution CSVs)
+AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae: 34 paths (14 contribution CSVs)
+AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae: 30 paths (12 contribution CSVs)
+AI-SinglePropertyPrediction-slme-dft_3d-test-mae: 32 paths (13 contribution CSVs)
+added 94 sparse-checkout paths
+```
+
+### 2026-07-03 05:59 UTC — paper002 layerA five additional JARVIS tasks
+
+```
+$ powershell -NoProfile -Command  = @('AI-SinglePropertyPrediction-ehull-dft_3d-test-mae','AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae','AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae','AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae','AI-SinglePropertyPrediction-slme-dft_3d-test-mae'); foreach ( in ) {  =  -replace '^AI-SinglePropertyPrediction-','' -replace '-dft_3d-test-mae$',''; & .\.venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark  --models all --out \ papers\jarvis-leaderboard\metric_check-.md\; if ( -ne 0) { exit  } }
+```
+
+- exit code: **1**  | duration: 0.8s  | raw log: `logs/cmd-20260703-055927.log`
+
+output tail:
+```
+t-mae'); foreach ( in ) {  ...
++                                                
+                  ~
+Missing variable name after foreach.
+At line:1 char:319
++ ... nglePropertyPrediction-slme-dft_3d-test-mae
+'); foreach ( in ) {  =  - ...
++                                                
+                 ~
+Unexpected token ')' in expression or statement.
+    + CategoryInfo          : ParserError: (:) [ 
+   ], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : MissingVariableNam 
+   eAfterForeach
+ 
+```
+
+### 2026-07-03 05:59 UTC — paper002 layerA JARVIS ehull
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-SinglePropertyPrediction-ehull-dft_3d-test-mae --models all --out papers\jarvis-leaderboard\metric_check-ehull.md
+```
+
+- exit code: **0**  | duration: 0.3s  | raw log: `logs/cmd-20260703-055942.log`
+
+output tail:
+```
+| kgcnn_megnet to kgcnn_cgcnn | 0.0021 | 0.00210703 |
+| kgcnn_coNGN to potnet | 0.0037 | 0.00362190 |
+| potnet to kgcnn_megnet | 0.0047 | 0.00475822 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-ehull.md
+```
+
+### 2026-07-03 05:59 UTC — paper002 layerA JARVIS optb88vdw bandgap
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae --models all --out papers\jarvis-leaderboard\metric_check-optb88vdw_bandgap.md
+```
+
+- exit code: **0**  | duration: 0.4s  | raw log: `logs/cmd-20260703-055947.log`
+
+output tail:
+```
+| potnet to kgcnn_coNGN | 0.0021 | 0.00205851 |
+| matminer_xgboost to matminer_rf | 0.0022 | 0.00213012 |
+| kgcnn_coGN to potnet | 0.0027 | 0.00274677 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-optb88vdw_bandgap.md
+```
+
+### 2026-07-03 05:59 UTC — paper002 layerA JARVIS optb88vdw total energy
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae --models all --out papers\jarvis-leaderboard\metric_check-optb88vdw_total_energy.md
+```
+
+- exit code: **0**  | duration: 0.4s  | raw log: `logs/cmd-20260703-055952.log`
+
+output tail:
+```
+| kgcnn_schnet to kgcnn_megnet | 0.0019 | 0.00190516 |
+| matminer_lgbm to matminer_rf | 0.0035 | 0.00343703 |
+| potnet to alignn_model | 0.0046 | 0.00455005 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-optb88vdw_total_energy.md
+```
+
+### 2026-07-03 06:00 UTC — paper002 layerA JARVIS bulk modulus
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae --models all --out papers\jarvis-leaderboard\metric_check-bulk_modulus_kv.md
+```
+
+- exit code: **0**  | duration: 0.3s  | raw log: `logs/cmd-20260703-060001.log`
+
+output tail:
+```
+| kgcnn_coNGN to kgcnn_coGN | 0.2898 | 0.28984601 |
+| kgcnn_schnet to kgcnn_cgcnn | 0.3043 | 0.30436306 |
+| alignn_model to kgcnn_schnet | 0.3117 | 0.31163507 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-bulk_modulus_kv.md
+```
+
+### 2026-07-03 06:00 UTC — paper002 layerA JARVIS slme
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-SinglePropertyPrediction-slme-dft_3d-test-mae --models all --out papers\jarvis-leaderboard\metric_check-slme.md
+```
+
+- exit code: **0**  | duration: 0.3s  | raw log: `logs/cmd-20260703-060006.log`
+
+output tail:
+```
+| kgcnn_cgcnn to kgcnn_megnet | 0.0475 | 0.04741627 |
+| kgcnn_megnet to matminer_rf | 0.0621 | 0.06209388 |
+| kgcnn_coGN to alignn_model | 0.0700 | 0.06997936 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-slme.md
+```
+
+### 2026-07-03 06:00 UTC — paper002 regenerate six JARVIS metric reports after target fix
+
+```
+$ .venv\Scripts\python.exe -c import subprocess,sys; benches=['AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae','AI-SinglePropertyPrediction-ehull-dft_3d-test-mae','AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae','AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae','AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae','AI-SinglePropertyPrediction-slme-dft_3d-test-mae']; outs=['metric_check.md','metric_check-ehull.md','metric_check-optb88vdw_bandgap.md','metric_check-optb88vdw_total_energy.md','metric_check-bulk_modulus_kv.md','metric_check-slme.md']; [subprocess.run([sys.executable,'scripts/jarvis_score.py','--vendor','vendor/jarvis_leaderboard','--benchmark',b,'--models','all','--out','papers/jarvis-leaderboard/'+o], check=True) for b,o in zip(benches,outs)]
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-060030.log`
+
+output tail:
+```
+| kgcnn_cgcnn to kgcnn_megnet | 0.0475 | 0.04741627 |
+| kgcnn_megnet to matminer_rf | 0.0621 | 0.06209388 |
+| kgcnn_coGN to alignn_model | 0.0700 | 0.06997936 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-slme.md
+```
+
+### 2026-07-03 06:00 UTC — verify jarvis scripts after multi-task run
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_score.py scripts\jarvis_sparse.py scripts\run_command.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-060035.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:01 UTC — verify paper002 six-task summary
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; files=sorted(Path('papers/jarvis-leaderboard').glob('metric_check*.md')); texts=[p.read_text(encoding='utf-8') for p in files]; counts=[int(re.search(r'Models scored: (\\d+)', t).group(1)) for t in texts]; bad=[str(p) for p,t in zip(files,texts) if '| no |' in t or 'missing=' in t or 'extra=' in t]; targets=[re.search(r'^Target: (.*)', t, re.M).group(1) for t in texts]; print('files', len(files)); print('counts', counts, 'total', sum(counts)); print('bad', bad); print('targets', targets); raise SystemExit(0 if len(files)==6 and sum(counts)==79 and not bad else 1)
+```
+
+- exit code: **1**  | duration: 0.1s  | raw log: `logs/cmd-20260703-060125.log`
+
+output tail:
+```
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<string>", line 1, in <listcomp>
+AttributeError: 'NoneType' object has no attribute 'group'
+```
+
+### 2026-07-03 06:01 UTC — verify paper002 six-task summary after regex fix
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; files=sorted(Path('papers/jarvis-leaderboard').glob('metric_check*.md')); texts=[p.read_text(encoding='utf-8') for p in files]; counts=[int(re.search('Models scored: ([0-9]+)', t).group(1)) for t in texts]; bad=[str(p) for p,t in zip(files,texts) if '| no |' in t or 'missing=' in t or 'extra=' in t]; targets=[re.search('^Target: (.*)', t, re.M).group(1) for t in texts]; print('files', len(files)); print('counts', counts, 'total', sum(counts)); print('bad', bad); print('targets', targets); raise SystemExit(0 if len(files)==6 and sum(counts)==79 and not bad else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-060137.log`
+
+output tail:
+```
+files 6
+counts [12, 11, 14, 14, 13, 15] total 79
+bad []
+targets ['`AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-ehull-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-slme-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae`']
+```

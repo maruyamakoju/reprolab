@@ -200,7 +200,7 @@ def main() -> int:
     lines = [
         "# Metric Check - JARVIS-Leaderboard Layer A",
         "",
-        "Target: `AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae`",
+        f"Target: `{args.benchmark}`",
         f"Vendor repo: `{vendor_display}`",
         f"Ground-truth split sizes: {split_sizes}",
         "",
