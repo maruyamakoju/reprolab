@@ -119,6 +119,15 @@ def normalize_label(value: Any) -> str:
     return f"{number:.12g}"
 
 
+def to_float_vector(value: Any) -> list[float]:
+    if isinstance(value, list):
+        return [float(item) for item in value]
+    text = str(value).strip()
+    if ";" in text:
+        return [float(item) for item in text.split(";") if item != ""]
+    return [float(text)]
+
+
 def score_model(root: Path, model: str, bench_name: str, truth: dict[str, Any],
                 metric: str) -> dict:
     rows = load_predictions(root, model, bench_name)
@@ -140,13 +149,26 @@ def score_model(root: Path, model: str, bench_name: str, truth: dict[str, Any],
                 normalize_label(row["prediction"]) == normalize_label(truth[material_id])
             )
             diffs.append(0.0)
+        elif metric == "multimae":
+            pred_vec = to_float_vector(row["prediction"])
+            true_vec = to_float_vector(truth[material_id])
+            if len(pred_vec) != len(true_vec):
+                raise ValueError(
+                    f"vector length mismatch for {model}/{material_id}: "
+                    f"pred={len(pred_vec)}, true={len(true_vec)}"
+                )
+            diffs.extend(abs(pred - true) for pred, true in zip(pred_vec, true_vec))
         else:
             raise NotImplementedError(f"metric not implemented: {metric}")
 
     missing_ids = sorted(set(truth) - seen)
     if not diffs:
         raise ValueError(f"no overlapping ids for {model}")
-    score = sum(diffs) / len(diffs) if metric == "mae" else correct / len(diffs)
+    score = (
+        sum(diffs) / len(diffs)
+        if metric in {"mae", "multimae"}
+        else correct / len(diffs)
+    )
     metadata = load_metadata(root, model)
     return {
         "model": model,

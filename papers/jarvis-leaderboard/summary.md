@@ -1,7 +1,7 @@
 # Summary - JARVIS-Leaderboard Paper-002 Candidate
 
-Status: Layer A metric recomputation has passed for 13 JARVIS-Leaderboard AI
-single-property benchmarks: 6 regression pages and 7 classification pages.
+Status: Layer A metric recomputation has passed for 14 JARVIS-Leaderboard AI
+benchmarks: 6 regression pages, 7 classification pages, and 1 spectra page.
 
 ## Result
 
@@ -9,7 +9,7 @@ The audit recomputed MAE directly from public benchmark JSON zips and contributi
 CSV zips, mirroring the upstream `rebuild.py::get_metric_value` logic with a small
 stdlib-only implementation (`scripts/jarvis_score.py`).
 
-All 100 checked submissions match the official docs-page metric within displayed
+All 101 checked submissions match the official docs-page metric within displayed
 rounding, and every checked CSV id set exactly matches the corresponding JSON
 `test` split.
 
@@ -36,10 +36,17 @@ rounding, and every checked CSV id set exactly matches the corresponding JSON
 | slme | 3 | 906 | ACC | `metric_check-class-slme.md` |
 | spillage | 3 | 1,137 | ACC | `metric_check-class-spillage.md` |
 
+## Spectra page
+
+| benchmark property | submissions | test rows | metric | report |
+|---|---:|---:|---:|---|
+| ph_dos / edos_pdos | 1 | 1,424 | MULTIMAE | `metric_check-spectra-ph_dos.md` |
+
 ## Interpretation
 
 This is a positive Layer A result: for the sampled JARVIS pages, the reported
-leaderboard MAE/ACC values are exactly recoverable from the public artifacts.
+leaderboard MAE/ACC/MULTIMAE values are exactly recoverable from the public
+artifacts.
 
 The closest adjacent score gaps are small on several pages, for example 0.0002 MAE
 between `kgcnn_coNGN` and `potnet` on formation energy, and 0.0013 MAE between
@@ -55,4 +62,5 @@ tools should not assume the internal filename matches the outer archive.
 ## Next
 
 The best next move is one tractable Layer B model-execution smoke for a simple
-baseline, or a spectra-page Layer A check if Layer B proves too environment-heavy.
+baseline. The public run scripts are heterogeneous enough that this should start as
+an execution-path probe before attempting full benchmark regeneration.

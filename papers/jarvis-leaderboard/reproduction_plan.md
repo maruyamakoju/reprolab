@@ -1,7 +1,7 @@
 # Reproduction Plan - JARVIS-Leaderboard (Paper-002 candidate)
 
-Status: Layer A passed for 13 selected JARVIS-Leaderboard AI single-property
-benchmarks (100 total submissions) on 2026-07-03.
+Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
+(101 total submissions) on 2026-07-03.
 
 ## 0. Why this candidate
 
@@ -66,9 +66,9 @@ python scripts/run_command.py --paper jarvis-leaderboard \
 Every submission matched the official page within displayed rounding, and every CSV
 id set exactly matched the JSON `test` split (5,572 rows).
 
-The same Layer A path was then extended to 5 additional regression pages and 7
-classification pages. Aggregate: 100/100 submissions pass, with exact CSV-vs-JSON
-test id agreement in every checked submission.
+The same Layer A path was then extended to 5 additional regression pages, 7
+classification pages, and 1 spectra page. Aggregate: 101/101 submissions pass, with
+exact CSV-vs-JSON test id agreement in every checked submission.
 
 | benchmark property | submissions | test rows | report |
 |---|---:|---:|---|
@@ -91,6 +91,12 @@ Classification pages:
 | slme | 3 | 906 | `metric_check-class-slme.md` |
 | spillage | 3 | 1,137 | `metric_check-class-spillage.md` |
 
+Spectra page:
+
+| benchmark property | submissions | test rows | report |
+|---|---:|---:|---|
+| ph_dos / edos_pdos | 1 | 1,424 | `metric_check-spectra-ph_dos.md` |
+
 Closest adjacent official gaps in the selected leaderboard are small:
 
 - `kgcnn_coNGN` vs `potnet`: 0.0002 MAE
@@ -104,6 +110,7 @@ be the natural Layer C analogue.
 
 1. Check whether a Layer B model-execution smoke is practical for one tractable
    baseline.
-2. If Layer B is too environment-heavy, run one spectra-page Layer A check.
+2. If Layer B is too environment-heavy, document the exact blocker and stop at the
+   three-format Layer A result.
 3. Add a small leaderboard-resolution analysis if this becomes the main Paper-002
    target rather than a candidate.

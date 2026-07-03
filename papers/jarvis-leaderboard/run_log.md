@@ -615,3 +615,164 @@ output tail:
 files 13 total 100 bad []
 summary_tables_ok True
 ```
+
+### 2026-07-03 06:45 UTC — verify jarvis multimae support py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_score.py scripts\jarvis_sparse.py scripts\run_command.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064500.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:45 UTC — paper002 sparse checkout JARVIS spectra task
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_sparse.py --vendor vendor\jarvis_leaderboard --benchmarks AI-Spectra-ph_dos-edos_pdos-test-multimae
+```
+
+- exit code: **0**  | duration: 1.3s  | raw log: `logs/cmd-20260703-064504.log`
+
+output tail:
+```
+AI-Spectra-ph_dos-edos_pdos-test-multimae: 8 paths (1 contribution CSVs)
+added 8 sparse-checkout paths
+```
+
+### 2026-07-03 06:45 UTC — paper002 layerA JARVIS spectra multimae
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-Spectra-ph_dos-edos_pdos-test-multimae --models all --out papers\jarvis-leaderboard\metric_check-spectra-ph_dos.md
+```
+
+- exit code: **1**  | duration: 0.3s  | raw log: `logs/cmd-20260703-064510.log`
+
+output tail:
+```
+|---|---|---:|---:|---:|---|---|
+| alignn_model | ALIGNN | 0.05772635693310998 | 0.00000000 | 1424 | exact | no |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-spectra-ph_dos.md
+failures: alignn_model: official 0.05772635693310998, reproduced 0.00000000
+```
+
+### 2026-07-03 06:45 UTC — inspect JARVIS spectra CSV target prediction columns
+
+```
+$ .venv\Scripts\python.exe -c import zipfile,csv,json; from pathlib import Path; root=Path('vendor/jarvis_leaderboard/jarvis_leaderboard'); pred=root/'contributions/alignn_model/AI-Spectra-ph_dos-edos_pdos-test-multimae.csv.zip'; z=zipfile.ZipFile(pred); rows=list(csv.DictReader(z.read(z.namelist()[0]).decode().splitlines())); r=rows[0]; vec=lambda s:[float(x) for x in s.split(';') if x]; truth=json.loads(zipfile.ZipFile(root/'benchmarks/AI/Spectra/edos_pdos_ph_dos.json.zip').read('edos_pdos_ph_dos.json'))['test']; print('cols', list(r)); print('id', r['id']); print('target_eq_prediction', r['target']==r['prediction']); print('row_target_pred_mae', sum(abs(a-b) for a,b in zip(vec(r['target']),vec(r['prediction'])))/len(vec(r['target']))); print('json_eq_target', truth[r['id']]==r['target']); print('json_eq_prediction', truth[r['id']]==r['prediction'])
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-064540.log`
+
+output tail:
+```
+cols ['id', 'target', 'prediction']
+id JVASP-10558
+target_eq_prediction False
+row_target_pred_mae 0.03450392009709056
+json_eq_target False
+json_eq_prediction False
+```
+
+### 2026-07-03 06:46 UTC — inspect spectra json prediction numeric diff
+
+```
+$ .venv\Scripts\python.exe -c import zipfile,csv,json; from pathlib import Path; root=Path('vendor/jarvis_leaderboard/jarvis_leaderboard'); pred=root/'contributions/alignn_model/AI-Spectra-ph_dos-edos_pdos-test-multimae.csv.zip'; z=zipfile.ZipFile(pred); rows=list(csv.DictReader(z.read(z.namelist()[0]).decode().splitlines())); r=rows[0]; vec=lambda s:[float(x) for x in s.split(';') if x]; truth=json.loads(zipfile.ZipFile(root/'benchmarks/AI/Spectra/edos_pdos_ph_dos.json.zip').read('edos_pdos_ph_dos.json'))['test']; j=vec(truth[r['id']]); p=vec(r['prediction']); t=vec(r['target']); print('len', len(j), len(p), len(t)); print('json_pred_mae', sum(abs(a-b) for a,b in zip(j,p))/len(j)); print('json_target_mae', sum(abs(a-b) for a,b in zip(j,t))/len(j)); print('target_pred_mae', sum(abs(a-b) for a,b in zip(t,p))/len(t))
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064602.log`
+
+output tail:
+```
+len 66 66 66
+json_pred_mae 0.034503920015128316
+json_target_mae 2.7136197334255363e-09
+target_pred_mae 0.03450392009709056
+```
+
+### 2026-07-03 06:46 UTC — verify jarvis multimae score aggregation py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_score.py scripts\jarvis_sparse.py scripts\run_command.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064624.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:46 UTC — paper002 layerA JARVIS spectra multimae after aggregation fix
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_score.py --vendor vendor\jarvis_leaderboard --benchmark AI-Spectra-ph_dos-edos_pdos-test-multimae --models all --out papers\jarvis-leaderboard\metric_check-spectra-ph_dos.md
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-064629.log`
+
+output tail:
+```
+| model | team | official MULTIMAE | reproduced MULTIMAE | rows | id check | pass |
+|---|---|---:|---:|---:|---|---|
+| alignn_model | ALIGNN | 0.05772635693310998 | 0.05772636 | 1424 | exact | yes |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-spectra-ph_dos.md
+```
+
+### 2026-07-03 06:47 UTC — verify paper002 spectra plus scalar summary
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; files=sorted(Path('papers/jarvis-leaderboard').glob('metric_check*.md')); texts=[p.read_text(encoding='utf-8') for p in files]; counts=[int(re.search('Models scored: ([0-9]+)', t).group(1)) for t in texts]; bad=[str(p) for p,t in zip(files,texts) if '| no |' in t or 'missing=' in t or 'extra=' in t]; summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); meta=Path('papers/jarvis-leaderboard/metadata.yaml').read_text(encoding='utf-8'); print('files', len(files)); print('total', sum(counts)); print('bad', bad); print('summary_has_101', '101 checked submissions' in summary); print('metadata_has_101', 'total_submissions: 101' in meta); raise SystemExit(0 if len(files)==14 and sum(counts)==101 and not bad and '101 checked submissions' in summary and 'total_submissions: 101' in meta else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064702.log`
+
+output tail:
+```
+files 14
+total 101
+bad []
+summary_has_101 True
+metadata_has_101 True
+```
+
+### 2026-07-03 06:47 UTC — verify paper002 final spectra summary counts
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; files=sorted(Path('papers/jarvis-leaderboard').glob('metric_check*.md')); texts=[p.read_text(encoding='utf-8') for p in files]; counts=[int(re.search('Models scored: ([0-9]+)', t).group(1)) for t in texts]; bad=[str(p) for p,t in zip(files,texts) if '| no |' in t or 'missing=' in t or 'extra=' in t]; summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); meta=Path('papers/jarvis-leaderboard/metadata.yaml').read_text(encoding='utf-8'); print('files', len(files)); print('total', sum(counts)); print('bad', bad); print('metadata_has_14', 'total_benchmarks: 14' in meta); raise SystemExit(0 if len(files)==14 and sum(counts)==101 and not bad and '101 checked submissions' in summary and 'total_benchmarks: 14' in meta else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064722.log`
+
+output tail:
+```
+files 14
+total 101
+bad []
+metadata_has_14 True
+```

@@ -198,12 +198,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       correlation / joint-blind-spot quantification, leaderboard-resolution analysis
       (43/59 adjacent pairs closer than one CI width)
 - [x] External release packet added (`reports/external_release_packet.md`)
-- [x] Paper-002 candidate selected and Layer A expanded across 13 JARVIS benchmarks:
-      100/100 submissions reproduce official MAE/ACC within displayed rounding,
-      with exact CSV-vs-JSON test-id agreement
+- [x] Paper-002 candidate selected and Layer A expanded across 14 JARVIS benchmarks:
+      101/101 submissions reproduce official MAE/ACC/MULTIMAE within displayed
+      rounding, with exact CSV-vs-JSON test-id agreement
       (`papers/jarvis-leaderboard/summary.md`)
-- [ ] Next: attempt one tractable JARVIS Layer B smoke, or fall back to one spectra
-      Layer A page if execution is too environment-heavy
+- [ ] Next: attempt one tractable JARVIS Layer B smoke, starting with an
+      execution-path probe
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -212,9 +212,9 @@ JARVIS-Leaderboard `AI/SinglePropertyPrediction/dft_3d_formation_energy_peratom`
 The first slice mirrors Paper-001 Layer A: recompute published MAE values directly
 from the public JSON ground truth and CSV prediction zips, before any model execution.
 
-Layer A result: 13 benchmark pages, 100 total submissions; all reproduce the
-official MAE/ACC within displayed rounding, and every CSV id set exactly matches the
-corresponding JSON test split.
+Layer A result: 14 benchmark pages, 101 total submissions; all reproduce the
+official MAE/ACC/MULTIMAE within displayed rounding, and every CSV id set exactly
+matches the corresponding JSON test split.
 
 Artifacts:
 
