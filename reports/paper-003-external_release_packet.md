@@ -12,10 +12,10 @@ need the Matbench result without reading the full assembled report first.
 
 The checked Matbench v0.1 prediction artifacts are internally reproducible, but
 the classification `rocauc` field appears to be computed after float predictions
-are thresholded to labels. A bounded TPOT source replay also shows that at least
-one public notebook path can run end-to-end, but does not regenerate its committed
-predictions exactly because the notebook refits stochastic estimators without a
-submitted random seed.
+are thresholded to labels. Three bounded source replays now run: TPOT-Mat is
+executable but non-identical, RFLR is prediction-identical under scikit-learn
+1.2.2, and Dummy regression folds are exact while stratified classification folds
+are not because RNG state was not persisted.
 
 - **Layer A:** RF-SCM/Magpie `matbench_v0.1_rf` fold scores reproduce exactly
   across all 13 Matbench v0.1 tasks. Scope: 65 folds, max stored-vs-recomputed
@@ -44,9 +44,9 @@ submitted random seed.
 - **Source inventory:** 28 submission directories scanned; 11 have direct
   `run.py` files, 14 have notebooks, and only one has a pickle/joblib model
   artifact. This supports treating TPOT-Mat as the bounded Layer B candidate.
-- **Layer B candidate triage:** after TPOT-Mat, the best next nontrivial bounded
-  CPU replay target is `matbench_v0.1_RFLR` on `matbench_steels`; the best
-  low-novelty positive control is `matbench_v0.1_dummy`.
+- **Layer B candidate triage:** after TPOT-Mat, RFLR was selected as the
+  nontrivial bounded CPU replay target and Dummy as the positive-control target;
+  both follow-up replays are now recorded.
 - **Layer C resolution:** 180 submission-task rows produce 167 adjacent
   leaderboard pairs. 68 adjacent gaps are no larger than one fold-SE proxy, 87
   are no larger than two, and 6 are exact ties.

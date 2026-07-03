@@ -270,8 +270,8 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench source artifact inventory: 28 submission directories scanned; 11
       direct `run.py` files, 14 notebooks, and only 1 pickle/joblib model artifact
       (`papers/matbench/source_artifact_inventory.md`)
-- [x] Matbench Layer B candidate triage: selected `matbench_v0.1_RFLR`, then
-      replayed it exactly; remaining positive-control target is `matbench_v0.1_dummy`
+- [x] Matbench Layer B candidate triage: selected `matbench_v0.1_RFLR` and
+      `matbench_v0.1_dummy`; both follow-up replays are now recorded
       (`papers/matbench/layer_b_candidate_triage.md`)
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,

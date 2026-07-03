@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 13:48 UTC_
+_Generated: 2026-07-03 13:50 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -75,11 +75,9 @@ stands out as the best bounded replay candidate because it has one small task, a
 notebook, a submitted helper, and a pickled TPOT pipeline.
 
 After the TPOT replay, `scripts/matbench_layer_b_candidate_triage.py` ranked all
-28 submissions for the next bounded source replay. It identifies
-`matbench_v0.1_RFLR` as the best next nontrivial CPU target: one
-`matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook
-source, and seed/fit/predict signals. `matbench_v0.1_dummy` is the best
-positive-control candidate if an exact low-novelty source replay is needed.
+28 submissions for bounded source replays. It selected `matbench_v0.1_RFLR` as
+the best nontrivial CPU target and `matbench_v0.1_dummy` as the low-novelty
+positive-control target; both were then replayed.
 
 Triage report: `layer_b_candidate_triage.md`.
 
@@ -2338,60 +2336,6 @@ Thanks for maintaining the benchmark.
 
 ## 9. Run log (tail)
 
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 13:24 UTC — paper003 final reassemble report after Dummy replay checks
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132434-409739.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 13:43 UTC — paper003 Matbench Layer C leaderboard resolution
-
-```
-$ .venv\Scripts\python.exe scripts\matbench_leaderboard_resolution.py --report papers\matbench\layer_c_leaderboard_resolution.md
-```
-
-- exit code: **0**  | duration: 4.8s  | raw log: `logs/cmd-20260703-134352-439369.log`
-
-output tail:
-```
-{
-  "adjacent_gaps_lte_1se": 68,
-  "adjacent_gaps_lte_2se": 87,
-  "adjacent_pairs": 167,
-  "exact_adjacent_ties": 6,
-  "report": "papers\\matbench\\layer_c_leaderboard_resolution.md",
-  "submission_task_rows": 180,
-  "tasks": 13
-}
-```
-
-### 2026-07-03 13:45 UTC — paper003 reassemble report with Layer C resolution
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134532-517057.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
 ### 2026-07-03 13:45 UTC — paper003 verify Layer C resolution docs
 
 ```
@@ -2497,5 +2441,59 @@ warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be repl
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:48 UTC — paper003 final reassemble report after Layer C fold bootstrap checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134841-449596.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:50 UTC — paper003 reassemble report after wording sync
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-135012-123917.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:50 UTC — paper003 verify wording sync
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import sys; summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); checks=['both were then replayed' in summary, 'Three bounded source replays now run' in packet, 'both follow-up replays are now recorded' in readme, 'both were then replayed' in assembled]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-135019-251623.log`
+
+output tail:
+```
+{'checks': [True, True, True, True]}
+```
+
+### 2026-07-03 13:50 UTC — paper003 wording sync whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-135026-241118.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 ```
 

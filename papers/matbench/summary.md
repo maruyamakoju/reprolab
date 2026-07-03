@@ -67,11 +67,9 @@ stands out as the best bounded replay candidate because it has one small task, a
 notebook, a submitted helper, and a pickled TPOT pipeline.
 
 After the TPOT replay, `scripts/matbench_layer_b_candidate_triage.py` ranked all
-28 submissions for the next bounded source replay. It identifies
-`matbench_v0.1_RFLR` as the best next nontrivial CPU target: one
-`matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook
-source, and seed/fit/predict signals. `matbench_v0.1_dummy` is the best
-positive-control candidate if an exact low-novelty source replay is needed.
+28 submissions for bounded source replays. It selected `matbench_v0.1_RFLR` as
+the best nontrivial CPU target and `matbench_v0.1_dummy` as the low-novelty
+positive-control target; both were then replayed.
 
 Triage report: `layer_b_candidate_triage.md`.
 
