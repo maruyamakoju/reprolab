@@ -60,6 +60,8 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 
 ## Artifacts
 
+- Assembled report: `../../reports/paper-003-matbench-audit.md`
+- External packet: `../../reports/paper-003-external_release_packet.md`
 - Plan: `reproduction_plan.md`
 - Candidate screen: `candidate_screen.md`
 - Metadata: `metadata.yaml`
@@ -74,4 +76,5 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
+- Report script: `../../scripts/make_matbench_report.py`
 - Run log: `run_log.md`

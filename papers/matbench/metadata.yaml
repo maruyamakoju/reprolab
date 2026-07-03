@@ -17,6 +17,11 @@ benchmark:
   domain: materials property prediction benchmarks
   tasks: 13
 
+reports:
+  assembled_report: reports/paper-003-matbench-audit.md
+  external_packet: reports/paper-003-external_release_packet.md
+  report_script: scripts/make_matbench_report.py
+
 artifact_model:
   required_submission_files:
     - results.json.gz

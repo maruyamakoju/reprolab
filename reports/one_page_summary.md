@@ -106,4 +106,6 @@ thresholded-label AUC for float-prediction submissions while the classification
 leaderboards display `mean rocauc` first, and a TPOT-Mat source replay runs
 end-to-end but does not regenerate the committed predictions exactly because the
 submitted notebook refits stochastic estimators without a seed. An upstream issue
-draft is prepared but not posted (`papers/matbench/summary.md`).
+draft is prepared but not posted, and the assembled report plus external packet are
+in `reports/paper-003-matbench-audit.md` and
+`reports/paper-003-external_release_packet.md`.

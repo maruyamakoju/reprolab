@@ -235,8 +235,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
       vs submitted mean MAE 79.947 (`papers/matbench/layer_b_tpot_steels_replay.md`)
-- [ ] Next: assemble the Paper-003 report and decide whether to post the Matbench
-      classification `rocauc` upstream issue draft
+- [x] Paper-003 assembled report and external packet added
+      (`reports/paper-003-matbench-audit.md`,
+      `reports/paper-003-external_release_packet.md`)
+- [ ] Next: decide whether to post the Matbench classification `rocauc` upstream
+      issue draft
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -307,6 +310,8 @@ random seed. With audit seed 0, replay mean MAE is 79.094 vs submitted mean MAE
 
 Artifacts:
 
+- Assembled report: `reports/paper-003-matbench-audit.md`
+- External packet: `reports/paper-003-external_release_packet.md`
 - Summary: `papers/matbench/summary.md`
 - Plan: `papers/matbench/reproduction_plan.md`
 - Metadata: `papers/matbench/metadata.yaml`
@@ -323,6 +328,7 @@ Artifacts:
 - Layer B replay script: `scripts/matbench_tpot_replay.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`
+- Report script: `scripts/make_matbench_report.py`
 
 ## Rules
 See `CLAUDE.md`. Short version: log every command, trace every metric to code,

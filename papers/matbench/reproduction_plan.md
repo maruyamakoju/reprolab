@@ -159,7 +159,7 @@ Report:
 ## 8. Next
 
 1. Post the upstream issue only if the user explicitly asks.
-2. Assemble a Paper-003 report that separates the positive score-recompute result,
-   the classification ROC-AUC scoring finding, and the TPOT source-replay limitation.
-3. Optionally broaden Layer A to selected structure tasks if compute/data download
+2. Optionally broaden Layer A to selected structure tasks if compute/data download
    cost is acceptable.
+3. If deeper Layer B is needed, choose submissions with fixed seeds or saved
+   fold-level model artifacts before attempting larger structure tasks.
