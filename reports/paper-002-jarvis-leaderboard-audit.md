@@ -1,6 +1,6 @@
 # ReproLab Paper-002 - JARVIS-Leaderboard Audit
 
-_Generated: 2026-07-03 07:04 UTC_
+_Generated: 2026-07-03 07:16 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_jarvis_report.py`.
 
@@ -102,11 +102,24 @@ page by its metric direction. Across 87 adjacent pairs, 5 official gaps are
 pair is `kgcnn_coNGN` to `potnet` on dft_3d formation energy: official MAE gap
 0.0002, reproduced gap 0.00016852. Report: `layer_c_resolution.md`.
 
+## Layer C paired bootstrap
+
+`scripts/jarvis_bootstrap.py` then bootstrapped the 20 closest adjacent pairs over
+the fixed public test rows (B=2000, seed=42). This is not retraining uncertainty or
+alternate-split uncertainty; it asks whether the observed paired test-row advantage
+is stable under resampling of the published test set.
+
+Result: 17/20 closest adjacent-pair 95% CIs include zero. For the closest pair,
+`kgcnn_coNGN` over `potnet` on dft_3d formation energy, the official MAE gap is
+0.0002, the paired advantage is 0.00016852, the 95% CI is [-0.00160975,
+0.00156560], and P(tie/reversal) is 0.4030. Report: `layer_c_bootstrap.md`.
+
 ## Next
 
 The best next move is cautious scale-up of the `matminer_rf` smoke. If feature
 runtime grows too quickly, Paper-002 can be stopped as a strong three-format Layer A
-audit plus a bounded Layer B execution-path result and point-gap map.
+audit plus a bounded Layer B execution-path result and Layer C point-gap/bootstrap
+map.
 
 
 
@@ -189,6 +202,23 @@ layer_c_resolution:
   adjacent_gaps_le_0_005: 29
   adjacent_gaps_le_0_010: 38
 
+layer_c_bootstrap:
+  status: paired_bootstrap_completed
+  script: scripts/jarvis_bootstrap.py
+  report: papers/jarvis-leaderboard/layer_c_bootstrap.md
+  adjacent_pairs_checked: 20
+  bootstrap_draws: 2000
+  seed: 42
+  ci_cross_zero: 17
+  closest_pair:
+    target: AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae
+    pair: kgcnn_coNGN over potnet
+    official_gap: 0.0002
+    paired_advantage: 0.00016852
+    ci_low: -0.00160975
+    ci_high: 0.00156560
+    p_tie_or_reversal: 0.4030
+
 ```
 
 
@@ -198,7 +228,8 @@ layer_c_resolution:
 
 Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
 (101 total submissions) on 2026-07-03. Layer B bounded `matminer_rf` pre-smoke
-passed on a 512 train / 128 test dft_3d slice. Layer C point-gap map completed.
+passed on a 512 train / 128 test dft_3d slice. Layer C point-gap map and paired
+bootstrap completed.
 
 ## 0. Why this candidate
 
@@ -356,14 +387,30 @@ Result:
 The closest adjacent pair is `kgcnn_coNGN` to `potnet` on dft_3d formation energy
 (official MAE gap 0.0002; reproduced gap 0.00016852).
 
-## 9. Next
+## 9. Layer C paired bootstrap
+
+`scripts/jarvis_bootstrap.py` takes the 20 closest adjacent pairs from the point-gap
+map and performs a paired nonparametric bootstrap over the fixed public test rows.
+This is not a retraining uncertainty estimate and does not sample alternate splits.
+
+Result:
+
+| pairs | draws | seed | CIs crossing zero | report |
+|---:|---:|---:|---:|---|
+| 20 | 2000 | 42 | 17 | `layer_c_bootstrap.md` |
+
+For the closest pair, `kgcnn_coNGN` over `potnet` on dft_3d formation energy, the
+official MAE gap is 0.0002, the paired advantage is 0.00016852, the 95% CI is
+[-0.00160975, 0.00156560], and P(tie/reversal) is 0.4030.
+
+## 10. Next
 
 1. Scale the `matminer_rf` smoke cautiously toward the full split only if feature
    runtime remains manageable.
-2. Turn the closest gaps into a bootstrap or split-sensitivity analysis if
-   Paper-002 becomes the main target.
-3. If runtime or uncertainty analysis becomes too broad, stop at Layer A + bounded
-   Layer B + point-gap Layer C map.
+2. If Paper-002 becomes the main target, package the JARVIS findings for external
+   review.
+3. If runtime becomes too broad, stop at Layer A + bounded Layer B + Layer C
+   point-gap/bootstrap results.
 
 
 
@@ -542,6 +589,83 @@ The checked pages contain many adjacent point estimates below 0.005 in metric
 units. Those small gaps are the natural targets for a later uncertainty,
 split-sensitivity, or bootstrap-style analysis. Layer A already established
 that these point estimates are internally reproducible from public artifacts.
+
+
+
+## 4c. Layer C paired bootstrap
+
+# Layer C Bootstrap - JARVIS Close Adjacent Pairs
+
+This is a paired, nonparametric bootstrap over fixed public test rows for
+the closest adjacent pairs identified by `layer_c_resolution.md`.
+
+It is not a retraining uncertainty estimate and does not sample alternate
+train/validation/test splits. It only tests whether the observed paired
+test-row advantage of the official higher-ranked model is stable under
+resampling of the published test set.
+
+## Settings
+
+- Bootstrap draws: 2000
+- Seed: 42
+- Pairs checked: 20
+
+## Results
+
+| rank | target | metric | official pair | rows | official gap | paired advantage | 95% CI | P(tie/reversal) |
+|---:|---|---|---|---:|---:|---:|---:|---:|
+| 1 | `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | kgcnn_coNGN over potnet | 5572 | 0.00020000 | 0.00016852 | [-0.00160975, 0.00156560] | 0.4030 |
+| 2 | `SinglePropertyPrediction / optb88vdw_total_energy / dft_3d` | MAE | alignn_model over kgcnn_schnet | 5572 | 0.00070000 | 0.00068863 | [-0.00285602, 0.00462995] | 0.3635 |
+| 3 | `SinglePropertyClass / magmom_oszicar / dft_3d` | ACC | matminer_rf over alignn_model | 5222 | 0.00080000 | 0.00076599 | [-0.00555343, 0.00746840] | 0.4245 |
+| 4 | `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | matformer_256 over alignn_model | 5572 | 0.00090000 | 0.00093247 | [-0.00016749, 0.00204791] | 0.0470 |
+| 5 | `SinglePropertyClass / optb88vdw_bandgap / dft_3d` | ACC | alignn_model over matminer_rf | 5572 | 0.00090000 | 0.00089734 | [-0.00574300, 0.00789663] | 0.3940 |
+| 6 | `SinglePropertyClass / slme / dft_3d` | ACC | matminer_rf over matminer_xgboost | 906 | 0.00110000 | 0.00110375 | [-0.01545254, 0.01876380] | 0.4555 |
+| 7 | `SinglePropertyPrediction / optb88vdw_total_energy / dft_3d` | MAE | kgcnn_coGN over kgcnn_coNGN | 5572 | 0.00110000 | 0.00111477 | [-0.00006757, 0.00254979] | 0.0390 |
+| 8 | `SinglePropertyPrediction / ehull / dft_3d` | MAE | kgcnn_cgcnn over matminer_xgboost | 5537 | 0.00110000 | 0.00107191 | [-0.00321573, 0.00501498] | 0.3075 |
+| 9 | `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | matminer_rf over cgcnn_model | 5572 | 0.00130000 | 0.00136523 | [-0.00857241, 0.01167811] | 0.4240 |
+| 10 | `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | kgcnn_cgcnn over matminer_xgboost | 5572 | 0.00160000 | 0.00158357 | [-0.00966971, 0.01293096] | 0.3860 |
+| 11 | `SinglePropertyPrediction / ehull / dft_3d` | MAE | kgcnn_coGN over kgcnn_coNGN | 5537 | 0.00190000 | 0.00191120 | [-0.00189713, 0.00609254] | 0.1655 |
+| 12 | `SinglePropertyPrediction / optb88vdw_total_energy / dft_3d` | MAE | kgcnn_schnet over kgcnn_megnet | 5572 | 0.00190000 | 0.00190516 | [0.00046759, 0.00331262] | 0.0050 |
+| 13 | `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | kgcnn_coGN over kgcnn_coNGN | 5572 | 0.00200000 | 0.00198041 | [0.00073827, 0.00336273] | 0.0000 |
+| 14 | `SinglePropertyPrediction / ehull / dft_3d` | MAE | kgcnn_megnet over kgcnn_cgcnn | 5537 | 0.00210000 | 0.00210703 | [-0.00182812, 0.00635259] | 0.1545 |
+| 15 | `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | potnet over kgcnn_coNGN | 5572 | 0.00210000 | 0.00205851 | [-0.00626258, 0.01019696] | 0.3120 |
+| 16 | `SinglePropertyClass / p_Seebeck / dft_3d` | ACC | alignn_model over matminer_rf | 2321 | 0.00220000 | 0.00215424 | [-0.00904782, 0.01379793] | 0.3775 |
+| 17 | `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | matminer_xgboost over matminer_rf | 5572 | 0.00220000 | 0.00213012 | [-0.00256972, 0.00645132] | 0.1855 |
+| 18 | `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | kgcnn_dimenetPP over kgcnn_cgcnn | 5572 | 0.00230000 | 0.00226462 | [-0.00414618, 0.00743016] | 0.2270 |
+| 19 | `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | kgcnn_coGN over potnet | 5572 | 0.00270000 | 0.00274677 | [-0.00438651, 0.01058822] | 0.2325 |
+| 20 | `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | potnet over matformer_256 | 5572 | 0.00290000 | 0.00292089 | [0.00205824, 0.00384399] | 0.0000 |
+
+## Interpretation
+
+- Pairs whose 95% CI includes zero: 17 / 20
+- `paired advantage` is positive when the official higher-ranked model has
+  the better metric on the resampled test set.
+- For MAE/MULTIMAE, advantage is mean(error_lower-ranked - error_higher-ranked).
+- For ACC, advantage is mean(correct_higher-ranked - correct_lower-ranked).
+- A high `P(tie/reversal)` means the official adjacent ordering is fragile
+  under this fixed-test-set bootstrap.
+
+Pairs with CI crossing zero:
+
+| target | metric | pair | 95% CI | P(tie/reversal) |
+|---|---|---|---:|---:|
+| `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | kgcnn_coNGN over potnet | [-0.00160975, 0.00156560] | 0.4030 |
+| `SinglePropertyPrediction / optb88vdw_total_energy / dft_3d` | MAE | alignn_model over kgcnn_schnet | [-0.00285602, 0.00462995] | 0.3635 |
+| `SinglePropertyClass / magmom_oszicar / dft_3d` | ACC | matminer_rf over alignn_model | [-0.00555343, 0.00746840] | 0.4245 |
+| `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | matformer_256 over alignn_model | [-0.00016749, 0.00204791] | 0.0470 |
+| `SinglePropertyClass / optb88vdw_bandgap / dft_3d` | ACC | alignn_model over matminer_rf | [-0.00574300, 0.00789663] | 0.3940 |
+| `SinglePropertyClass / slme / dft_3d` | ACC | matminer_rf over matminer_xgboost | [-0.01545254, 0.01876380] | 0.4555 |
+| `SinglePropertyPrediction / optb88vdw_total_energy / dft_3d` | MAE | kgcnn_coGN over kgcnn_coNGN | [-0.00006757, 0.00254979] | 0.0390 |
+| `SinglePropertyPrediction / ehull / dft_3d` | MAE | kgcnn_cgcnn over matminer_xgboost | [-0.00321573, 0.00501498] | 0.3075 |
+| `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | matminer_rf over cgcnn_model | [-0.00857241, 0.01167811] | 0.4240 |
+| `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | kgcnn_cgcnn over matminer_xgboost | [-0.00966971, 0.01293096] | 0.3860 |
+| `SinglePropertyPrediction / ehull / dft_3d` | MAE | kgcnn_coGN over kgcnn_coNGN | [-0.00189713, 0.00609254] | 0.1655 |
+| `SinglePropertyPrediction / ehull / dft_3d` | MAE | kgcnn_megnet over kgcnn_cgcnn | [-0.00182812, 0.00635259] | 0.1545 |
+| `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | potnet over kgcnn_coNGN | [-0.00626258, 0.01019696] | 0.3120 |
+| `SinglePropertyClass / p_Seebeck / dft_3d` | ACC | alignn_model over matminer_rf | [-0.00904782, 0.01379793] | 0.3775 |
+| `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | matminer_xgboost over matminer_rf | [-0.00256972, 0.00645132] | 0.1855 |
+| `SinglePropertyPrediction / formation_energy_peratom / dft_3d` | MAE | kgcnn_dimenetPP over kgcnn_cgcnn | [-0.00414618, 0.00743016] | 0.2270 |
+| `SinglePropertyPrediction / optb88vdw_bandgap / dft_3d` | MAE | kgcnn_coGN over potnet | [-0.00438651, 0.01058822] | 0.2325 |
 
 
 
@@ -1149,84 +1273,6 @@ Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B 
 
 ```
 
-### 2026-07-03 06:59 UTC — paper002 matminer_rf scaled pre-smoke 256x64
-
-```
-$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 256 --test-size 64 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke256\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke256.md
-```
-
-- exit code: **0**  | duration: 42.0s  | raw log: `logs/cmd-20260703-065923.log`
-
-output tail:
-```
-Loading the zipfile...
-Loading completed.
-{
-  "all_nan_feature_rows": 0,
-  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
-  "feature_columns": 273,
-  "first_test_id": "JVASP-38636",
-  "first_train_id": "JVASP-21450",
-  "mae": 0.36771290156249997,
-  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke256\\predictions.csv",
-  "seconds": 38.39225888252258,
-  "test_rows": 64,
-  "train_rows": 256,
-  "trees": 100
-}
-```
-
-### 2026-07-03 07:00 UTC — paper002 matminer_rf scaled pre-smoke 512x128
-
-```
-$ env\jarvis\Scripts\python.exe scripts\jarvis_matminer_rf_smoke.py --train-size 512 --test-size 128 --trees 100 --pred-out experiments\jarvis-leaderboard\matminer_rf_smoke512\predictions.csv --out papers\jarvis-leaderboard\layer_b_matminer_rf_smoke512.md
-```
-
-- exit code: **0**  | duration: 76.9s  | raw log: `logs/cmd-20260703-070016.log`
-
-output tail:
-```
-Loading the zipfile...
-Loading completed.
-{
-  "all_nan_feature_rows": 0,
-  "benchmark": "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae",
-  "feature_columns": 273,
-  "first_test_id": "JVASP-38636",
-  "first_train_id": "JVASP-21450",
-  "mae": 0.28496479140624986,
-  "pred_out": "experiments\\jarvis-leaderboard\\matminer_rf_smoke512\\predictions.csv",
-  "seconds": 72.81904554367065,
-  "test_rows": 128,
-  "train_rows": 512,
-  "trees": 100
-}
-```
-
-### 2026-07-03 07:02 UTC — verify paper002 matminer_rf 512x128 docs
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import re, yaml; root=Path('papers/jarvis-leaderboard'); meta=yaml.safe_load((root/'metadata.yaml').read_text(encoding='utf-8')); summary=(root/'summary.md').read_text(encoding='utf-8'); plan=(root/'reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); report=(root/'layer_b_matminer_rf_smoke.md').read_text(encoding='utf-8'); script=Path('scripts/jarvis_matminer_rf_smoke.py').read_text(encoding='utf-8'); files=sorted(root.glob('metric_check*.md')); total=sum(int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files); smoke=meta['layer_b_probe']['smoke']; checks=[len(files)==14,total==101,meta['layer_b_probe']['status']=='bounded_pre_smoke_passed',smoke['train_rows']==512,smoke['test_rows']==128,smoke['feature_columns']==273,smoke['all_nan_feature_rows']==0,abs(smoke['subset_mae']-0.28496479140624986)<1e-15,'0.28496479' in report,'512 train / 128 test' in readme,'512 train rows, 128 test rows' in summary,'jarvis_matminer_rf_smoke.py' in plan,'RandomForestRegressor' in script]; print({'metric_files':len(files),'total_submissions':total,'smoke':smoke,'checks':checks}); raise SystemExit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070214.log`
-
-output tail:
-```
-{'metric_files': 14, 'total_submissions': 101, 'smoke': {'script': 'scripts/jarvis_matminer_rf_smoke.py', 'report': 'papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md', 'benchmark': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'train_rows': 512, 'test_rows': 128, 'feature_columns': 273, 'all_nan_feature_rows': 0, 'trees': 100, 'subset_mae': 0.28496479140624986}, 'checks': [True, True, True, True, True, True, True, True, True, True, True, True, True]}
-```
-
-### 2026-07-03 07:03 UTC — verify jarvis resolution script py_compile
-
-```
-$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_resolution.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070310.log`
-
-output tail:
-```
-
 ```
 
 ### 2026-07-03 07:03 UTC — paper002 JARVIS leaderboard resolution analysis
@@ -1266,5 +1312,83 @@ $ .venv\Scripts\python.exe -m py_compile scripts\make_jarvis_report.py
 output tail:
 ```
 
+```
+
+### 2026-07-03 07:04 UTC — assemble Paper-002 JARVIS report
+
+```
+$ .venv\Scripts\python.exe scripts\make_jarvis_report.py
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-070446.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-002-jarvis-leaderboard-audit.md
+```
+
+### 2026-07-03 07:05 UTC — verify Paper-002 assembled report
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; report=Path('reports/paper-002-jarvis-leaderboard-audit.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=['All 101 checked submissions' in report,'Layer B bounded matminer_rf pre-smoke' in report,'Layer C point-gap map' in report,'Metric check - metric_check-spectra-ph_dos' in report,'paper-002-jarvis-leaderboard-audit.md' in readme,'make_jarvis_report.py' in readme]; print({'report_lines': len(report.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-070504.log`
+
+output tail:
+```
+{'report_lines': 1270, 'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 07:14 UTC — verify JARVIS bootstrap script py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_bootstrap.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-071430.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:14 UTC — paper002 bootstrap smoke top5
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_bootstrap.py --top 5 --draws 500 --seed 42 --out papers\jarvis-leaderboard\layer_c_bootstrap_top5_smoke.md
+```
+
+- exit code: **0**  | duration: 1.8s  | raw log: `logs/cmd-20260703-071434.log`
+
+output tail:
+```
+{'pairs': 5, 'draws': 500, 'ci_cross_zero': 5, 'out': 'papers\\jarvis-leaderboard\\layer_c_bootstrap_top5_smoke.md'}
+```
+
+### 2026-07-03 07:14 UTC — paper002 bootstrap close adjacent pairs top20
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_bootstrap.py --top 20 --draws 2000 --seed 42 --out papers\jarvis-leaderboard\layer_c_bootstrap.md
+```
+
+- exit code: **0**  | duration: 2.1s  | raw log: `logs/cmd-20260703-071446.log`
+
+output tail:
+```
+{'pairs': 20, 'draws': 2000, 'ci_cross_zero': 17, 'out': 'papers\\jarvis-leaderboard\\layer_c_bootstrap.md'}
+```
+
+### 2026-07-03 07:16 UTC — verify paper002 layerC bootstrap docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import yaml; meta=yaml.safe_load(Path('papers/jarvis-leaderboard/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); plan=Path('papers/jarvis-leaderboard/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); bootstrap=Path('papers/jarvis-leaderboard/layer_c_bootstrap.md').read_text(encoding='utf-8'); script=Path('scripts/jarvis_bootstrap.py').read_text(encoding='utf-8'); layer=meta['layer_c_bootstrap']; checks=[layer['adjacent_pairs_checked']==20,layer['bootstrap_draws']==2000,layer['ci_cross_zero']==17,'17/20 closest adjacent-pair 95% CIs include zero' in summary,'Layer C paired bootstrap' in plan,'17/20 95% CIs' in readme,'kgcnn_coNGN over potnet' in bootstrap,'paired_advantages' in script,not Path('papers/jarvis-leaderboard/layer_c_bootstrap_top5_smoke.md').exists()]; print({'layer_c_bootstrap': layer, 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-071621.log`
+
+output tail:
+```
+{'layer_c_bootstrap': {'status': 'paired_bootstrap_completed', 'script': 'scripts/jarvis_bootstrap.py', 'report': 'papers/jarvis-leaderboard/layer_c_bootstrap.md', 'adjacent_pairs_checked': 20, 'bootstrap_draws': 2000, 'seed': 42, 'ci_cross_zero': 17, 'closest_pair': {'target': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'pair': 'kgcnn_coNGN over potnet', 'official_gap': 0.0002, 'paired_advantage': 0.00016852, 'ci_low': -0.00160975, 'ci_high': 0.0015656, 'p_tie_or_reversal': 0.403}}, 'checks': [True, True, True, True, True, True, True, True, True]}
 ```
 

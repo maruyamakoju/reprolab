@@ -211,8 +211,10 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] JARVIS leaderboard-resolution map: 87 adjacent pairs across the 14 checked
       pages; 29 gaps are <=0.005 and 38 are <=0.010 in metric units
       (`layer_c_resolution.md`)
-- [ ] Next: either scale the `matminer_rf` smoke further or turn the closest
-      JARVIS gaps into a bootstrap/split-sensitivity analysis
+- [x] JARVIS paired bootstrap on the 20 closest adjacent pairs: 17/20 95% CIs
+      include zero under fixed-test-set resampling (`layer_c_bootstrap.md`)
+- [ ] Next: either scale the `matminer_rf` smoke further or package the JARVIS
+      findings for external review
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -231,6 +233,8 @@ dft_3d target in the shared venv. In an isolated JARVIS env, a bounded
 
 Layer C map: adjacent official point estimates are often close in the checked
 pages: 29/87 adjacent gaps are <=0.005 and 38/87 are <=0.010 in metric units.
+For the 20 closest adjacent pairs, a paired bootstrap over fixed public test rows
+finds that 17/20 95% CIs include zero.
 
 Artifacts:
 
@@ -241,10 +245,12 @@ Artifacts:
 - Layer B probe: `papers/jarvis-leaderboard/layer_b_probe.md`
 - Layer B pre-smoke: `papers/jarvis-leaderboard/layer_b_matminer_rf_smoke.md`
 - Layer C resolution map: `papers/jarvis-leaderboard/layer_c_resolution.md`
+- Layer C bootstrap: `papers/jarvis-leaderboard/layer_c_bootstrap.md`
 - Metric check: `papers/jarvis-leaderboard/metric_check.md`
 - Script: `scripts/jarvis_score.py`
 - Layer B script: `scripts/jarvis_matminer_rf_smoke.py`
 - Layer C script: `scripts/jarvis_resolution.py`
+- Layer C bootstrap script: `scripts/jarvis_bootstrap.py`
 - Report script: `scripts/make_jarvis_report.py`
 
 ## Rules

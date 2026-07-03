@@ -2,7 +2,8 @@
 
 Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
 (101 total submissions) on 2026-07-03. Layer B bounded `matminer_rf` pre-smoke
-passed on a 512 train / 128 test dft_3d slice. Layer C point-gap map completed.
+passed on a 512 train / 128 test dft_3d slice. Layer C point-gap map and paired
+bootstrap completed.
 
 ## 0. Why this candidate
 
@@ -160,11 +161,27 @@ Result:
 The closest adjacent pair is `kgcnn_coNGN` to `potnet` on dft_3d formation energy
 (official MAE gap 0.0002; reproduced gap 0.00016852).
 
-## 9. Next
+## 9. Layer C paired bootstrap
+
+`scripts/jarvis_bootstrap.py` takes the 20 closest adjacent pairs from the point-gap
+map and performs a paired nonparametric bootstrap over the fixed public test rows.
+This is not a retraining uncertainty estimate and does not sample alternate splits.
+
+Result:
+
+| pairs | draws | seed | CIs crossing zero | report |
+|---:|---:|---:|---:|---|
+| 20 | 2000 | 42 | 17 | `layer_c_bootstrap.md` |
+
+For the closest pair, `kgcnn_coNGN` over `potnet` on dft_3d formation energy, the
+official MAE gap is 0.0002, the paired advantage is 0.00016852, the 95% CI is
+[-0.00160975, 0.00156560], and P(tie/reversal) is 0.4030.
+
+## 10. Next
 
 1. Scale the `matminer_rf` smoke cautiously toward the full split only if feature
    runtime remains manageable.
-2. Turn the closest gaps into a bootstrap or split-sensitivity analysis if
-   Paper-002 becomes the main target.
-3. If runtime or uncertainty analysis becomes too broad, stop at Layer A + bounded
-   Layer B + point-gap Layer C map.
+2. If Paper-002 becomes the main target, package the JARVIS findings for external
+   review.
+3. If runtime becomes too broad, stop at Layer A + bounded Layer B + Layer C
+   point-gap/bootstrap results.

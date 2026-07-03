@@ -1211,3 +1211,81 @@ output tail:
 ```
 {'report_lines': 1270, 'checks': [True, True, True, True, True, True]}
 ```
+
+### 2026-07-03 07:14 UTC — verify JARVIS bootstrap script py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_bootstrap.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-071430.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 07:14 UTC — paper002 bootstrap smoke top5
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_bootstrap.py --top 5 --draws 500 --seed 42 --out papers\jarvis-leaderboard\layer_c_bootstrap_top5_smoke.md
+```
+
+- exit code: **0**  | duration: 1.8s  | raw log: `logs/cmd-20260703-071434.log`
+
+output tail:
+```
+{'pairs': 5, 'draws': 500, 'ci_cross_zero': 5, 'out': 'papers\\jarvis-leaderboard\\layer_c_bootstrap_top5_smoke.md'}
+```
+
+### 2026-07-03 07:14 UTC — paper002 bootstrap close adjacent pairs top20
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_bootstrap.py --top 20 --draws 2000 --seed 42 --out papers\jarvis-leaderboard\layer_c_bootstrap.md
+```
+
+- exit code: **0**  | duration: 2.1s  | raw log: `logs/cmd-20260703-071446.log`
+
+output tail:
+```
+{'pairs': 20, 'draws': 2000, 'ci_cross_zero': 17, 'out': 'papers\\jarvis-leaderboard\\layer_c_bootstrap.md'}
+```
+
+### 2026-07-03 07:16 UTC — verify paper002 layerC bootstrap docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import yaml; meta=yaml.safe_load(Path('papers/jarvis-leaderboard/metadata.yaml').read_text(encoding='utf-8')); summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); plan=Path('papers/jarvis-leaderboard/reproduction_plan.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); bootstrap=Path('papers/jarvis-leaderboard/layer_c_bootstrap.md').read_text(encoding='utf-8'); script=Path('scripts/jarvis_bootstrap.py').read_text(encoding='utf-8'); layer=meta['layer_c_bootstrap']; checks=[layer['adjacent_pairs_checked']==20,layer['bootstrap_draws']==2000,layer['ci_cross_zero']==17,'17/20 closest adjacent-pair 95% CIs include zero' in summary,'Layer C paired bootstrap' in plan,'17/20 95% CIs' in readme,'kgcnn_coNGN over potnet' in bootstrap,'paired_advantages' in script,not Path('papers/jarvis-leaderboard/layer_c_bootstrap_top5_smoke.md').exists()]; print({'layer_c_bootstrap': layer, 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-071621.log`
+
+output tail:
+```
+{'layer_c_bootstrap': {'status': 'paired_bootstrap_completed', 'script': 'scripts/jarvis_bootstrap.py', 'report': 'papers/jarvis-leaderboard/layer_c_bootstrap.md', 'adjacent_pairs_checked': 20, 'bootstrap_draws': 2000, 'seed': 42, 'ci_cross_zero': 17, 'closest_pair': {'target': 'AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae', 'pair': 'kgcnn_coNGN over potnet', 'official_gap': 0.0002, 'paired_advantage': 0.00016852, 'ci_low': -0.00160975, 'ci_high': 0.0015656, 'p_tie_or_reversal': 0.403}}, 'checks': [True, True, True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 07:16 UTC — reassemble Paper-002 report after bootstrap
+
+```
+$ .venv\Scripts\python.exe scripts\make_jarvis_report.py
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-071638.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-002-jarvis-leaderboard-audit.md
+```
+
+### 2026-07-03 07:16 UTC — verify Paper-002 assembled report after bootstrap
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; report=Path('reports/paper-002-jarvis-leaderboard-audit.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=['4c. Layer C paired bootstrap' in report,'17/20 closest adjacent-pair 95% CIs include zero' in report,'kgcnn_coNGN over potnet' in report,'layer_c_bootstrap.md' in readme,'scripts/jarvis_bootstrap.py' in readme,not Path('papers/jarvis-leaderboard/layer_c_bootstrap_top5_smoke.md').exists()]; print({'report_lines': len(report.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-071656.log`
+
+output tail:
+```
+{'report_lines': 1394, 'checks': [True, True, True, True, True, True]}
+```

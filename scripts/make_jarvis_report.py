@@ -38,6 +38,7 @@ def main() -> None:
         section("4. Layer B bounded matminer_rf pre-smoke",
                 PAPER / "layer_b_matminer_rf_smoke.md"),
         section("4b. Layer C point-gap map", PAPER / "layer_c_resolution.md"),
+        section("4c. Layer C paired bootstrap", PAPER / "layer_c_bootstrap.md"),
         *metric_sections,
         section("6. Run log (tail)", PAPER / "run_log.md", tail=120),
     ]

@@ -94,8 +94,21 @@ page by its metric direction. Across 87 adjacent pairs, 5 official gaps are
 pair is `kgcnn_coNGN` to `potnet` on dft_3d formation energy: official MAE gap
 0.0002, reproduced gap 0.00016852. Report: `layer_c_resolution.md`.
 
+## Layer C paired bootstrap
+
+`scripts/jarvis_bootstrap.py` then bootstrapped the 20 closest adjacent pairs over
+the fixed public test rows (B=2000, seed=42). This is not retraining uncertainty or
+alternate-split uncertainty; it asks whether the observed paired test-row advantage
+is stable under resampling of the published test set.
+
+Result: 17/20 closest adjacent-pair 95% CIs include zero. For the closest pair,
+`kgcnn_coNGN` over `potnet` on dft_3d formation energy, the official MAE gap is
+0.0002, the paired advantage is 0.00016852, the 95% CI is [-0.00160975,
+0.00156560], and P(tie/reversal) is 0.4030. Report: `layer_c_bootstrap.md`.
+
 ## Next
 
 The best next move is cautious scale-up of the `matminer_rf` smoke. If feature
 runtime grows too quickly, Paper-002 can be stopped as a strong three-format Layer A
-audit plus a bounded Layer B execution-path result and point-gap map.
+audit plus a bounded Layer B execution-path result and Layer C point-gap/bootstrap
+map.

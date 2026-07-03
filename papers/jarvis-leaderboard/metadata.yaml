@@ -73,3 +73,20 @@ layer_c_resolution:
   adjacent_gaps_le_0_001: 5
   adjacent_gaps_le_0_005: 29
   adjacent_gaps_le_0_010: 38
+
+layer_c_bootstrap:
+  status: paired_bootstrap_completed
+  script: scripts/jarvis_bootstrap.py
+  report: papers/jarvis-leaderboard/layer_c_bootstrap.md
+  adjacent_pairs_checked: 20
+  bootstrap_draws: 2000
+  seed: 42
+  ci_cross_zero: 17
+  closest_pair:
+    target: AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae
+    pair: kgcnn_coNGN over potnet
+    official_gap: 0.0002
+    paired_advantage: 0.00016852
+    ci_low: -0.00160975
+    ci_high: 0.00156560
+    p_tie_or_reversal: 0.4030
