@@ -259,6 +259,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench RFLR `matbench_steels` source replay: submitted notebook logic
       regenerates all five folds exactly under scikit-learn 1.2.2
       (`papers/matbench/layer_b_rflr_steels_replay.md`)
+- [x] Matbench Dummy source replay on four low-cost composition tasks: regression
+      folds exact, stratified classification folds non-identical because RNG state
+      was not persisted (`papers/matbench/layer_b_dummy_composition_replay.md`)
 - [x] Matbench source artifact inventory: 28 submission directories scanned; 11
       direct `run.py` files, 14 notebooks, and only 1 pickle/joblib model artifact
       (`papers/matbench/source_artifact_inventory.md`)
@@ -349,8 +352,9 @@ regex composition featurizer and 30-tree random forest, with max prediction delt
 0 and max score delta 0 across all five folds.
 
 Layer B candidate triage: after TPOT-Mat, `matbench_v0.1_RFLR` was selected and
-then replayed exactly; `matbench_v0.1_dummy` is the remaining positive-control
-target.
+then replayed exactly. The Dummy positive-control replay is exact for checked
+regression folds and non-identical for stratified classification folds because RNG
+state was not persisted.
 
 Artifacts:
 
@@ -377,11 +381,13 @@ Artifacts:
 - Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Layer B RFLR steels replay: `papers/matbench/layer_b_rflr_steels_replay.md`
+- Layer B Dummy composition replay: `papers/matbench/layer_b_dummy_composition_replay.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
 - All-submission score scan script: `scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `scripts/matbench_tpot_replay.py`
 - Layer B RFLR replay script: `scripts/matbench_rflr_replay.py`
+- Layer B Dummy replay script: `scripts/matbench_dummy_replay.py`
 - Layer B triage script: `scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`

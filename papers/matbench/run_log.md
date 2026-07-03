@@ -2591,3 +2591,137 @@ warning: in the working copy of 'reports/paper-003-external_release_packet.md', 
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 13:23 UTC — paper003 replay Dummy composition source subset
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_dummy_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_dummy_composition_replay.md
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-132314-950603.log`
+
+output tail:
+```
+{
+  "folds_replayed": 20,
+  "max_prediction_delta": 0.5020325203252033,
+  "max_score_delta": 0.044867666278723795,
+  "report": "papers\\matbench\\layer_b_dummy_composition_replay.md",
+  "sklearn": "1.2.2",
+  "tasks": [
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_steels"
+  ]
+}
+```
+
+### 2026-07-03 13:24 UTC — paper003 regenerate Dummy replay wording
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_dummy_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_dummy_composition_replay.md
+```
+
+- exit code: **0**  | duration: 1.1s  | raw log: `logs/cmd-20260703-132403-899903.log`
+
+output tail:
+```
+{
+  "folds_replayed": 20,
+  "max_prediction_delta": 0.5020325203252033,
+  "max_score_delta": 0.044867666278723795,
+  "report": "papers\\matbench\\layer_b_dummy_composition_replay.md",
+  "sklearn": "1.2.2",
+  "tasks": [
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_steels"
+  ]
+}
+```
+
+### 2026-07-03 13:24 UTC — paper003 update Layer B triage after Dummy replay
+
+```
+$ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
+```
+
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-132409-222654.log`
+
+output tail:
+```
+  "priorities": {
+    "already replayed": 3,
+    "low": 24,
+    "medium": 1
+  },
+  "report": "papers\\matbench\\layer_b_candidate_triage.md",
+  "submissions": 28,
+  "top_remaining": [
+    "matbench_v0.1_Auto-sklearn",
+    "matbench_v0.1_lattice_xgboost",
+    "matbench_v0.1_gptchem",
+    "matbench_v0.1_Ax_10_90_CrabNet_v1.2.7",
+    "matbench_v0.1_Ax_CrabNet_v1.2.1"
+  ]
+}
+```
+
+### 2026-07-03 13:24 UTC — paper003 reassemble report with Dummy replay
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132417-594620.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 13:24 UTC — paper003 verify Dummy replay docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_dummy_replay.py', doraise=True); py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); dummy=Path('papers/matbench/layer_b_dummy_composition_replay.md').read_text(encoding='utf-8'); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_dummy_composition']['regression_exact_folds']==10, meta['layer_b_dummy_composition']['classification_exact_folds']==0, 'Regression exact folds: 10 / 10' in dummy, 'Classification exact folds: 0 / 10' in dummy, 'Already replayed: 3' in triage, 'Layer B Dummy composition source replay' in assembled, 'matbench_dummy_replay.py' in summary, 'Dummy source replay' in packet, 'layer_b_dummy_composition_replay.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132426-180745.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 13:24 UTC — paper003 Dummy replay whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132430-591259.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:24 UTC — paper003 final reassemble report after Dummy replay checks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132434-409739.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```

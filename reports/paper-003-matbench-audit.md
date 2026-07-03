@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 13:20 UTC_
+_Generated: 2026-07-03 13:24 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -8,7 +8,7 @@ _Generated: 2026-07-03 13:20 UTC_
 
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT and RFLR source replays completed.
+Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT, RFLR, and Dummy source replays completed.
 
 ## Result
 
@@ -92,6 +92,14 @@ non-identical, so this source replay is environment-sensitive.
 
 RFLR replay report: `layer_b_rflr_steels_replay.md`.
 
+The Dummy positive-control replay covers the four low-cost composition tasks. The
+mean-regression dummy path is exact for all 10 checked regression folds. The
+stratified classification dummy path is runnable but non-identical for all 10
+checked classification folds under audit seed 0, as expected because the notebook
+does not persist RNG state or set `DummyClassifier(random_state=...)`.
+
+Dummy replay report: `layer_b_dummy_composition_replay.md`.
+
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
 the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
@@ -150,11 +158,13 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B candidate triage: `layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
+- Layer B Dummy composition replay: `layer_b_dummy_composition_replay.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Layer B RFLR replay script: `../../scripts/matbench_rflr_replay.py`
+- Layer B Dummy replay script: `../../scripts/matbench_dummy_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
@@ -352,12 +362,14 @@ layer_b_candidate_triage:
   already_replayed:
     - matbench_v0.1_TPOT
     - matbench_v0.1_RFLR
+    - matbench_v0.1_dummy
   selected_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
   selected_candidate_task: matbench_steels
   selected_candidate_priority_before_replay: high
   selected_candidate_score: 78
   selected_candidate_replay_result: prediction_identical
-  remaining_positive_control_candidate: matbench_v0.1_dummy
+  positive_control_replay: matbench_v0.1_dummy
+  positive_control_replay_scope: low_cost_composition_subset
   medium_priority_candidates: 1
   low_priority_candidates: 24
 
@@ -395,6 +407,27 @@ layer_b_rflr_steels:
     max_abs_prediction_delta: 108.58666666666704
     max_abs_score_delta: 22.306666666666843
   interpretation: notebook source path regenerates committed predictions exactly under the checked sklearn 1.2.2 environment
+
+layer_b_dummy_composition:
+  status: source_replay_regression_exact_classification_non_identical
+  script: scripts/matbench_dummy_replay.py
+  report: papers/matbench/layer_b_dummy_composition_replay.md
+  environment: env/matbench-tpot
+  sklearn_version: 1.2.2
+  submission: matbench_v0.1_dummy
+  tasks:
+    - matbench_expt_gap
+    - matbench_expt_is_metal
+    - matbench_glass
+    - matbench_steels
+  folds_replayed: 20
+  exact_prediction_and_score_folds: 10
+  regression_exact_folds: 10
+  classification_exact_folds: 0
+  max_prediction_delta_or_mismatch_rate: 0.5020325203252033
+  max_score_delta: 0.04486766627873349
+  audit_numpy_seed: 0
+  interpretation: mean-regression dummy replay is exact, stratified classification replay is non-identical because the notebook did not persist RNG state
 
 candidate_screen:
   status: selected
@@ -1731,20 +1764,19 @@ This ranks public Matbench v0.1 submission artifacts for bounded source replays.
 - High-priority candidates: 0
 - Medium-priority candidates: 1
 - Low-priority candidates: 24
-- Already replayed: 2
-- Positive-control candidates: 1
+- Already replayed: 3
+- Positive-control candidates: 0
 
 ## Decision
 
 `matbench_v0.1_RFLR` was selected as the best next nontrivial bounded CPU replay target after TPOT-Mat. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook source, and seed/fit/predict signals. The follow-up replay is prediction-identical in `layer_b_rflr_steels_replay.md`.
 
-`matbench_v0.1_dummy` is the best positive-control replay target if an exact source-path check is needed, but it has low novelty. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.
+`matbench_v0.1_dummy` was also replayed on the low-cost composition subset as a positive control: regression folds are exact and stratified classification folds are non-identical without a persisted RNG state. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.
 
 ## Next remaining candidates
 
 | Rank | Submission | Tasks | Score | Priority | Evidence | Recommendation |
 |---:|---|---|---:|---|---|---|
-| 1 | matbench_v0.1_dummy | matbench_dielectric, matbench_expt_gap, matbench_expt_is_metal, +10 more | 0 | positive-control candidate | 13 tasks, some low-cost tasks, large MP task, notebook, fit/predict path, CPU deps | Use as an exact-source positive control if a low-novelty replay is useful. |
 
 ## Full ranking
 
@@ -1769,7 +1801,7 @@ This ranks public Matbench v0.1 submission artifacts for bounded source replays.
 | matbench_v0.1_CrabNet | CrabNet | 10 | notebook.ipynb |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_DeeperGATGNN | DeeperGATGNN | 8 | config.yml, deep_gatgnn.py, main.py, training.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | DimeNet++ (kgcnn v2.1.0) | 9 | run.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
-| matbench_v0.1_dummy | Dummy | 13 | notebook.ipynb |  | 0 | positive-control candidate | Use as an exact-source positive control if a low-novelty replay is useful. |
+| matbench_v0.1_dummy | Dummy | 13 | notebook.ipynb |  | 0 | already replayed | Already replayed on the low-cost composition subset; regression folds are exact and stratified classification folds are non-identical without a persisted RNG state. |
 | matbench_v0.1_Finder_v1.2_composition | Finder_v1.2 composition-only version | 8 | matbench_test.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_Finder_v1.2_structure | Finder_v1.2 structure-based version | 8 | matbench_test.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_GN-OA | GN-OA v1 | 1 | GN_OA.ipynb |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
@@ -1849,6 +1881,57 @@ The source replay is prediction-identical to the submitted artifact.
 ## Version note
 
 A logged control run in env/jarvis with scikit-learn 1.9.0 was runnable but non-identical (max prediction delta 108.587, max score delta 22.307). The prediction-identical replay above uses scikit-learn 1.2.2.
+
+
+
+## 7c. Layer B Dummy composition source replay
+
+# Matbench v0.1 Dummy source replay
+
+- Submission: `matbench_v0.1_dummy` / `Dummy`
+- Tasks replayed: 4
+- Folds replayed: 20
+- Python environment: `env/matbench-tpot`
+- scikit-learn version: `1.2.2`
+- Audit NumPy seed: `0`
+- Exact prediction+score folds: 10 / 20
+- Regression exact folds: 10 / 10
+- Classification exact folds: 0 / 10
+- Max prediction delta / mismatch rate: 5.020e-01
+- Max score delta: 4.487e-02
+
+## Method
+
+The replay mirrors the submitted notebook logic on a bounded low-cost task subset: `DummyRegressor(strategy="mean")` for regression and `DummyClassifier(strategy="stratified")` for classification. The notebook does not record a random seed for the stratified classifier, so this audit sets a NumPy seed only to make the replay deterministic.
+
+## Fold comparison
+
+| Task | Fold | Type | Test n | Prediction delta / mismatch rate | Primary stored | Primary replay | Primary delta | Max score delta |
+|---|---:|---|---:|---:|---:|---:|---:|---:|
+| matbench_expt_gap | 0 | regression | 921 | 0 | 1.09646800468 | 1.09646800468 | 0 | 0 |
+| matbench_expt_gap | 1 | regression | 921 | 0 | 1.19221192656 | 1.19221192656 | 0 | 0 |
+| matbench_expt_gap | 2 | regression | 921 | 0 | 1.15268817052 | 1.15268817052 | 0 | 0 |
+| matbench_expt_gap | 3 | regression | 921 | 0 | 1.1445202552 | 1.1445202552 | 0 | 0 |
+| matbench_expt_gap | 4 | regression | 920 | 0 | 1.13174644762 | 1.13174644762 | 0 | 0 |
+| matbench_expt_is_metal | 0 | classification | 985 | 0.489340101523 | 0.469965450992 | 0.502477798758 | 0.0325123477659 | 0.0377263494158 |
+| matbench_expt_is_metal | 1 | classification | 984 | 0.502032520325 | 0.500074361728 | 0.514302239114 | 0.0142278773858 | 0.0142278773858 |
+| matbench_expt_is_metal | 2 | classification | 984 | 0.485772357724 | 0.487812938941 | 0.491861521937 | 0.00404858299595 | 0.00406504065041 |
+| matbench_expt_is_metal | 3 | classification | 984 | 0.475609756098 | 0.507167644386 | 0.521222011072 | 0.0140543666859 | 0.0142276422764 |
+| matbench_expt_is_metal | 4 | classification | 984 | 0.5 | 0.49693877551 | 0.488742460547 | 0.00819631496323 | 0.016708086854 |
+| matbench_glass | 0 | classification | 1136 | 0.397887323944 | 0.521244581041 | 0.496355973379 | 0.0248886076617 | 0.0264084507042 |
+| matbench_glass | 1 | classification | 1136 | 0.426936619718 | 0.521747400218 | 0.486115034482 | 0.035632365736 | 0.035632365736 |
+| matbench_glass | 2 | classification | 1136 | 0.406690140845 | 0.484759117599 | 0.515048794176 | 0.0302896765762 | 0.0302896765762 |
+| matbench_glass | 3 | classification | 1136 | 0.414612676056 | 0.479860867862 | 0.524728534141 | 0.0448676662787 | 0.0448676662787 |
+| matbench_glass | 4 | classification | 1136 | 0.399647887324 | 0.495058436251 | 0.500237285454 | 0.00517884920321 | 0.00517884920321 |
+| matbench_steels | 0 | regression | 63 | 0 | 241.459074393 | 241.459074393 | 0 | 0 |
+| matbench_steels | 1 | regression | 63 | 0 | 219.377031937 | 219.377031937 | 0 | 0 |
+| matbench_steels | 2 | regression | 62 | 0 | 225.793225806 | 225.793225806 | 0 | 0 |
+| matbench_steels | 3 | regression | 62 | 0 | 241.203522581 | 241.203522581 | 0 | 0 |
+| matbench_steels | 4 | regression | 62 | 0 | 220.889793548 | 220.889793548 | 0 | 0 |
+
+## Interpretation
+
+The mean-regression dummy source path is prediction-identical for the checked regression folds. The stratified classification dummy source path is runnable but not prediction-identical under the audit seed, which is expected because the submitted notebook did not persist the RNG state or a classifier `random_state`.
 
 
 
@@ -2047,91 +2130,110 @@ Thanks for maintaining the benchmark.
 
 ## 9. Run log (tail)
 
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
+```
 
-### 2026-07-03 13:15 UTC — paper003 final reassemble report after Layer B triage verification
+### 2026-07-03 13:20 UTC — paper003 final reassemble report after RFLR replay checks
 
 ```
 $ .venv\Scripts\python.exe scripts\make_matbench_report.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-131543-521759.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132056-502016.log`
 
 output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
 
-### 2026-07-03 13:17 UTC — paper003 replay RFLR steels source
+### 2026-07-03 13:21 UTC — paper003 RFLR replay final whitespace check
 
 ```
-$ env\jarvis\Scripts\python.exe scripts\matbench_rflr_replay.py --report papers\matbench\layer_b_rflr_steels_replay.md
+$ git diff --check
 ```
 
-- exit code: **0**  | duration: 3.3s  | raw log: `logs/cmd-20260703-131751-195964.log`
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132119-924595.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/matbench_layer_b_candidate_triage.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:23 UTC — paper003 replay Dummy composition source subset
+
+```
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_dummy_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_dummy_composition_replay.md
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-132314-950603.log`
 
 output tail:
 ```
 {
-  "folds_replayed": 5,
-  "max_prediction_delta": 108.58666666666704,
-  "max_score_delta": 22.306666666666843,
-  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
-  "sklearn": "1.9.0"
+  "folds_replayed": 20,
+  "max_prediction_delta": 0.5020325203252033,
+  "max_score_delta": 0.044867666278723795,
+  "report": "papers\\matbench\\layer_b_dummy_composition_replay.md",
+  "sklearn": "1.2.2",
+  "tasks": [
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_steels"
+  ]
 }
 ```
 
-### 2026-07-03 13:18 UTC — paper003 replay RFLR steels source in TPOT sklearn env
+### 2026-07-03 13:24 UTC — paper003 regenerate Dummy replay wording
 
 ```
-$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report logs\rflr_steels_replay_tpot_env.md
+$ env\matbench-tpot\Scripts\python.exe scripts\matbench_dummy_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_dummy_composition_replay.md
 ```
 
-- exit code: **0**  | duration: 11.7s  | raw log: `logs/cmd-20260703-131812-413748.log`
+- exit code: **0**  | duration: 1.1s  | raw log: `logs/cmd-20260703-132403-899903.log`
 
 output tail:
 ```
 {
-  "folds_replayed": 5,
-  "max_prediction_delta": 0.0,
-  "max_score_delta": 0.0,
-  "report": "logs\\rflr_steels_replay_tpot_env.md",
-  "sklearn": "1.2.2"
+  "folds_replayed": 20,
+  "max_prediction_delta": 0.5020325203252033,
+  "max_score_delta": 0.044867666278723795,
+  "report": "papers\\matbench\\layer_b_dummy_composition_replay.md",
+  "sklearn": "1.2.2",
+  "tasks": [
+    "matbench_expt_gap",
+    "matbench_expt_is_metal",
+    "matbench_glass",
+    "matbench_steels"
+  ]
 }
 ```
 
-### 2026-07-03 13:18 UTC — paper003 replay RFLR steels source exact sklearn env
-
-```
-$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_rflr_steels_replay.md
-```
-
-- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-131842-817474.log`
-
-output tail:
-```
-{
-  "folds_replayed": 5,
-  "max_prediction_delta": 0.0,
-  "max_score_delta": 0.0,
-  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
-  "sklearn": "1.2.2"
-}
-```
-
-### 2026-07-03 13:19 UTC — paper003 update Layer B triage after RFLR replay
+### 2026-07-03 13:24 UTC — paper003 update Layer B triage after Dummy replay
 
 ```
 $ .venv\Scripts\python.exe scripts\matbench_layer_b_candidate_triage.py --report papers\matbench\layer_b_candidate_triage.md
 ```
 
-- exit code: **0**  | duration: 5.0s  | raw log: `logs/cmd-20260703-131932-610260.log`
+- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-132409-222654.log`
 
 output tail:
 ```
-    "already replayed": 2,
+  "priorities": {
+    "already replayed": 3,
     "low": 24,
-    "medium": 1,
-    "positive-control candidate": 1
+    "medium": 1
   },
   "report": "papers\\matbench\\layer_b_candidate_triage.md",
   "submissions": 28,
@@ -2145,58 +2247,39 @@ output tail:
 }
 ```
 
-### 2026-07-03 13:20 UTC — paper003 regenerate RFLR replay with version note
-
-```
-$ env\matbench-tpot\Scripts\python.exe scripts\matbench_rflr_replay.py --python-env env/matbench-tpot --report papers\matbench\layer_b_rflr_steels_replay.md --extra-note A logged control run in env/jarvis with scikit-learn 1.9.0 was runnable but non-identical (max prediction delta 108.587, max score delta 22.307). The prediction-identical replay above uses scikit-learn 1.2.2.
-```
-
-- exit code: **0**  | duration: 1.3s  | raw log: `logs/cmd-20260703-132030-835145.log`
-
-output tail:
-```
-{
-  "folds_replayed": 5,
-  "max_prediction_delta": 0.0,
-  "max_score_delta": 0.0,
-  "report": "papers\\matbench\\layer_b_rflr_steels_replay.md",
-  "sklearn": "1.2.2"
-}
-```
-
-### 2026-07-03 13:20 UTC — paper003 reassemble report with RFLR replay
+### 2026-07-03 13:24 UTC — paper003 reassemble report with Dummy replay
 
 ```
 $ .venv\Scripts\python.exe scripts\make_matbench_report.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132037-680777.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132417-594620.log`
 
 output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
 
-### 2026-07-03 13:20 UTC — paper003 verify RFLR replay docs
+### 2026-07-03 13:24 UTC — paper003 verify Dummy replay docs
 
 ```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_rflr_replay.py', doraise=True); py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); rflr=Path('papers/matbench/layer_b_rflr_steels_replay.md').read_text(encoding='utf-8'); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_rflr_steels']['max_abs_prediction_delta']==0.0, meta['layer_b_rflr_steels']['sklearn_version']=='1.2.2', 'Max absolute prediction delta vs submitted artifact: 0.000e+00' in rflr, 'Version note' in rflr, 'Already replayed: 2' in triage, 'Layer B RFLR steels source replay' in assembled, 'matbench_rflr_replay.py' in summary, 'RFLR source replay' in packet, 'layer_b_rflr_steels_replay.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_dummy_replay.py', doraise=True); py_compile.compile('scripts/matbench_layer_b_candidate_triage.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); dummy=Path('papers/matbench/layer_b_dummy_composition_replay.md').read_text(encoding='utf-8'); triage=Path('papers/matbench/layer_b_candidate_triage.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_b_dummy_composition']['regression_exact_folds']==10, meta['layer_b_dummy_composition']['classification_exact_folds']==0, 'Regression exact folds: 10 / 10' in dummy, 'Classification exact folds: 0 / 10' in dummy, 'Already replayed: 3' in triage, 'Layer B Dummy composition source replay' in assembled, 'matbench_dummy_replay.py' in summary, 'Dummy source replay' in packet, 'layer_b_dummy_composition_replay.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132048-083620.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-132426-180745.log`
 
 output tail:
 ```
 {'checks': [True, True, True, True, True, True, True, True, True]}
 ```
 
-### 2026-07-03 13:20 UTC — paper003 RFLR replay whitespace check
+### 2026-07-03 13:24 UTC — paper003 Dummy replay whitespace check
 
 ```
 $ git diff --check
 ```
 
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132052-572641.log`
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-132430-591259.log`
 
 output tail:
 ```

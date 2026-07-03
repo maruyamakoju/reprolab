@@ -1,6 +1,6 @@
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT and RFLR source replays completed.
+Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT, RFLR, and Dummy source replays completed.
 
 ## Result
 
@@ -84,6 +84,14 @@ non-identical, so this source replay is environment-sensitive.
 
 RFLR replay report: `layer_b_rflr_steels_replay.md`.
 
+The Dummy positive-control replay covers the four low-cost composition tasks. The
+mean-regression dummy path is exact for all 10 checked regression folds. The
+stratified classification dummy path is runnable but non-identical for all 10
+checked classification folds under audit seed 0, as expected because the notebook
+does not persist RNG state or set `DummyClassifier(random_state=...)`.
+
+Dummy replay report: `layer_b_dummy_composition_replay.md`.
+
 The first bounded source-execution probe targets `matbench_v0.1_TPOT`, a
 notebook-based TPOT-Mat submission for `matbench_steels`. The replay script loads
 the submitted `tpot_best_pipeline.pkl`, uses the submitted `utils.py` composition
@@ -142,11 +150,13 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B candidate triage: `layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
+- Layer B Dummy composition replay: `layer_b_dummy_composition_replay.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Layer B RFLR replay script: `../../scripts/matbench_rflr_replay.py`
+- Layer B Dummy replay script: `../../scripts/matbench_dummy_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`

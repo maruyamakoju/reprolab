@@ -35,10 +35,12 @@ submitted random seed.
 - **Leaderboard display check:** all three classification per-task leaderboard
   tables put `mean rocauc` first, and all 27 displayed rows have `mean rocauc`
   equal to mean balanced accuracy.
-- **Layer B:** two `matbench_steels` source paths run. TPOT-Mat runs from the
-  submitted notebook artifacts but is not prediction-identical. RFLR mirrors the
-  submitted regex featurizer plus `RandomForestRegressor(n_estimators=30,
-  random_state=1)` and is prediction-identical under scikit-learn 1.2.2.
+- **Layer B:** three bounded source paths run. TPOT-Mat runs from the submitted
+  notebook artifacts but is not prediction-identical. RFLR mirrors the submitted
+  regex featurizer plus `RandomForestRegressor(n_estimators=30, random_state=1)`
+  and is prediction-identical under scikit-learn 1.2.2. Dummy is exact for
+  checked regression folds and non-identical for stratified classification folds
+  because no RNG state was persisted.
 - **Source inventory:** 28 submission directories scanned; 11 have direct
   `run.py` files, 14 have notebooks, and only one has a pickle/joblib model
   artifact. This supports treating TPOT-Mat as the bounded Layer B candidate.
@@ -61,6 +63,7 @@ submitted random seed.
 | Layer B candidate triage | 28 submissions | selected `matbench_v0.1_RFLR`, now replayed exactly |
 | TPOT source replay | 5 steels folds | runnable, non-identical predictions |
 | RFLR source replay | 5 steels folds | max prediction delta `0.0`, max score delta `0.0` |
+| Dummy source replay | 4 composition tasks, 20 folds | 10/10 regression folds exact, 0/10 classification folds exact |
 
 ## Evidence map
 
@@ -87,6 +90,7 @@ submitted random seed.
 - Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Layer B RFLR replay: `papers/matbench/layer_b_rflr_steels_replay.md`
+- Layer B Dummy replay: `papers/matbench/layer_b_dummy_composition_replay.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
 - Command log: `papers/matbench/run_log.md`
@@ -99,6 +103,7 @@ submitted random seed.
   - `scripts/matbench_layer_b_candidate_triage.py`
   - `scripts/matbench_tpot_replay.py`
   - `scripts/matbench_rflr_replay.py`
+  - `scripts/matbench_dummy_replay.py`
   - `scripts/make_matbench_report.py`
 
 ## Claims to avoid
@@ -126,7 +131,9 @@ submitted random seed.
 > balanced accuracy, and for MODNet probability outputs the raw-probability ROC-AUC
 > is higher by up to 0.122 mean AUC. I also ran two bounded source replays on
 > `matbench_steels`: TPOT-Mat is executable but non-identical, while RFLR is
-> prediction-identical under scikit-learn 1.2.2.
+> prediction-identical under scikit-learn 1.2.2. A Dummy positive-control replay
+> is exact for checked regression folds and non-identical for stratified
+> classification folds because the notebook did not persist RNG state.
 
 ## Next useful moves
 
@@ -138,4 +145,5 @@ submitted random seed.
    leaderboards do not imply probability ROC-AUC when labels were used.
 4. If deeper Layer B is needed, choose submissions with fixed seeds or saved
    fold-level model artifacts before attempting larger structure tasks.
-   `matbench_v0.1_dummy` is the remaining positive-control option.
+   `matbench_v0.1_lattice_xgboost` is a possible later one-task baseline, but it
+   targets the large `matbench_mp_e_form` task.

@@ -6,20 +6,19 @@ This ranks public Matbench v0.1 submission artifacts for bounded source replays.
 - High-priority candidates: 0
 - Medium-priority candidates: 1
 - Low-priority candidates: 24
-- Already replayed: 2
-- Positive-control candidates: 1
+- Already replayed: 3
+- Positive-control candidates: 0
 
 ## Decision
 
 `matbench_v0.1_RFLR` was selected as the best next nontrivial bounded CPU replay target after TPOT-Mat. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook source, and seed/fit/predict signals. The follow-up replay is prediction-identical in `layer_b_rflr_steels_replay.md`.
 
-`matbench_v0.1_dummy` is the best positive-control replay target if an exact source-path check is needed, but it has low novelty. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.
+`matbench_v0.1_dummy` was also replayed on the low-cost composition subset as a positive control: regression folds are exact and stratified classification folds are non-identical without a persisted RNG state. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.
 
 ## Next remaining candidates
 
 | Rank | Submission | Tasks | Score | Priority | Evidence | Recommendation |
 |---:|---|---|---:|---|---|---|
-| 1 | matbench_v0.1_dummy | matbench_dielectric, matbench_expt_gap, matbench_expt_is_metal, +10 more | 0 | positive-control candidate | 13 tasks, some low-cost tasks, large MP task, notebook, fit/predict path, CPU deps | Use as an exact-source positive control if a low-novelty replay is useful. |
 
 ## Full ranking
 
@@ -44,7 +43,7 @@ This ranks public Matbench v0.1 submission artifacts for bounded source replays.
 | matbench_v0.1_CrabNet | CrabNet | 10 | notebook.ipynb |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_DeeperGATGNN | DeeperGATGNN | 8 | config.yml, deep_gatgnn.py, main.py, training.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | DimeNet++ (kgcnn v2.1.0) | 9 | run.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
-| matbench_v0.1_dummy | Dummy | 13 | notebook.ipynb |  | 0 | positive-control candidate | Use as an exact-source positive control if a low-novelty replay is useful. |
+| matbench_v0.1_dummy | Dummy | 13 | notebook.ipynb |  | 0 | already replayed | Already replayed on the low-cost composition subset; regression folds are exact and stratified classification folds are non-identical without a persisted RNG state. |
 | matbench_v0.1_Finder_v1.2_composition | Finder_v1.2 composition-only version | 8 | matbench_test.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_Finder_v1.2_structure | Finder_v1.2 structure-based version | 8 | matbench_test.py |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |
 | matbench_v0.1_GN-OA | GN-OA v1 | 1 | GN_OA.ipynb |  | 0 | low | Defer for now; dependency stack is heavier than needed for the next bounded pass. |

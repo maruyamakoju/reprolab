@@ -30,6 +30,7 @@ LARGE_MP_TASKS = {"matbench_mp_e_form", "matbench_mp_gap", "matbench_mp_is_metal
 REPLAYED_SUBMISSIONS = {
     "matbench_v0.1_TPOT": "Already used for the first bounded Layer B replay; runnable but not prediction-identical.",
     "matbench_v0.1_RFLR": "Already replayed after triage; prediction-identical in `layer_b_rflr_steels_replay.md`.",
+    "matbench_v0.1_dummy": "Already replayed on the low-cost composition subset; regression folds are exact and stratified classification folds are non-identical without a persisted RNG state.",
 }
 
 SEED_TOKENS = ("random_state", "np.random.seed", "torch.manual_seed", "manual_seed", "random.seed", "seed=")
@@ -200,8 +201,6 @@ def score(row: dict[str, Any]) -> tuple[int, list[str]]:
 def priority(row: dict[str, Any]) -> str:
     if row["name"] in REPLAYED_SUBMISSIONS:
         return "already replayed"
-    if row["name"] == "matbench_v0.1_dummy":
-        return "positive-control candidate"
     if row["score"] >= 70:
         return "high"
     if row["score"] >= 45:
@@ -273,7 +272,7 @@ def write_report(path: Path, rows: list[dict[str, Any]]) -> None:
         "",
         "`matbench_v0.1_RFLR` was selected as the best next nontrivial bounded CPU replay target after TPOT-Mat. It has one small `matbench_steels` task, simple scikit-learn/numpy/matbench requirements, notebook source, and seed/fit/predict signals. The follow-up replay is prediction-identical in `layer_b_rflr_steels_replay.md`.",
         "",
-        "`matbench_v0.1_dummy` is the best positive-control replay target if an exact source-path check is needed, but it has low novelty. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.",
+        "`matbench_v0.1_dummy` was also replayed on the low-cost composition subset as a positive control: regression folds are exact and stratified classification folds are non-identical without a persisted RNG state. `matbench_v0.1_lattice_xgboost` is a plausible later one-task baseline, but it targets the large `matbench_mp_e_form` task and is notebook-only.",
         "",
         "## Next remaining candidates",
         "",

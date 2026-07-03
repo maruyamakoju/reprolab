@@ -183,12 +183,14 @@ layer_b_candidate_triage:
   already_replayed:
     - matbench_v0.1_TPOT
     - matbench_v0.1_RFLR
+    - matbench_v0.1_dummy
   selected_nontrivial_cpu_replay_candidate: matbench_v0.1_RFLR
   selected_candidate_task: matbench_steels
   selected_candidate_priority_before_replay: high
   selected_candidate_score: 78
   selected_candidate_replay_result: prediction_identical
-  remaining_positive_control_candidate: matbench_v0.1_dummy
+  positive_control_replay: matbench_v0.1_dummy
+  positive_control_replay_scope: low_cost_composition_subset
   medium_priority_candidates: 1
   low_priority_candidates: 24
 
@@ -226,6 +228,27 @@ layer_b_rflr_steels:
     max_abs_prediction_delta: 108.58666666666704
     max_abs_score_delta: 22.306666666666843
   interpretation: notebook source path regenerates committed predictions exactly under the checked sklearn 1.2.2 environment
+
+layer_b_dummy_composition:
+  status: source_replay_regression_exact_classification_non_identical
+  script: scripts/matbench_dummy_replay.py
+  report: papers/matbench/layer_b_dummy_composition_replay.md
+  environment: env/matbench-tpot
+  sklearn_version: 1.2.2
+  submission: matbench_v0.1_dummy
+  tasks:
+    - matbench_expt_gap
+    - matbench_expt_is_metal
+    - matbench_glass
+    - matbench_steels
+  folds_replayed: 20
+  exact_prediction_and_score_folds: 10
+  regression_exact_folds: 10
+  classification_exact_folds: 0
+  max_prediction_delta_or_mismatch_rate: 0.5020325203252033
+  max_score_delta: 0.04486766627873349
+  audit_numpy_seed: 0
+  interpretation: mean-regression dummy replay is exact, stratified classification replay is non-identical because the notebook did not persist RNG state
 
 candidate_screen:
   status: selected
