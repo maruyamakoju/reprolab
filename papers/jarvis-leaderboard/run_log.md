@@ -428,3 +428,190 @@ counts [12, 11, 14, 14, 13, 15] total 79
 bad []
 targets ['`AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-ehull-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-slme-dft_3d-test-mae`', '`AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae`']
 ```
+
+### 2026-07-03 06:41 UTC — paper002 sparse checkout baseline run scripts
+
+```
+$ git -C vendor\jarvis_leaderboard sparse-checkout add --skip-checks jarvis_leaderboard/contributions/matminer_rf/run.py jarvis_leaderboard/contributions/matminer_rf/run.bash jarvis_leaderboard/contributions/matminer_xgboost/run.py jarvis_leaderboard/contributions/matminer_xgboost/run.bash jarvis_leaderboard/contributions/cfid/run.py jarvis_leaderboard/contributions/cfid/run.sh jarvis_leaderboard/contributions/cfid/zipit.py jarvis_leaderboard/contributions/cfid_chem/run.py jarvis_leaderboard/contributions/cfid_chem/run_chem.py
+```
+
+- exit code: **0**  | duration: 0.6s  | raw log: `logs/cmd-20260703-064123.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:42 UTC — verify jarvis_score mae acc support py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_score.py scripts\jarvis_sparse.py scripts\run_command.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064217.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:42 UTC — verify existing six JARVIS MAE reports after acc support
+
+```
+$ .venv\Scripts\python.exe -c import subprocess,sys; benches=['AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae','AI-SinglePropertyPrediction-ehull-dft_3d-test-mae','AI-SinglePropertyPrediction-optb88vdw_bandgap-dft_3d-test-mae','AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae','AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae','AI-SinglePropertyPrediction-slme-dft_3d-test-mae']; outs=['metric_check.md','metric_check-ehull.md','metric_check-optb88vdw_bandgap.md','metric_check-optb88vdw_total_energy.md','metric_check-bulk_modulus_kv.md','metric_check-slme.md']; [subprocess.run([sys.executable,'scripts/jarvis_score.py','--vendor','vendor/jarvis_leaderboard','--benchmark',b,'--models','all','--out','papers/jarvis-leaderboard/'+o], check=True) for b,o in zip(benches,outs)]
+```
+
+- exit code: **0**  | duration: 1.2s  | raw log: `logs/cmd-20260703-064224.log`
+
+output tail:
+```
+| kgcnn_cgcnn to kgcnn_megnet | 0.0475 | 0.04741627 |
+| kgcnn_megnet to matminer_rf | 0.0621 | 0.06209388 |
+| kgcnn_coGN to alignn_model | 0.0700 | 0.06997936 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-slme.md
+```
+
+### 2026-07-03 06:42 UTC — paper002 sparse checkout JARVIS classification tasks
+
+```
+$ .venv\Scripts\python.exe scripts\jarvis_sparse.py --vendor vendor\jarvis_leaderboard --benchmarks AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc AI-SinglePropertyClass-mbj_bandgap-dft_3d-test-acc AI-SinglePropertyClass-n_powerfact-dft_3d-test-acc AI-SinglePropertyClass-optb88vdw_bandgap-dft_3d-test-acc AI-SinglePropertyClass-p_Seebeck-dft_3d-test-acc AI-SinglePropertyClass-slme-dft_3d-test-acc AI-SinglePropertyClass-spillage-dft_3d-test-acc
+```
+
+- exit code: **0**  | duration: 1.1s  | raw log: `logs/cmd-20260703-064233.log`
+
+output tail:
+```
+AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+AI-SinglePropertyClass-mbj_bandgap-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+AI-SinglePropertyClass-n_powerfact-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+AI-SinglePropertyClass-optb88vdw_bandgap-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+AI-SinglePropertyClass-p_Seebeck-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+AI-SinglePropertyClass-slme-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+AI-SinglePropertyClass-spillage-dft_3d-test-acc: 12 paths (3 contribution CSVs)
+added 42 sparse-checkout paths
+```
+
+### 2026-07-03 06:42 UTC — paper002 layerA JARVIS classification tasks
+
+```
+$ .venv\Scripts\python.exe -c import subprocess,sys; benches=['AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc','AI-SinglePropertyClass-mbj_bandgap-dft_3d-test-acc','AI-SinglePropertyClass-n_powerfact-dft_3d-test-acc','AI-SinglePropertyClass-optb88vdw_bandgap-dft_3d-test-acc','AI-SinglePropertyClass-p_Seebeck-dft_3d-test-acc','AI-SinglePropertyClass-slme-dft_3d-test-acc','AI-SinglePropertyClass-spillage-dft_3d-test-acc']; [subprocess.run([sys.executable,'scripts/jarvis_score.py','--vendor','vendor/jarvis_leaderboard','--benchmark',b,'--models','all','--out','papers/jarvis-leaderboard/metric_check-'+b.split('-')[2]+'.md'], check=True) for b in benches]
+```
+
+- exit code: **1**  | duration: 0.3s  | raw log: `logs/cmd-20260703-064240.log`
+
+output tail:
+```
+  File "C:\Users\07013\Desktop\0702fable\reprolab\scripts\jarvis_score.py", line 194, in main
+    result = score_model(root, model, args.benchmark, truth, bench.metric)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\scripts\jarvis_score.py", line 126, in score_model
+    rows = load_predictions(root, model, bench_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\scripts\jarvis_score.py", line 79, in load_predictions
+    raise ValueError(f"expected {expected_name} inside {rel}, found {csv_name}")
+ValueError: expected AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc.csv inside contributions\matminer_rf\AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc.csv.zip, found AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-mae.csv
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<string>", line 1, in <listcomp>
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['C:\\Users\\07013\\Desktop\\0702fable\\reprolab\\.venv\\Scripts\\python.exe', 'scripts/jarvis_score.py', '--vendor', 'vendor/jarvis_leaderboard', '--benchmark', 'AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc', '--models', 'all', '--out', 'papers/jarvis-leaderboard/metric_check-magmom_oszicar.md']' returned non-zero exit status 1.
+```
+
+### 2026-07-03 06:43 UTC — verify jarvis classification zip-name tolerance py_compile
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\jarvis_score.py scripts\jarvis_sparse.py scripts\run_command.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064302.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 06:43 UTC — paper002 layerA JARVIS classification tasks after zip-name tolerance
+
+```
+$ .venv\Scripts\python.exe -c import subprocess,sys; benches=['AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc','AI-SinglePropertyClass-mbj_bandgap-dft_3d-test-acc','AI-SinglePropertyClass-n_powerfact-dft_3d-test-acc','AI-SinglePropertyClass-optb88vdw_bandgap-dft_3d-test-acc','AI-SinglePropertyClass-p_Seebeck-dft_3d-test-acc','AI-SinglePropertyClass-slme-dft_3d-test-acc','AI-SinglePropertyClass-spillage-dft_3d-test-acc']; [subprocess.run([sys.executable,'scripts/jarvis_score.py','--vendor','vendor/jarvis_leaderboard','--benchmark',b,'--models','all','--out','papers/jarvis-leaderboard/metric_check-class-'+b.split('-')[2]+'.md'], check=True) for b in benches]
+```
+
+- exit code: **0**  | duration: 1.3s  | raw log: `logs/cmd-20260703-064308.log`
+
+output tail:
+```
+|---|---:|---:|
+| matminer_rf to matminer_xgboost | 0.0053 | 0.00527704 |
+| alignn_model to matminer_rf | 0.0176 | 0.01759015 |
+
+## Scope
+
+- Layer A only: metric recomputation from already-published artifacts.
+- No model training or model execution yet.
+- The target was chosen because the official page exposes CSV predictions, JSON ground truth, run scripts, and metadata.
+
+## Next
+
+Next, decide whether to broaden across more JARVIS tasks or attempt one Layer B model-execution smoke for a tractable baseline.
+
+wrote papers\jarvis-leaderboard\metric_check-class-spillage.md
+```
+
+### 2026-07-03 06:43 UTC — paper002 verify classification reports and zip inner names
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re, zipfile; reports=sorted(Path('papers/jarvis-leaderboard').glob('metric_check-class-*.md')); texts=[p.read_text(encoding='utf-8') for p in reports]; counts=[int(re.search('Models scored: ([0-9]+)', t).group(1)) for t in texts]; bad=[str(p) for p,t in zip(reports,texts) if '| no |' in t or 'missing=' in t or 'extra=' in t]; vendor=Path('vendor/jarvis_leaderboard/jarvis_leaderboard/contributions'); zips=sorted(vendor.glob('*/AI-SinglePropertyClass-*-dft_3d-test-acc.csv.zip')); mismatches=[]; [mismatches.append((str(p), zipfile.ZipFile(p).namelist()[0])) for p in zips if zipfile.ZipFile(p).namelist()[0] != p.name[:-4]]; print('classification_reports', len(reports)); print('counts', counts, 'total', sum(counts)); print('bad', bad); print('class_csv_zips', len(zips), 'inner_name_mismatches', len(mismatches)); print('example_mismatch', mismatches[0] if mismatches else None); raise SystemExit(0 if len(reports)==7 and sum(counts)==21 and not bad else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064328.log`
+
+output tail:
+```
+classification_reports 7
+counts [3, 3, 3, 3, 3, 3, 3] total 21
+bad []
+class_csv_zips 21 inner_name_mismatches 14
+example_mismatch ('vendor\\jarvis_leaderboard\\jarvis_leaderboard\\contributions\\matminer_rf\\AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-acc.csv.zip', 'AI-SinglePropertyClass-magmom_oszicar-dft_3d-test-mae.csv')
+```
+
+### 2026-07-03 06:44 UTC — verify paper002 regression plus classification summary
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; files=sorted(Path('papers/jarvis-leaderboard').glob('metric_check*.md')); texts=[p.read_text(encoding='utf-8') for p in files]; counts=[int(re.search('Models scored: ([0-9]+)', t).group(1)) for t in texts]; bad=[str(p) for p,t in zip(files,texts) if '| no |' in t or 'missing=' in t or 'extra=' in t]; summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); print('files', len(files)); print('counts', counts, 'total', sum(counts)); print('bad', bad); print('summary_has_100', '100 checked submissions' in summary); raise SystemExit(0 if len(files)==13 and sum(counts)==100 and not bad and '100 checked submissions' in summary else 1)
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-064404.log`
+
+output tail:
+```
+files 13
+counts [12, 3, 3, 3, 3, 3, 3, 3, 11, 14, 14, 13, 15] total 100
+bad []
+summary_has_100 True
+```
+
+### 2026-07-03 06:44 UTC — verify paper002 summary tables after classification update
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import re; summary=Path('papers/jarvis-leaderboard/summary.md').read_text(encoding='utf-8'); files=sorted(Path('papers/jarvis-leaderboard').glob('metric_check*.md')); counts=[int(re.search('Models scored: ([0-9]+)', p.read_text(encoding='utf-8')).group(1)) for p in files]; bad=[str(p) for p in files if '| no |' in p.read_text(encoding='utf-8') or 'missing=' in p.read_text(encoding='utf-8') or 'extra=' in p.read_text(encoding='utf-8')]; print('files', len(files), 'total', sum(counts), 'bad', bad); print('summary_tables_ok', '|---|---:|---:|---:|---|' in summary); raise SystemExit(0 if len(files)==13 and sum(counts)==100 and not bad and '|---|---:|---:|---:|---|' in summary else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-064425.log`
+
+output tail:
+```
+files 13 total 100 bad []
+summary_tables_ok True
+```

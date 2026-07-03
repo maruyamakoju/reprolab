@@ -1,7 +1,7 @@
 # Summary - JARVIS-Leaderboard Paper-002 Candidate
 
-Status: Layer A metric recomputation has passed for 6 JARVIS-Leaderboard AI
-single-property-prediction benchmarks.
+Status: Layer A metric recomputation has passed for 13 JARVIS-Leaderboard AI
+single-property benchmarks: 6 regression pages and 7 classification pages.
 
 ## Result
 
@@ -9,23 +9,37 @@ The audit recomputed MAE directly from public benchmark JSON zips and contributi
 CSV zips, mirroring the upstream `rebuild.py::get_metric_value` logic with a small
 stdlib-only implementation (`scripts/jarvis_score.py`).
 
-All 79 checked submissions match the official docs-page MAE within displayed
+All 100 checked submissions match the official docs-page metric within displayed
 rounding, and every checked CSV id set exactly matches the corresponding JSON
 `test` split.
 
-| benchmark property | submissions | test rows | report |
-|---|---:|---:|---|
-| formation_energy_peratom | 15 | 5,572 | `metric_check.md` |
-| ehull | 11 | 5,537 | `metric_check-ehull.md` |
-| optb88vdw_bandgap | 14 | 5,572 | `metric_check-optb88vdw_bandgap.md` |
-| optb88vdw_total_energy | 14 | 5,572 | `metric_check-optb88vdw_total_energy.md` |
-| bulk_modulus_kv | 12 | 1,968 | `metric_check-bulk_modulus_kv.md` |
-| slme | 13 | 906 | `metric_check-slme.md` |
+## Regression pages
+
+| benchmark property | submissions | test rows | metric | report |
+|---|---:|---:|---:|---|
+| formation_energy_peratom | 15 | 5,572 | MAE | `metric_check.md` |
+| ehull | 11 | 5,537 | MAE | `metric_check-ehull.md` |
+| optb88vdw_bandgap | 14 | 5,572 | MAE | `metric_check-optb88vdw_bandgap.md` |
+| optb88vdw_total_energy | 14 | 5,572 | MAE | `metric_check-optb88vdw_total_energy.md` |
+| bulk_modulus_kv | 12 | 1,968 | MAE | `metric_check-bulk_modulus_kv.md` |
+| slme | 13 | 906 | MAE | `metric_check-slme.md` |
+
+## Classification pages
+
+| benchmark property | submissions | test rows | metric | report |
+|---|---:|---:|---:|---|
+| magmom_oszicar | 3 | 5,222 | ACC | `metric_check-class-magmom_oszicar.md` |
+| mbj_bandgap | 3 | 1,815 | ACC | `metric_check-class-mbj_bandgap.md` |
+| n_powerfact | 3 | 2,321 | ACC | `metric_check-class-n_powerfact.md` |
+| optb88vdw_bandgap | 3 | 5,572 | ACC | `metric_check-class-optb88vdw_bandgap.md` |
+| p_Seebeck | 3 | 2,321 | ACC | `metric_check-class-p_Seebeck.md` |
+| slme | 3 | 906 | ACC | `metric_check-class-slme.md` |
+| spillage | 3 | 1,137 | ACC | `metric_check-class-spillage.md` |
 
 ## Interpretation
 
 This is a positive Layer A result: for the sampled JARVIS pages, the reported
-leaderboard MAE values are exactly recoverable from the public artifacts.
+leaderboard MAE/ACC values are exactly recoverable from the public artifacts.
 
 The closest adjacent score gaps are small on several pages, for example 0.0002 MAE
 between `kgcnn_coNGN` and `potnet` on formation energy, and 0.0013 MAE between
@@ -33,8 +47,12 @@ between `kgcnn_coNGN` and `potnet` on formation energy, and 0.0013 MAE between
 estimates only, so uncertainty or split-sensitivity analysis is the natural Layer C
 analogue if this becomes the main Paper-002 target.
 
+One packaging note surfaced in the classification tasks: the outer zip filenames
+correctly use `test-acc.csv.zip`, but the single CSV stored inside those zips is
+named `test-mae.csv`. Upstream reads the zip directly and is unaffected; independent
+tools should not assume the internal filename matches the outer archive.
+
 ## Next
 
-The best next move is not more MAE recomputation on near-identical pages; it is
-either a broader task-family sample (classification or spectra) or one tractable
-Layer B model-execution smoke for a simple baseline.
+The best next move is one tractable Layer B model-execution smoke for a simple
+baseline, or a spectra-page Layer A check if Layer B proves too environment-heavy.

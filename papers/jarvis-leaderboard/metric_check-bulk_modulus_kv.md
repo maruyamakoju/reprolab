@@ -4,7 +4,7 @@ Target: `AI-SinglePropertyPrediction-bulk_modulus_kv-dft_3d-test-mae`
 Vendor repo: `vendor/jarvis_leaderboard`
 Ground-truth split sizes: {'train': 15744, 'val': 1968, 'test': 1968}
 
-The score is recomputed from the public submission CSV zip and benchmark JSON zip artifacts. This mirrors the upstream `rebuild.py::get_metric_value` path for MAE but uses a small stdlib-only implementation.
+The score is recomputed from the public submission CSV zip and benchmark JSON zip artifacts. This mirrors the upstream `rebuild.py::get_metric_value` path for `mae` but uses a small stdlib-only implementation.
 Models scored: 12
 
 | model | team | official MAE | reproduced MAE | rows | id check | pass |

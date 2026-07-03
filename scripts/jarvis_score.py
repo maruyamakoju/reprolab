@@ -17,6 +17,7 @@ import re
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 
 DEFAULT_BENCH = "AI-SinglePropertyPrediction-formation_energy_peratom-dft_3d-test-mae"
@@ -55,7 +56,7 @@ def read_single_file_zip(path: Path) -> tuple[str, bytes]:
         return names[0], zf.read(names[0])
 
 
-def load_truth(root: Path, bench: BenchParts) -> tuple[dict[str, float], dict[str, int]]:
+def load_truth(root: Path, bench: BenchParts) -> tuple[dict[str, Any], dict[str, int]]:
     rel = Path("benchmarks") / bench.category / bench.subcategory / (
         f"{bench.dataset}_{bench.prop}.json.zip"
     )
@@ -67,15 +68,13 @@ def load_truth(root: Path, bench: BenchParts) -> tuple[dict[str, float], dict[st
     if bench.split not in data:
         raise KeyError(f"split {bench.split!r} not present in {rel}")
     sizes = {key: len(value) for key, value in data.items() if isinstance(value, dict)}
-    return {str(key): float(value) for key, value in data[bench.split].items()}, sizes
+    return {str(key): value for key, value in data[bench.split].items()}, sizes
 
 
 def load_predictions(root: Path, model: str, bench_name: str) -> list[dict[str, str]]:
     rel = Path("contributions") / model / f"{bench_name}.csv.zip"
     csv_name, raw = read_single_file_zip(root / rel)
     expected_name = f"{bench_name}.csv"
-    if csv_name != expected_name:
-        raise ValueError(f"expected {expected_name} inside {rel}, found {csv_name}")
     text = raw.decode("utf-8")
     rows = list(csv.DictReader(text.splitlines()))
     required = {"id", "prediction"}
@@ -109,10 +108,23 @@ def within_reported_rounding(value: float, official_text: str) -> bool:
     return abs(value - official) <= tolerance
 
 
-def score_model(root: Path, model: str, bench_name: str, truth: dict[str, float]) -> dict:
+def normalize_label(value: Any) -> str:
+    text = str(value).strip()
+    try:
+        number = float(text)
+    except ValueError:
+        return text.lower()
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.12g}"
+
+
+def score_model(root: Path, model: str, bench_name: str, truth: dict[str, Any],
+                metric: str) -> dict:
     rows = load_predictions(root, model, bench_name)
     seen: set[str] = set()
     diffs: list[float] = []
+    correct = 0
     extra_ids: list[str] = []
 
     for row in rows:
@@ -121,11 +133,20 @@ def score_model(root: Path, model: str, bench_name: str, truth: dict[str, float]
         if material_id not in truth:
             extra_ids.append(material_id)
             continue
-        diffs.append(abs(float(row["prediction"]) - truth[material_id]))
+        if metric == "mae":
+            diffs.append(abs(float(row["prediction"]) - float(truth[material_id])))
+        elif metric == "acc":
+            correct += int(
+                normalize_label(row["prediction"]) == normalize_label(truth[material_id])
+            )
+            diffs.append(0.0)
+        else:
+            raise NotImplementedError(f"metric not implemented: {metric}")
 
     missing_ids = sorted(set(truth) - seen)
     if not diffs:
         raise ValueError(f"no overlapping ids for {model}")
+    score = sum(diffs) / len(diffs) if metric == "mae" else correct / len(diffs)
     metadata = load_metadata(root, model)
     return {
         "model": model,
@@ -137,8 +158,8 @@ def score_model(root: Path, model: str, bench_name: str, truth: dict[str, float]
         "overlap": len(diffs),
         "missing_ids": missing_ids,
         "extra_ids": extra_ids,
-        "mae": sum(diffs) / len(diffs),
-        "max_abs_error": max(diffs),
+        "score": score,
+        "max_abs_error": max(diffs) if metric == "mae" else "",
     }
 
 
@@ -168,16 +189,16 @@ def main() -> int:
     rows = []
     failures = []
     for model in models:
-        result = score_model(root, model, args.benchmark, truth)
+        result = score_model(root, model, args.benchmark, truth, bench.metric)
         official = official_scores.get(model)
         if official is None:
             ok = "missing-official"
             failures.append(f"{model}: official score not found")
         else:
-            ok = "yes" if within_reported_rounding(result["mae"], official) else "no"
+            ok = "yes" if within_reported_rounding(result["score"], official) else "no"
             if ok == "no":
                 failures.append(
-                    f"{model}: official {official}, reproduced {result['mae']:.8f}"
+                    f"{model}: official {official}, reproduced {result['score']:.8f}"
                 )
         result["official"] = official or ""
         result["pass"] = ok
@@ -193,7 +214,7 @@ def main() -> int:
         closest_pairs.append({
             "pair": f"{left['model']} to {right['model']}",
             "official_gap": abs(float(right["official"]) - float(left["official"])),
-            "reproduced_gap": abs(right["mae"] - left["mae"]),
+            "reproduced_gap": abs(right["score"] - left["score"]),
         })
     closest_pairs = sorted(closest_pairs, key=lambda row: row["official_gap"])[:5]
 
@@ -206,10 +227,11 @@ def main() -> int:
         "",
         "The score is recomputed from the public submission CSV zip and benchmark JSON "
         "zip artifacts. This mirrors the upstream `rebuild.py::get_metric_value` "
-        "path for MAE but uses a small stdlib-only implementation.",
+        f"path for `{bench.metric}` but uses a small stdlib-only implementation.",
         f"Models scored: {len(rows)}",
         "",
-        "| model | team | official MAE | reproduced MAE | rows | id check | pass |",
+        f"| model | team | official {bench.metric.upper()} | reproduced "
+        f"{bench.metric.upper()} | rows | id check | pass |",
         "|---|---|---:|---:|---:|---|---|",
     ]
     for row in rows:
@@ -220,7 +242,7 @@ def main() -> int:
         )
         lines.append(
             f"| {row['model']} | {row['team']} | {row['official']} | "
-            f"{row['mae']:.8f} | {row['rows']} | {id_check} | {row['pass']} |"
+            f"{row['score']:.8f} | {row['rows']} | {id_check} | {row['pass']} |"
         )
 
     if closest_pairs:
@@ -229,9 +251,11 @@ def main() -> int:
             "## Closest adjacent scores",
             "",
             "The official page reports point estimates only; this table flags adjacent "
-            "MAE gaps that may deserve uncertainty or sensitivity checks later.",
+            f"{bench.metric.upper()} gaps that may deserve uncertainty or sensitivity "
+            "checks later.",
             "",
-            "| pair | official MAE gap | reproduced MAE gap |",
+            f"| pair | official {bench.metric.upper()} gap | reproduced "
+            f"{bench.metric.upper()} gap |",
             "|---|---:|---:|",
         ])
         for pair in closest_pairs:

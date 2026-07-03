@@ -4,7 +4,7 @@ Target: `AI-SinglePropertyPrediction-optb88vdw_total_energy-dft_3d-test-mae`
 Vendor repo: `vendor/jarvis_leaderboard`
 Ground-truth split sizes: {'train': 44569, 'val': 5572, 'test': 5572}
 
-The score is recomputed from the public submission CSV zip and benchmark JSON zip artifacts. This mirrors the upstream `rebuild.py::get_metric_value` path for MAE but uses a small stdlib-only implementation.
+The score is recomputed from the public submission CSV zip and benchmark JSON zip artifacts. This mirrors the upstream `rebuild.py::get_metric_value` path for `mae` but uses a small stdlib-only implementation.
 Models scored: 14
 
 | model | team | official MAE | reproduced MAE | rows | id check | pass |
