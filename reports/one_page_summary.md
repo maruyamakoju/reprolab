@@ -103,4 +103,5 @@ JARVIS-Leaderboard as Paper-002. Its assembled report is
 Matbench v0.1: the RF baseline's saved fold scores reproduce on two seed tasks,
 and a classification probe found stored `rocauc` behaves like thresholded-label AUC
 for float-prediction submissions while the classification leaderboards display
-`mean rocauc` as the first metric column (`papers/matbench/summary.md`).
+`mean rocauc` as the first metric column; an upstream issue draft is prepared
+but not posted (`papers/matbench/summary.md`).

@@ -43,6 +43,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
+- Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`

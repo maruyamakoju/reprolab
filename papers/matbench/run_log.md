@@ -424,3 +424,34 @@ warning: in the working copy of 'papers/matbench/run_log.md', LF will be replace
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 07:43 UTC — paper003 verify upstream issue draft wiring
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import sys, yaml; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); draft=Path('reports/paper-003_upstream_issue_draft.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); checks=[meta['classification_auc_probe']['upstream_issue_draft']=='reports/paper-003_upstream_issue_draft.md', 'Status: draft only; not posted.' in draft, 'Do not post until the user explicitly asks' in draft, '0.122272' in draft, 'paper-003_upstream_issue_draft.md' in readme, 'paper-003_upstream_issue_draft.md' in summary]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-074304-675654.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True]}
+```
+
+### 2026-07-03 07:43 UTC — paper003 upstream issue draft git diff whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-074308-699446.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/run_log.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+```

@@ -56,6 +56,7 @@ classification_auc_probe:
   scan_script: scripts/matbench_classification_scan.py
   scan_report: papers/matbench/classification_prediction_scan.md
   finding_report: papers/matbench/classification_auc_probe.md
+  upstream_issue_draft: reports/paper-003_upstream_issue_draft.md
   classification_submission_task_records: 27
   all_bool_records: 16
   all_float_records: 11

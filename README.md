@@ -226,8 +226,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       per-task tables put `mean rocauc` first, and all 27 displayed rows have
       `mean rocauc == mean balanced_accuracy`
       (`papers/matbench/classification_leaderboard_metric_scan.md`)
-- [ ] Next: draft a Matbench upstream issue for the classification `rocauc`
-      behavior, then broaden score recomputation across more low-cost tasks
+- [x] Matbench upstream issue draft prepared for the classification `rocauc`
+      behavior (`reports/paper-003_upstream_issue_draft.md`; draft only, not posted)
+- [ ] Next: broaden Matbench score recomputation across more low-cost tasks
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -299,6 +300,7 @@ Artifacts:
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
+- Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`

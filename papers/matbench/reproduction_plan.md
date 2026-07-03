@@ -110,7 +110,7 @@ Reports:
 
 ## 7. Next
 
-1. Prepare an upstream issue draft for the classification `rocauc` behavior.
+1. Post the upstream issue only if the user explicitly asks.
 2. Broaden Layer A across more low-cost composition tasks before touching large
    structure datasets.
 3. Select one or two runnable source-code submissions for a bounded Layer B smoke.
