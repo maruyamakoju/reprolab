@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 09:05 UTC_
+_Generated: 2026-07-03 09:20 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -53,6 +53,16 @@ Across another 65 folds, the max stored-vs-recomputed score delta is
 submission-task pairs, and 130 folds.
 
 Report: `layer_a_dummy_all_tasks.md`.
+
+The final Layer A pass scans every local Matbench v0.1 `results.json.gz` artifact:
+28 submissions, 180 submission-task records, and 900 folds. 179/180
+submission-task records match stored scores to numerical precision. The only
+exception is `matbench_v0.1_GN-OA` on `matbench_mp_e_form`: all five folds have
+stored MAPE values that differ from recomputed Matbench MAPE, while MAE, RMSE, and
+max error match exactly. All 135 classification folds in the scan have stored
+`rocauc == balanced_accuracy`.
+
+Report: `layer_a_all_submission_score_scan.md`.
 
 ## Layer B source replay
 
@@ -110,6 +120,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - RF medium-structure-task report: `layer_a_rf_structure_medium_tasks.md`
 - RF all-task report: `layer_a_rf_all_tasks.md`
 - Dummy all-task report: `layer_a_dummy_all_tasks.md`
+- All-submission score scan: `layer_a_all_submission_score_scan.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
@@ -117,6 +128,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
+- All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
@@ -248,6 +260,23 @@ layer_a_dummy_all_tasks:
   tasks_checked: 13
   folds_checked: 65
   max_abs_stored_vs_recomputed_delta: 3.552713678800501e-15
+
+layer_a_all_submission_score_scan:
+  status: completed_with_one_mape_only_exception
+  script: scripts/matbench_all_results_score_scan.py
+  report: papers/matbench/layer_a_all_submission_score_scan.md
+  environment: env/jarvis
+  submissions_checked: 28
+  submission_task_records_checked: 180
+  folds_checked: 900
+  max_abs_stored_vs_recomputed_delta: 12.168624707070679
+  failing_folds_at_1e_12: 5
+  failing_submission: matbench_v0.1_GN-OA
+  failing_task: matbench_mp_e_form
+  failing_metric: mape
+  passing_submission_task_records: 179
+  classification_folds_checked: 135
+  classification_folds_rocauc_equal_balanced_accuracy: 135
 
 classification_auc_probe:
   status: completed
@@ -460,6 +489,7 @@ The seed check passed:
 | `matbench_v0.1_rf` medium structure tasks | 3 | 15 | 0.000e+00 | `layer_a_rf_structure_medium_tasks.md` |
 | `matbench_v0.1_rf` all tasks | 13 | 65 | 1.776e-15 | `layer_a_rf_all_tasks.md` |
 | `matbench_v0.1_dummy` all tasks | 13 | 65 | 3.553e-15 | `layer_a_dummy_all_tasks.md` |
+| all local submissions | 180 submission-task records | 900 | 12.169 MAPE-only exception | `layer_a_all_submission_score_scan.md` |
 
 The classification predictions in the RF baseline are stored as hard booleans, so
 the stored ROC-AUC equals balanced accuracy for the checked classification task.
@@ -1171,6 +1201,106 @@ Report:
 
 
 
+## 4g. Layer A all-submission score scan
+
+# Matbench v0.1 all-submission score scan
+
+- Submissions checked: 28
+- Submission/task records checked: 180
+- Folds checked: 900
+- Max absolute stored-vs-recomputed score delta: 1.217e+01
+- Failing folds at tolerance 1e-12: 5
+- Classification folds checked: 135
+- Classification folds with stored `rocauc == balanced_accuracy`: 135
+
+## Per-submission summary
+
+| Submission | Tasks | Folds | Max score delta | Failing folds |
+|---|---:|---:|---:|---:|
+| matbench_v0.1_Auto-sklearn | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_Ax_10_90_CrabNet_v1.2.7 | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_Ax_CrabNet_v1.2.1 | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_Ax_SAASBO_CrabNet_v1.2.7 | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_CrabNet | 10 | 50 | 8.882e-16 | 0 |
+| matbench_v0.1_CrabNet_v1.2.1 | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_DeeperGATGNN | 8 | 40 | 8.882e-16 | 0 |
+| matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | 9 | 45 | 1.776e-15 | 0 |
+| matbench_v0.1_Finder_v1.2_composition | 8 | 40 | 8.882e-16 | 0 |
+| matbench_v0.1_Finder_v1.2_structure | 8 | 40 | 1.776e-15 | 0 |
+| matbench_v0.1_GN-OA | 1 | 5 | 1.217e+01 | 5 |
+| matbench_v0.1_MegNet_kgcnn_v2.1.0 | 9 | 45 | 1.776e-15 | 0 |
+| matbench_v0.1_RFLR | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_SchNet_kgcnn_v2.1.0 | 9 | 45 | 8.882e-16 | 0 |
+| matbench_v0.1_TPOT | 1 | 5 | 0.000e+00 | 0 |
+| matbench_v0.1_alignn | 9 | 45 | 1.776e-15 | 0 |
+| matbench_v0.1_automatminer_expressv2020 | 13 | 65 | 4.441e-16 | 0 |
+| matbench_v0.1_cgcnnv2019 | 9 | 45 | 8.882e-16 | 0 |
+| matbench_v0.1_coGN | 9 | 45 | 8.882e-16 | 0 |
+| matbench_v0.1_coNGN | 9 | 45 | 8.882e-16 | 0 |
+| matbench_v0.1_darwin | 4 | 20 | 1.110e-16 | 0 |
+| matbench_v0.1_dummy | 13 | 65 | 3.553e-15 | 0 |
+| matbench_v0.1_gptchem | 4 | 20 | 1.110e-16 | 0 |
+| matbench_v0.1_lattice_xgboost | 1 | 5 | 1.776e-15 | 0 |
+| matbench_v0.1_matformer | 1 | 5 | 1.110e-16 | 0 |
+| matbench_v0.1_modnet_v0.1.10 | 13 | 65 | 1.776e-15 | 0 |
+| matbench_v0.1_modnet_v0.1.12 | 13 | 65 | 1.776e-15 | 0 |
+| matbench_v0.1_rf | 13 | 65 | 1.776e-15 | 0 |
+
+## Task coverage
+
+| Task | Submission records |
+|---|---:|
+| matbench_dielectric | 16 |
+| matbench_expt_gap | 12 |
+| matbench_expt_is_metal | 7 |
+| matbench_glass | 7 |
+| matbench_jdft2d | 16 |
+| matbench_log_gvrh | 16 |
+| matbench_log_kvrh | 16 |
+| matbench_mp_e_form | 18 |
+| matbench_mp_gap | 16 |
+| matbench_mp_is_metal | 13 |
+| matbench_perovskites | 16 |
+| matbench_phonons | 16 |
+| matbench_steels | 11 |
+
+## Largest score deltas
+
+| Submission | Task | Fold | n | Prediction type | Worst metric | Max delta | Stored rocauc | Stored bal. acc. | Probability rocauc |
+|---|---|---|---:|---|---|---:|---:|---:|---:|
+| matbench_v0.1_GN-OA | matbench_mp_e_form | 0 | 26551 | float | mape | 1.217e+01 |  |  |  |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | 4 | 26550 | float | mape | 1.199e+01 |  |  |  |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | 3 | 26550 | float | mape | 1.165e+01 |  |  |  |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | 2 | 26550 | float | mape | 9.114e+00 |  |  |  |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | 1 | 26551 | float | mape | 7.809e+00 |  |  |  |
+| matbench_v0.1_dummy | matbench_mp_e_form | 0 | 26551 | float | mape | 3.553e-15 |  |  |  |
+| matbench_v0.1_dummy | matbench_mp_gap | 1 | 21223 | float | mape | 3.553e-15 |  |  |  |
+| matbench_v0.1_alignn | matbench_mp_gap | 2 | 21223 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_DimeNetPP_kgcnn_v2.1.0 | matbench_mp_gap | 3 | 21222 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_dummy | matbench_mp_e_form | 3 | 26550 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_dummy | matbench_mp_gap | 0 | 21223 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_Finder_v1.2_structure | matbench_mp_gap | 3 | 21222 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_lattice_xgboost | matbench_mp_e_form | 0 | 26551 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_lattice_xgboost | matbench_mp_e_form | 4 | 26550 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_MegNet_kgcnn_v2.1.0 | matbench_mp_gap | 3 | 21222 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_modnet_v0.1.10 | matbench_mp_gap | 3 | 21222 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_modnet_v0.1.12 | matbench_mp_gap | 3 | 21222 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_rf | matbench_mp_gap | 0 | 21223 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_rf | matbench_mp_gap | 3 | 21222 | float | mape | 1.776e-15 |  |  |  |
+| matbench_v0.1_rf | matbench_mp_gap | 4 | 21222 | float | mape | 1.776e-15 |  |  |  |
+
+## Failures
+
+| Submission | Task | Fold | Problem |
+|---|---|---|---|
+| matbench_v0.1_GN-OA | matbench_mp_e_form | fold_0 | delta 1.217e+01 |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | fold_1 | delta 7.809e+00 |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | fold_2 | delta 9.114e+00 |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | fold_3 | delta 1.165e+01 |
+| matbench_v0.1_GN-OA | matbench_mp_e_form | fold_4 | delta 1.199e+01 |
+
+
+
 ## 5. Classification prediction scan
 
 # Matbench v0.1 classification prediction-type scan
@@ -1635,48 +1765,6 @@ the classification `rocauc` field.
 
 ## 9. Run log (tail)
 
-  ]
-}
-
-Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB:   0%|          | 0.0/137.068566 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB:  57%|#####7    | 78.405632/137.068566 [00:00<00:00, 782.56MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB: 137.070592MB [00:00, 755.19MB/s]
-```
-
-### 2026-07-03 08:52 UTC — paper003 recompute RF score for MP formation-energy structure task
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_mp_e_form --report papers\matbench\layer_a_rf_structure_mp_e_form.md
-```
-
-- exit code: **0**  | duration: 107.4s  | raw log: `logs/cmd-20260703-085212-513183.log`
-
-output tail:
-```
-Fetching matbench_mp_e_form.json.gz from https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_mp_e_form.json.gz
-{
-  "folds_checked": 5,
-  "max_abs_delta": 2.220446049250313e-16,
-  "report": "papers\\matbench\\layer_a_rf_structure_mp_e_form.md",
-  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
-  "tasks": [
-    "matbench_mp_e_form"
-  ]
-}
-
-Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:   0%|          | 0.0/166.734239 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:  48%|####8     | 80.621568/166.734239 [00:00<00:00, 805.50MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB:  99%|#########9| 165.60537599999998/166.734239 [00:00<00:00, 826.86MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB: 166.735872MB [00:00, 805.27MB/s]
-```
-
-### 2026-07-03 08:54 UTC — paper003 recompute RF scores for all Matbench tasks
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks all --report papers\matbench\layer_a_rf_all_tasks.md
-```
-
-- exit code: **0**  | duration: 268.1s  | raw log: `logs/cmd-20260703-085411-612968.log`
 
 output tail:
 ```
@@ -1697,66 +1785,39 @@ output tail:
 }
 ```
 
-### 2026-07-03 08:59 UTC — paper003 reassemble report with RF all-task check
+### 2026-07-03 09:05 UTC — paper003 reassemble report with Dummy all-task check
 
 ```
 $ .venv\Scripts\python.exe scripts\make_matbench_report.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-085926-858524.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090524-501589.log`
 
 output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
 
-### 2026-07-03 08:59 UTC — paper003 verify RF all-task docs
+### 2026-07-03 09:05 UTC — paper003 verify Dummy all-task docs
 
 ```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_all_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_all_tasks']['folds_checked']==65, abs(meta['layer_a_rf_all_tasks']['max_abs_stored_vs_recomputed_delta']-1.7763568394002505e-15)<1e-30, 'Fold scores checked: 65' in report, 'all 13 tasks' in summary, 'Layer A RF all-task expansion' in assembled, '13 tasks, 65 folds' in packet, 'RF all-task Layer A completed' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_dummy_all_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_dummy_all_tasks']['folds_checked']==65, abs(meta['layer_a_dummy_all_tasks']['max_abs_stored_vs_recomputed_delta']-3.552713678800501e-15)<1e-30, 'Fold scores checked: 65' in report, '130 folds' in summary, 'Layer A Dummy all-task expansion' in assembled, 'Dummy all-task score recomputation' in packet, 'Dummy all-task Layer A completed' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-085934-454140.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090532-115905.log`
 
 output tail:
 ```
 {'checks': [True, True, True, True, True, True, True]}
 ```
 
-### 2026-07-03 08:59 UTC — paper003 RF all-task whitespace check
+### 2026-07-03 09:05 UTC — paper003 Dummy all-task whitespace check
 
 ```
 $ git diff --check
 ```
 
-- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-085938-617788.log`
-
-output tail:
-```
-reports/paper-003-matbench-audit.md:1472: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_perovskites.json.gz in MB: 4.194304MB [00:00, 699.07MB/s]
-reports/paper-003-matbench-audit.md:1498: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_mp_is_metal.json.gz in MB: 136.699904MB [00:00, 790.03MB/s]
-reports/paper-003-matbench-audit.md:1524: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_mp_gap.json.gz in MB: 137.070592MB [00:00, 755.19MB/s]
-reports/paper-003-matbench-audit.md:1551: trailing whitespace.
-+Fetching https://ml.materialsproject.org/projects/matbench_mp_e_form.json.gz in MB: 166.735872MB [00:00, 805.27MB/s]
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 08:59 UTC — paper003 RF all-task whitespace check rerun
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-085949-814424.log`
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-090538-483556.log`
 
 output tail:
 ```
@@ -1769,30 +1830,99 @@ warning: in the working copy of 'reports/paper-003-external_release_packet.md', 
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
 
-### 2026-07-03 09:00 UTC — paper003 recompute Dummy scores for all Matbench tasks
+### 2026-07-03 09:07 UTC — paper003 compile all-submission score scan
 
 ```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_dummy\results.json.gz --tasks all --report papers\matbench\layer_a_dummy_all_tasks.md
+$ .venv\Scripts\python.exe -m py_compile scripts\matbench_all_results_score_scan.py
 ```
 
-- exit code: **0**  | duration: 269.2s  | raw log: `logs/cmd-20260703-090021-513062.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090745-257077.log`
 
 output tail:
 ```
-    "matbench_dielectric",
-    "matbench_expt_gap",
-    "matbench_expt_is_metal",
-    "matbench_glass",
-    "matbench_jdft2d",
-    "matbench_log_gvrh",
-    "matbench_log_kvrh",
-    "matbench_mp_e_form",
-    "matbench_mp_gap",
-    "matbench_mp_is_metal",
-    "matbench_perovskites",
-    "matbench_phonons",
-    "matbench_steels"
-  ]
+
+```
+
+### 2026-07-03 09:07 UTC — paper003 smoke all-submission score scan
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_all_results_score_scan.py --limit 2 --report papers\matbench\layer_a_all_submission_score_scan_smoke.md
+```
+
+- exit code: **0**  | duration: 311.1s  | raw log: `logs/cmd-20260703-090750-266320.log`
+
+output tail:
+```
+  "submission_task_records": 10,
+  "submissions": 2,
+  "tasks_seen": {
+    "matbench_dielectric": 1,
+    "matbench_jdft2d": 1,
+    "matbench_log_gvrh": 1,
+    "matbench_log_kvrh": 1,
+    "matbench_mp_e_form": 1,
+    "matbench_mp_gap": 1,
+    "matbench_mp_is_metal": 1,
+    "matbench_perovskites": 1,
+    "matbench_phonons": 1,
+    "matbench_steels": 1
+  }
 }
+```
+
+### 2026-07-03 09:13 UTC — paper003 scan all Matbench submission scores
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_all_results_score_scan.py --report papers\matbench\layer_a_all_submission_score_scan.md
+```
+
+- exit code: **1**  | duration: 281.7s  | raw log: `logs/cmd-20260703-091316-197235.log`
+
+output tail:
+```
+    "matbench_dielectric": 16,
+    "matbench_expt_gap": 12,
+    "matbench_expt_is_metal": 7,
+    "matbench_glass": 7,
+    "matbench_jdft2d": 16,
+    "matbench_log_gvrh": 16,
+    "matbench_log_kvrh": 16,
+    "matbench_mp_e_form": 18,
+    "matbench_mp_gap": 16,
+    "matbench_mp_is_metal": 13,
+    "matbench_perovskites": 16,
+    "matbench_phonons": 16,
+    "matbench_steels": 11
+  }
+}
+```
+
+### 2026-07-03 09:18 UTC — paper003 inspect GN-OA stored vs recomputed metrics
+
+```
+$ env\jarvis\Scripts\python.exe -c import gzip,json,math; from pathlib import Path; import sys; sys.path.insert(0,'scripts'); import matbench_score as ms; meta=ms.read_json(ms.METADATA_PATH); val=ms.read_json(ms.VALIDATION_PATH)['splits']; res=ms.read_json(Path('vendor/matbench/benchmarks/matbench_v0.1_GN-OA/results.json.gz')); truth=ms.load_truth('matbench_mp_e_form', meta); task=res['tasks']['matbench_mp_e_form']['results'];
+for fold_key, fold in sorted(task.items()):
+ ids=val['matbench_mp_e_form'][fold_key]['test']; y_true=[truth[i] for i in ids]; y_pred=[fold['data'][i] for i in ids]; rec=ms.regression_scores(y_true,y_pred); stored={k:float(v) for k,v in fold['scores'].items()}; print(fold_key); print(' stored', stored); print(' recomputed', rec); print(' delta', {k: stored[k]-rec[k] for k in rec})
+```
+
+- exit code: **0**  | duration: 101.1s  | raw log: `logs/cmd-20260703-091817-507438.log`
+
+output tail:
+```
+ stored {'mae': 0.02447261946306292, 'mape': 7.946592103960418, 'max_error': 1.9404605745495607, 'rmse': 0.06155955374830743}
+ recomputed {'mae': 0.02447261946306292, 'rmse': 0.06155955374830743, 'mape': 0.1378199888074734, 'max_error': 1.9404605745495607}
+ delta {'mae': 0.0, 'rmse': 0.0, 'mape': 7.808772115152944, 'max_error': 0.0}
+fold_2
+ stored {'mae': 0.024890881301123925, 'mape': 9.26331433818309, 'max_error': 2.415037930315695, 'rmse': 0.06479287427553128}
+ recomputed {'mae': 0.024890881301123928, 'rmse': 0.06479287427553128, 'mape': 0.14975018390270012, 'max_error': 2.415037930315695}
+ delta {'mae': -3.469446951953614e-18, 'rmse': 0.0, 'mape': 9.11356415428039, 'max_error': 0.0}
+fold_3
+ stored {'mae': 0.024886031335372344, 'mape': 11.888184389789986, 'max_error': 2.1704877171063526, 'rmse': 0.06322060324313321}
+ recomputed {'mae': 0.024886031335372347, 'rmse': 0.06322060324313321, 'mape': 0.2362870076890531, 'max_error': 2.1704877171063526}
+ delta {'mae': -3.469446951953614e-18, 'rmse': 0.0, 'mape': 11.651897382100932, 'max_error': 0.0}
+fold_4
+ stored {'mae': 0.02498503808917608, 'mape': 12.194645598056068, 'max_error': 1.7973616971756918, 'rmse': 0.06583117785444022}
+ recomputed {'mae': 0.024985038089176084, 'rmse': 0.06583117785444023, 'mape': 0.2016167272238903, 'max_error': 1.7973616971756918}
+ delta {'mae': -3.469446951953614e-18, 'rmse': -1.3877787807814457e-17, 'mape': 11.993028870832179, 'max_error': 0.0}
 ```
 

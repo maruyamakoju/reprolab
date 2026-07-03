@@ -37,6 +37,7 @@ def main() -> None:
         section("4d. Layer A RF medium-structure-task expansion", PAPER / "layer_a_rf_structure_medium_tasks.md"),
         section("4e. Layer A RF all-task expansion", PAPER / "layer_a_rf_all_tasks.md"),
         section("4f. Layer A Dummy all-task expansion", PAPER / "layer_a_dummy_all_tasks.md"),
+        section("4g. Layer A all-submission score scan", PAPER / "layer_a_all_submission_score_scan.md"),
         section("5. Classification prediction scan", PAPER / "classification_prediction_scan.md"),
         section("5b. Classification leaderboard metric scan", PAPER / "classification_leaderboard_metric_scan.md"),
         section("5c. Classification ROC-AUC probe", PAPER / "classification_auc_probe.md"),

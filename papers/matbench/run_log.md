@@ -1938,3 +1938,144 @@ warning: in the working copy of 'reports/one_page_summary.md', LF will be replac
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 09:07 UTC — paper003 compile all-submission score scan
+
+```
+$ .venv\Scripts\python.exe -m py_compile scripts\matbench_all_results_score_scan.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-090745-257077.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 09:07 UTC — paper003 smoke all-submission score scan
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_all_results_score_scan.py --limit 2 --report papers\matbench\layer_a_all_submission_score_scan_smoke.md
+```
+
+- exit code: **0**  | duration: 311.1s  | raw log: `logs/cmd-20260703-090750-266320.log`
+
+output tail:
+```
+  "submission_task_records": 10,
+  "submissions": 2,
+  "tasks_seen": {
+    "matbench_dielectric": 1,
+    "matbench_jdft2d": 1,
+    "matbench_log_gvrh": 1,
+    "matbench_log_kvrh": 1,
+    "matbench_mp_e_form": 1,
+    "matbench_mp_gap": 1,
+    "matbench_mp_is_metal": 1,
+    "matbench_perovskites": 1,
+    "matbench_phonons": 1,
+    "matbench_steels": 1
+  }
+}
+```
+
+### 2026-07-03 09:13 UTC — paper003 scan all Matbench submission scores
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_all_results_score_scan.py --report papers\matbench\layer_a_all_submission_score_scan.md
+```
+
+- exit code: **1**  | duration: 281.7s  | raw log: `logs/cmd-20260703-091316-197235.log`
+
+output tail:
+```
+    "matbench_dielectric": 16,
+    "matbench_expt_gap": 12,
+    "matbench_expt_is_metal": 7,
+    "matbench_glass": 7,
+    "matbench_jdft2d": 16,
+    "matbench_log_gvrh": 16,
+    "matbench_log_kvrh": 16,
+    "matbench_mp_e_form": 18,
+    "matbench_mp_gap": 16,
+    "matbench_mp_is_metal": 13,
+    "matbench_perovskites": 16,
+    "matbench_phonons": 16,
+    "matbench_steels": 11
+  }
+}
+```
+
+### 2026-07-03 09:18 UTC — paper003 inspect GN-OA stored vs recomputed metrics
+
+```
+$ env\jarvis\Scripts\python.exe -c import gzip,json,math; from pathlib import Path; import sys; sys.path.insert(0,'scripts'); import matbench_score as ms; meta=ms.read_json(ms.METADATA_PATH); val=ms.read_json(ms.VALIDATION_PATH)['splits']; res=ms.read_json(Path('vendor/matbench/benchmarks/matbench_v0.1_GN-OA/results.json.gz')); truth=ms.load_truth('matbench_mp_e_form', meta); task=res['tasks']['matbench_mp_e_form']['results'];
+for fold_key, fold in sorted(task.items()):
+ ids=val['matbench_mp_e_form'][fold_key]['test']; y_true=[truth[i] for i in ids]; y_pred=[fold['data'][i] for i in ids]; rec=ms.regression_scores(y_true,y_pred); stored={k:float(v) for k,v in fold['scores'].items()}; print(fold_key); print(' stored', stored); print(' recomputed', rec); print(' delta', {k: stored[k]-rec[k] for k in rec})
+```
+
+- exit code: **0**  | duration: 101.1s  | raw log: `logs/cmd-20260703-091817-507438.log`
+
+output tail:
+```
+ stored {'mae': 0.02447261946306292, 'mape': 7.946592103960418, 'max_error': 1.9404605745495607, 'rmse': 0.06155955374830743}
+ recomputed {'mae': 0.02447261946306292, 'rmse': 0.06155955374830743, 'mape': 0.1378199888074734, 'max_error': 1.9404605745495607}
+ delta {'mae': 0.0, 'rmse': 0.0, 'mape': 7.808772115152944, 'max_error': 0.0}
+fold_2
+ stored {'mae': 0.024890881301123925, 'mape': 9.26331433818309, 'max_error': 2.415037930315695, 'rmse': 0.06479287427553128}
+ recomputed {'mae': 0.024890881301123928, 'rmse': 0.06479287427553128, 'mape': 0.14975018390270012, 'max_error': 2.415037930315695}
+ delta {'mae': -3.469446951953614e-18, 'rmse': 0.0, 'mape': 9.11356415428039, 'max_error': 0.0}
+fold_3
+ stored {'mae': 0.024886031335372344, 'mape': 11.888184389789986, 'max_error': 2.1704877171063526, 'rmse': 0.06322060324313321}
+ recomputed {'mae': 0.024886031335372347, 'rmse': 0.06322060324313321, 'mape': 0.2362870076890531, 'max_error': 2.1704877171063526}
+ delta {'mae': -3.469446951953614e-18, 'rmse': 0.0, 'mape': 11.651897382100932, 'max_error': 0.0}
+fold_4
+ stored {'mae': 0.02498503808917608, 'mape': 12.194645598056068, 'max_error': 1.7973616971756918, 'rmse': 0.06583117785444022}
+ recomputed {'mae': 0.024985038089176084, 'rmse': 0.06583117785444023, 'mape': 0.2016167272238903, 'max_error': 1.7973616971756918}
+ delta {'mae': -3.469446951953614e-18, 'rmse': -1.3877787807814457e-17, 'mape': 11.993028870832179, 'max_error': 0.0}
+```
+
+### 2026-07-03 09:20 UTC — paper003 reassemble report with all-submission scan
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-092056-233694.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 09:21 UTC — paper003 verify all-submission scan docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/matbench_all_results_score_scan.py','scripts/make_matbench_report.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); scan=Path('papers/matbench/layer_a_all_submission_score_scan.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_all_submission_score_scan']['folds_checked']==900, meta['layer_a_all_submission_score_scan']['failing_folds_at_1e_12']==5, 'Submissions checked: 28' in scan, '179/180' in summary, 'Layer A all-submission score scan' in assembled, 'GN-OA formation-energy MAPE-only mismatch' in packet, 'matbench_all_results_score_scan.py' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-092104-879955.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 09:21 UTC — paper003 all-submission scan whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-092110-429187.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```

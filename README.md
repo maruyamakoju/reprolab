@@ -244,6 +244,10 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Matbench Dummy all-task Layer A completed: 13 tasks, 65 folds, max
       stored-vs-recomputed score delta 3.553e-15
       (`papers/matbench/layer_a_dummy_all_tasks.md`)
+- [x] Matbench all-submission Layer A scan completed: 28 submissions, 180
+      submission-task records, 900 folds; 179/180 records match to numerical
+      precision, with one GN-OA `matbench_mp_e_form` MAPE-only exception
+      (`papers/matbench/layer_a_all_submission_score_scan.md`)
 - [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
@@ -313,6 +317,9 @@ recomputed all fold scores for the four low-cost composition tasks
 IDs, and Matminer targets. The same check now passes on all 13 RF tasks and 65
 folds, with max absolute delta 1.776e-15. The all-task check also passes for the
 dummy baseline across another 65 folds, with max absolute delta 3.553e-15.
+The all-submission scan covers 28 submissions, 180 submission-task records, and
+900 folds; 179/180 records match to numerical precision, with one GN-OA
+`matbench_mp_e_form` MAPE-only exception.
 
 Classification metric probe: 11/27 classification submission-task records store
 float predictions, but every checked stored `rocauc` value equals balanced accuracy.
@@ -341,6 +348,7 @@ Artifacts:
 - RF medium-structure-task report: `papers/matbench/layer_a_rf_structure_medium_tasks.md`
 - RF all-task report: `papers/matbench/layer_a_rf_all_tasks.md`
 - Dummy all-task report: `papers/matbench/layer_a_dummy_all_tasks.md`
+- All-submission score scan: `papers/matbench/layer_a_all_submission_score_scan.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
@@ -349,6 +357,7 @@ Artifacts:
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `reports/paper-003_upstream_issue_draft.md`
 - Script: `scripts/matbench_score.py`
+- All-submission score scan script: `scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `scripts/matbench_tpot_replay.py`
 - Classification scan script: `scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `scripts/matbench_leaderboard_metric_scan.py`

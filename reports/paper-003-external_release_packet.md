@@ -21,6 +21,11 @@ submitted random seed.
   across all 13 Matbench v0.1 tasks. Scope: 65 folds, max stored-vs-recomputed
   score delta `1.776e-15`. The Dummy baseline also reproduces across all 13 tasks:
   another 65 folds, max delta `3.553e-15`.
+- **All-submission scan:** all 28 local Matbench v0.1 submission artifacts were
+  scanned: 180 submission-task records and 900 folds. 179/180 records match stored
+  scores to numerical precision. The only exception is `matbench_v0.1_GN-OA` on
+  `matbench_mp_e_form`, where MAPE differs on all five folds while MAE, RMSE, and
+  max error match exactly.
 - **Classification metric probe:** 27 classification submission-task records were
   scanned. 11 store float predictions and 16 store booleans; in all 27 records,
   stored `rocauc` equals balanced accuracy within numerical precision. For MODNet
@@ -43,6 +48,7 @@ submitted random seed.
 |---|---:|---|
 | RF all-task score recomputation | 13 tasks, 65 folds | max delta `1.776e-15` |
 | Dummy all-task score recomputation | 13 tasks, 65 folds | max delta `3.553e-15` |
+| All-submission score scan | 28 submissions, 900 folds | 5 MAPE-only failing folds |
 | Classification records scanned | 27 submission-task records | 16 bool, 11 float, 0 mixed |
 | Stored `rocauc` differing from balanced accuracy | 27 records | 0 |
 | Classification leaderboard rows checked | 27 displayed rows | all `mean rocauc == mean balanced_accuracy` |
@@ -63,6 +69,7 @@ submitted random seed.
   - `papers/matbench/layer_a_rf_structure_medium_tasks.md`
   - `papers/matbench/layer_a_rf_all_tasks.md`
   - `papers/matbench/layer_a_dummy_all_tasks.md`
+  - `papers/matbench/layer_a_all_submission_score_scan.md`
 - Classification reports:
   - `papers/matbench/classification_prediction_scan.md`
   - `papers/matbench/classification_leaderboard_metric_scan.md`
@@ -75,6 +82,7 @@ submitted random seed.
 - Command log: `papers/matbench/run_log.md`
 - Core scripts:
   - `scripts/matbench_score.py`
+  - `scripts/matbench_all_results_score_scan.py`
   - `scripts/matbench_classification_scan.py`
   - `scripts/matbench_leaderboard_metric_scan.py`
   - `scripts/matbench_submission_inventory.py`
@@ -97,8 +105,10 @@ submitted random seed.
 ## Suggested short wording
 
 > I ran a ReproLab audit on Matbench v0.1. The positive result is that the checked
-> RF baseline prediction artifacts reproduce their stored fold scores exactly on
-> all 13 tasks / 65 folds, and the Dummy baseline does the same over another 65 folds.
+> local submission artifacts are almost entirely score-reproducible: 179/180
+> submission-task records across 900 folds match to numerical precision. The only
+> exception is a GN-OA formation-energy MAPE-only mismatch; MAE, RMSE, and max
+> error match.
 > The main finding is in classification scoring:
 > across 27 classification submission-task records, stored `rocauc` always equals
 > balanced accuracy, and for MODNet probability outputs the raw-probability ROC-AUC

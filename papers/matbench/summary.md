@@ -46,6 +46,16 @@ submission-task pairs, and 130 folds.
 
 Report: `layer_a_dummy_all_tasks.md`.
 
+The final Layer A pass scans every local Matbench v0.1 `results.json.gz` artifact:
+28 submissions, 180 submission-task records, and 900 folds. 179/180
+submission-task records match stored scores to numerical precision. The only
+exception is `matbench_v0.1_GN-OA` on `matbench_mp_e_form`: all five folds have
+stored MAPE values that differ from recomputed Matbench MAPE, while MAE, RMSE, and
+max error match exactly. All 135 classification folds in the scan have stored
+`rocauc == balanced_accuracy`.
+
+Report: `layer_a_all_submission_score_scan.md`.
+
 ## Layer B source replay
 
 `scripts/matbench_submission_inventory.py` scanned 28 Matbench v0.1 submission
@@ -102,6 +112,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - RF medium-structure-task report: `layer_a_rf_structure_medium_tasks.md`
 - RF all-task report: `layer_a_rf_all_tasks.md`
 - Dummy all-task report: `layer_a_dummy_all_tasks.md`
+- All-submission score scan: `layer_a_all_submission_score_scan.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
@@ -109,6 +120,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Upstream issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
+- All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
 - Layer B replay script: `../../scripts/matbench_tpot_replay.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`

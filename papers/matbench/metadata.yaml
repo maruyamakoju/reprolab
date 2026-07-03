@@ -118,6 +118,23 @@ layer_a_dummy_all_tasks:
   folds_checked: 65
   max_abs_stored_vs_recomputed_delta: 3.552713678800501e-15
 
+layer_a_all_submission_score_scan:
+  status: completed_with_one_mape_only_exception
+  script: scripts/matbench_all_results_score_scan.py
+  report: papers/matbench/layer_a_all_submission_score_scan.md
+  environment: env/jarvis
+  submissions_checked: 28
+  submission_task_records_checked: 180
+  folds_checked: 900
+  max_abs_stored_vs_recomputed_delta: 12.168624707070679
+  failing_folds_at_1e_12: 5
+  failing_submission: matbench_v0.1_GN-OA
+  failing_task: matbench_mp_e_form
+  failing_metric: mape
+  passing_submission_task_records: 179
+  classification_folds_checked: 135
+  classification_folds_rocauc_equal_balanced_accuracy: 135
+
 classification_auc_probe:
   status: completed
   scan_script: scripts/matbench_classification_scan.py

@@ -100,8 +100,9 @@ upstream feedback is pending, the same audit template has been applied to
 JARVIS-Leaderboard as Paper-002. Its assembled report is
 `reports/paper-002-jarvis-leaderboard-audit.md`, and the short external packet is
 `reports/paper-002-external_release_packet.md`. Paper-003 scouting has started on
-Matbench v0.1: RF and Dummy saved fold scores reproduce across all 13 tasks for
-130 total folds, a classification probe found stored `rocauc` behaves like
+Matbench v0.1: all local submission artifacts were scanned across 900 folds;
+179/180 submission-task records reproduce stored scores to numerical precision,
+with one GN-OA MAPE-only exception. A classification probe found stored `rocauc` behaves like
 thresholded-label AUC for float-prediction submissions while the classification
 leaderboards display `mean rocauc` first, and a TPOT-Mat source replay runs
 end-to-end but does not regenerate the committed predictions exactly because the
