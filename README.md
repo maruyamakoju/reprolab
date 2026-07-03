@@ -240,6 +240,7 @@ Artifacts:
 
 - Assembled report: `reports/paper-002-jarvis-leaderboard-audit.md`
 - External packet: `reports/paper-002-external_release_packet.md`
+- Outreach draft: `reports/paper-002_outreach_draft.md`
 - Summary: `papers/jarvis-leaderboard/summary.md`
 - Plan: `papers/jarvis-leaderboard/reproduction_plan.md`
 - Metadata: `papers/jarvis-leaderboard/metadata.yaml`

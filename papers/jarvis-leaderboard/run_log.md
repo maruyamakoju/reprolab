@@ -1368,3 +1368,16 @@ output tail:
 ```
 {'report_lines': 1394, 'checks': [True, True, True, True]}
 ```
+
+### 2026-07-03 07:21 UTC — verify Paper-002 outreach draft
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; draft=Path('reports/paper-002_outreach_draft.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=['Status: draft only; not sent.' in draft,'101/101 checked submissions' in draft,'17/20 95% CIs crossing zero' in draft,'1024 train / 256 test' in draft,'Do not say JARVIS-Leaderboard is wrong' in draft,'paper-002_outreach_draft.md' in readme]; print({'draft_lines': len(draft.splitlines()), 'checks': checks}); raise SystemExit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-072137.log`
+
+output tail:
+```
+{'draft_lines': 74, 'checks': [True, True, True, True, True, True]}
+```
