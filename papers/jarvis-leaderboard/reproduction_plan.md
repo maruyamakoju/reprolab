@@ -2,7 +2,7 @@
 
 Status: Layer A passed for 14 selected JARVIS-Leaderboard AI benchmarks
 (101 total submissions) on 2026-07-03. Layer B bounded `matminer_rf` pre-smoke
-passed on a 512 train / 128 test dft_3d slice. Layer C point-gap map and paired
+passed on a 1024 train / 256 test dft_3d slice. Layer C point-gap map and paired
 bootstrap completed.
 
 ## 0. Why this candidate
@@ -139,7 +139,7 @@ Bounded smoke result:
 
 | train rows | test rows | feature columns | all-NaN feature rows | RF trees | subset MAE | report |
 |---:|---:|---:|---:|---:|---:|---|
-| 512 | 128 | 273 | 0 | 100 | 0.28496479 | `layer_b_matminer_rf_smoke.md` |
+| 1024 | 256 | 273 | 0 | 100 | 0.26783845 | `layer_b_matminer_rf_smoke.md` |
 
 Scope note: this is not a full leaderboard reproduction and does not claim to
 reproduce the official `matminer_rf` MAE. It proves the Layer B execution path can

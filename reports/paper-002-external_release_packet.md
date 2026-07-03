@@ -21,7 +21,7 @@ bootstrap.
 - **Layer B:** public baseline runners exist, but they are heterogeneous and not
   one-command fits for the audited dft_3d target. In an isolated JARVIS env, a
   bounded `matminer_rf`-style CPU execution-path smoke passed on a deterministic
-  512 train / 128 test dft_3d formation-energy slice.
+  1024 train / 256 test dft_3d formation-energy slice.
 - **Layer C:** across the 14 checked pages, 29/87 adjacent official point gaps are
   <=0.005 and 38/87 are <=0.010 in metric units. For the 20 closest adjacent pairs,
   paired bootstrap over fixed public test rows gives 17/20 95% CIs crossing zero.
@@ -35,7 +35,7 @@ bootstrap.
 | Regression pages | 6 pages, 79 submissions | all MAE values reproduce |
 | Classification pages | 7 pages, 21 submissions | all ACC values reproduce |
 | Spectra page | 1 page, 1 submission | MULTIMAE reproduces |
-| Layer B bounded pre-smoke | 512 train / 128 test | 273 Matminer features, 0 all-NaN rows, subset MAE 0.28496479 |
+| Layer B bounded pre-smoke | 1024 train / 256 test | 273 Matminer features, 0 all-NaN rows, subset MAE 0.26783845 |
 | Layer C point-gap map | 87 adjacent pairs | 29 gaps <=0.005; 38 gaps <=0.010 |
 | Layer C bootstrap | 20 closest adjacent pairs | 17/20 95% CIs include zero |
 
