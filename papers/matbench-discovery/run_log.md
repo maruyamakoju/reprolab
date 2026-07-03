@@ -1215,3 +1215,561 @@ output tail:
 ```
 wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
 ```
+
+### 2026-07-03 05:18 UTC — layerB orb dry-run install orb-models 0.4.0
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m pip install --dry-run orb-models==0.4.0
+```
+
+- exit code: **0**  | duration: 4.7s  | raw log: `logs/cmd-20260703-051848.log`
+
+output tail:
+```
+Collecting wrapt>=1.11.2 (from dm-tree>=0.1.8->orb-models==0.4.0)
+  Using cached wrapt-2.2.2-cp311-cp311-win_amd64.whl.metadata (7.6 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich<14.0,>=12.1->cached-path>=1.6.2->orb-models==0.4.0)
+  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Requirement already satisfied: contourpy>=1.0.1 in .\.venv\Lib\site-packages (from matplotlib>=3.5.2->ase>=3.23.0->orb-models==0.4.0) (1.3.3)
+Requirement already satisfied: cycler>=0.10 in .\.venv\Lib\site-packages (from matplotlib>=3.5.2->ase>=3.23.0->orb-models==0.4.0) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in .\.venv\Lib\site-packages (from matplotlib>=3.5.2->ase>=3.23.0->orb-models==0.4.0) (4.63.0)
+Requirement already satisfied: kiwisolver>=1.3.1 in .\.venv\Lib\site-packages (from matplotlib>=3.5.2->ase>=3.23.0->orb-models==0.4.0) (1.5.0)
+Requirement already satisfied: pillow>=9 in .\.venv\Lib\site-packages (from matplotlib>=3.5.2->ase>=3.23.0->orb-models==0.4.0) (12.3.0)
+Requirement already satisfied: pyparsing>=3 in .\.venv\Lib\site-packages (from matplotlib>=3.5.2->ase>=3.23.0->orb-models==0.4.0) (3.3.2)
+Collecting pyasn1<0.7.0,>=0.6.1 (from pyasn1-modules>=0.2.1->google-auth<3.0.0,>=2.26.1->google-cloud-storage<4.0,>=1.32.0->cached-path>=1.6.2->orb-models==0.4.0)
+  Using cached pyasn1-0.6.3-py3-none-any.whl.metadata (8.4 kB)
+Requirement already satisfied: MarkupSafe>=2.0 in .\.venv\Lib\site-packages (from jinja2->torch==2.2.0->orb-models==0.4.0) (3.0.3)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in .\.venv\Lib\site-packages (from sympy->torch==2.2.0->orb-models==0.4.0) (1.3.0)
+Would install absl-py-2.4.0 annotated-doc-0.0.4 anyio-4.14.1 attrs-26.1.0 boto3-1.43.40 botocore-1.43.40 cached_path-1.8.10 cffi-2.0.0 cryptography-49.0.0 dm-tree-0.1.10 google-api-core-2.31.0 google-auth-2.55.1 google-cloud-core-2.6.0 google-cloud-storage-3.12.0 google-crc32c-1.8.0 google-resumable-media-2.10.0 googleapis-common-protos-1.75.0 h11-0.16.0 hf-xet-1.5.1 httpcore-1.0.9 httpx-0.28.1 huggingface_hub-1.21.0 jmespath-1.1.0 markdown-it-py-4.2.0 mdurl-0.1.2 numpy-1.26.4 orb-models-0.4.0 proto-plus-1.28.0 pyasn1-0.6.3 pyasn1_modules-0.4.2 pycparser-3.0 rich-13.9.4 s3transfer-0.19.0 shellingham-1.5.4 torch-2.2.0 typer-0.25.1 wrapt-2.2.2
+```
+
+### 2026-07-03 05:19 UTC — layerB orb install orb-models 0.4.0 no deps
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m pip install --no-deps orb-models==0.4.0
+```
+
+- exit code: **0**  | duration: 2.3s  | raw log: `logs/cmd-20260703-051931.log`
+
+output tail:
+```
+Collecting orb-models==0.4.0
+  Using cached orb_models-0.4.0-py3-none-any.whl.metadata (8.6 kB)
+Downloading orb_models-0.4.0-py3-none-any.whl (52 kB)
+Installing collected packages: orb-models
+Successfully installed orb-models-0.4.0
+```
+
+### 2026-07-03 05:19 UTC — layerB orb preflight import cuda checkpoint
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -c import torch; print('torch', torch.__version__, 'cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'cpu'); from orb_models.forcefield.pretrained import ORB_PRETRAINED_MODELS; print('variants sample', list(ORB_PRETRAINED_MODELS)[:5]); model=ORB_PRETRAINED_MODELS['orb-v2'](); model.to('cuda' if torch.cuda.is_available() else 'cpu'); print(type(model).__name__)
+```
+
+- exit code: **1**  | duration: 2.9s  | raw log: `logs/cmd-20260703-051939.log`
+
+output tail:
+```
+torch 2.11.0+cu128 cuda True NVIDIA GeForce RTX 4090
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\orb_models\forcefield\pretrained.py", line 5, in <module>
+    from cached_path import cached_path
+ModuleNotFoundError: No module named 'cached_path'
+```
+
+### 2026-07-03 05:19 UTC — layerB orb install runtime deps excluding torch numpy
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m pip install cached-path>=1.6.2 dm-tree>=0.1.8
+```
+
+- exit code: **0**  | duration: 21.7s  | raw log: `logs/cmd-20260703-051955.log`
+
+output tail:
+```
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Using cached pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+Using cached pyasn1-0.6.3-py3-none-any.whl (83 kB)
+Using cached shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Using cached wrapt-2.2.2-cp311-cp311-win_amd64.whl (80 kB)
+Downloading anyio-4.14.1-py3-none-any.whl (124 kB)
+Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Installing collected packages: wrapt, shellingham, pycparser, pyasn1, proto-plus, mdurl, jmespath, hf-xet, h11, googleapis-common-protos, google-crc32c, attrs, anyio, annotated-doc, absl-py, pyasn1-modules, markdown-it-py, httpcore, google-resumable-media, dm-tree, cffi, botocore, s3transfer, rich, httpx, cryptography, typer, google-auth, boto3, huggingface-hub, google-api-core, google-cloud-core, google-cloud-storage, cached-path
+
+Successfully installed absl-py-2.4.0 annotated-doc-0.0.4 anyio-4.14.1 attrs-26.1.0 boto3-1.43.40 botocore-1.43.40 cached-path-1.8.10 cffi-2.0.0 cryptography-49.0.0 dm-tree-0.1.10 google-api-core-2.31.0 google-auth-2.55.1 google-cloud-core-2.6.0 google-cloud-storage-3.12.0 google-crc32c-1.8.0 google-resumable-media-2.10.0 googleapis-common-protos-1.75.0 h11-0.16.0 hf-xet-1.5.1 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-1.21.0 jmespath-1.1.0 markdown-it-py-4.2.0 mdurl-0.1.2 proto-plus-1.28.0 pyasn1-0.6.3 pyasn1-modules-0.4.2 pycparser-3.0 rich-13.9.4 s3transfer-0.19.0 shellingham-1.5.4 typer-0.25.1 wrapt-2.2.2
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+orb-models 0.4.0 requires numpy<2.0.0,>=1.26.4, but you have numpy 2.4.6 which is incompatible.
+orb-models 0.4.0 requires torch==2.2.0, but you have torch 2.11.0+cu128 which is incompatible.
+```
+
+### 2026-07-03 05:20 UTC — layerB orb preflight import cuda checkpoint after deps
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -c import torch; print('torch', torch.__version__, 'cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'cpu'); from orb_models.forcefield.pretrained import ORB_PRETRAINED_MODELS; print('variants sample', list(ORB_PRETRAINED_MODELS)[:8]); model=ORB_PRETRAINED_MODELS['orb-v2'](); model.to('cuda' if torch.cuda.is_available() else 'cpu'); print(type(model).__name__)
+```
+
+- exit code: **1**  | duration: 8.6s  | raw log: `logs/cmd-20260703-052022.log`
+
+output tail:
+```
+torch 2.11.0+cu128 cuda True NVIDIA GeForce RTX 4090
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\orb_models\forcefield\pretrained.py", line 8, in <module>
+    from orb_models.forcefield.featurization_utilities import (
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\orb_models\forcefield\featurization_utilities.py", line 9, in <module>
+    from pynanoflann import KDTree as NanoKDTree
+ModuleNotFoundError: No module named 'pynanoflann'
+```
+
+### 2026-07-03 05:20 UTC — layerB orb install pynanoflann from upstream pin
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m pip install git+https://github.com/dwastberg/pynanoflann#egg=af434039ae14bedcbb838a7808924d6689274168
+```
+
+- exit code: **1**  | duration: 6.5s  | raw log: `logs/cmd-20260703-052042.log`
+
+output tail:
+```
+Collecting af434039ae14bedcbb838a7808924d6689274168
+  Cloning https://github.com/dwastberg/pynanoflann to C:\Users\07013\AppData\Local\Temp\pip-install-xt0jn6_8\af434039ae14bedcbb838a7808924d6689274168_66600dbe018f42fa89af9269ebe3006c
+  Resolved https://github.com/dwastberg/pynanoflann to commit af434039ae14bedcbb838a7808924d6689274168
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Discarding git+https://github.com/dwastberg/pynanoflann#egg=af434039ae14bedcbb838a7808924d6689274168: Requested pynanoflann from git+https://github.com/dwastberg/pynanoflann#egg=af434039ae14bedcbb838a7808924d6689274168 has inconsistent name: expected 'af434039ae14bedcbb838a7808924d6689274168', but metadata has 'pynanoflann'
+  Running command git clone --filter=blob:none --quiet https://github.com/dwastberg/pynanoflann 'C:\Users\07013\AppData\Local\Temp\pip-install-xt0jn6_8\af434039ae14bedcbb838a7808924d6689274168_66600dbe018f42fa89af9269ebe3006c'
+  WARNING: Generating metadata for package af434039ae14bedcbb838a7808924d6689274168 produced metadata for project name pynanoflann. Fix your #egg=af434039ae14bedcbb838a7808924d6689274168 fragments.
+ERROR: Could not find a version that satisfies the requirement af434039ae14bedcbb838a7808924d6689274168 (unavailable) (from versions: none)
+ERROR: No matching distribution found for af434039ae14bedcbb838a7808924d6689274168 (unavailable)
+```
+
+### 2026-07-03 05:21 UTC — layerB orb install pynanoflann corrected git ref
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m pip install git+https://github.com/dwastberg/pynanoflann@af434039ae14bedcbb838a7808924d6689274168#egg=pynanoflann
+```
+
+- exit code: **0**  | duration: 27.7s  | raw log: `logs/cmd-20260703-052101.log`
+
+output tail:
+```
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: numpy in .\.venv\Lib\site-packages (from pynanoflann) (2.4.6)
+Building wheels for collected packages: pynanoflann
+  Building wheel for pynanoflann (pyproject.toml): started
+  Building wheel for pynanoflann (pyproject.toml): finished with status 'done'
+  Created wheel for pynanoflann: filename=pynanoflann-0.0.9-cp311-cp311-win_amd64.whl size=206338 sha256=2794be5a05ea7e30461269e847c1acffd66da9114c8e29873e0e51d3fbf11ab8
+  Stored in directory: c:\users\07013\appdata\local\pip\cache\wheels\44\4f\44\8c48327894f92a206f76f4acaf1940246ba4e468318c4036fa
+Successfully built pynanoflann
+Installing collected packages: pynanoflann
+Successfully installed pynanoflann-0.0.9
+  Running command git clone --filter=blob:none --quiet https://github.com/dwastberg/pynanoflann 'C:\Users\07013\AppData\Local\Temp\pip-install-a0ezxdl8\pynanoflann_6dc107e5aeeb4f25aa8dd5ffdd8f1e8f'
+  Running command git rev-parse -q --verify 'sha^af434039ae14bedcbb838a7808924d6689274168'
+  Running command git fetch -q https://github.com/dwastberg/pynanoflann af434039ae14bedcbb838a7808924d6689274168
+```
+
+### 2026-07-03 05:21 UTC — layerB orb preflight import cuda checkpoint after pynanoflann
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -c import torch; print('torch', torch.__version__, 'cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'cpu'); from orb_models.forcefield.pretrained import ORB_PRETRAINED_MODELS; print('variants sample', list(ORB_PRETRAINED_MODELS)[:8]); model=ORB_PRETRAINED_MODELS['orb-v2'](); model.to('cuda' if torch.cuda.is_available() else 'cpu'); print(type(model).__name__)
+```
+
+- exit code: **1**  | duration: 5.9s  | raw log: `logs/cmd-20260703-052134.log`
+
+output tail:
+```
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\cached_path\_cached_path.py", line 211, in cached_path
+    file_path, etag = get_from_cache(
+                      ^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\cached_path\_cached_path.py", line 327, in get_from_cache
+    etag = client.get_etag()
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\cached_path\schemes\http.py", line 80, in get_etag
+    return self.head_response.headers.get("ETag")
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\cached_path\schemes\http.py", line 73, in head_response
+    self.validate_response(response)
+  File "C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\cached_path\schemes\http.py", line 117, in validate_response
+    raise FileNotFoundError(self.resource)
+FileNotFoundError: https://storage.googleapis.com/orbitalmaterials-public-models/forcefields/orb-v2-20241011.ckpt
+```
+
+### 2026-07-03 05:21 UTC — layerB orb preflight checkpoint from yaml S3 URL
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -c import torch; from orb_models.forcefield.pretrained import orb_v2; url='https://orbitalmaterials-public-models.s3.us-west-1.amazonaws.com/forcefields/orb-v2-20241011.ckpt'; print('torch', torch.__version__, 'cuda', torch.cuda.is_available()); model=orb_v2(weights_path=url, device='cuda' if torch.cuda.is_available() else 'cpu'); print(type(model).__name__, sum(p.numel() for p in model.parameters()))
+```
+
+- exit code: **0**  | duration: 37.2s  | raw log: `logs/cmd-20260703-052159.log`
+
+output tail:
+```
+torch 2.11.0+cu128 cuda True
+GPU tensorfloat matmuls precision set to 'high'. This can achieve up to 2x speedup on Nvidia A100 and H100 devices.
+GraphRegressor 25213601
+Downloading …rcefields/orb-v2-20241011.ckpt ---------- 100% 0:00:32 101.0/101.0
+                                                                    MB         
+```
+
+### 2026-07-03 05:23 UTC — layerB orb pre-smoke 2 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_orb_relax.py --limit 2 --out experiments/layer-b/orb-v2/presmoke2-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 9.2s  | raw log: `logs/cmd-20260703-052335.log`
+
+output tail:
+```
+loaded 2 initial structures in 2.2s
+GPU tensorfloat matmuls precision set to 'high'. This can achieve up to 2x speedup on Nvidia A100 and H100 devices.
+this run: 2 new, 0 resumed, 0 failed
+versions: orb-models 0.4.0 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: ORB v2 FIRE steps<=500 fmax=0.05 FrechetCellFilter
+relaxed 2/2 | failures 0
+s/structure: mean 0.78 | median 0.78 | max 0.91
+converged: 2/2
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\orb-v2\presmoke2-run1.jsonl.gz
+```
+
+### 2026-07-03 05:23 UTC — layerB orb score pre-smoke 2
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model orb-v2 --preds experiments/layer-b/orb-v2/presmoke2-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-orb-v2-presmoke2.md
+```
+
+- exit code: **0**  | duration: 20.9s  | raw log: `logs/cmd-20260703-052351.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-orb-v2-presmoke2.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+
+  0%|          | 0/2 [00:00<?, ?it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-33636 (BaI3). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+ 50%|█████     | 1/2 [00:00<00:00,  7.75it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-24460 (Er4In5Fe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 2/2 [00:00<00:00, 15.50it/s]
+```
+
+### 2026-07-03 05:24 UTC — layerB orb pre-smoke 2 run fmax 0.02
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_orb_relax.py --limit 2 --fmax 0.02 --out experiments/layer-b/orb-v2/presmoke2-fmax002-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 10.9s  | raw log: `logs/cmd-20260703-052446.log`
+
+output tail:
+```
+loaded 2 initial structures in 2.2s
+GPU tensorfloat matmuls precision set to 'high'. This can achieve up to 2x speedup on Nvidia A100 and H100 devices.
+this run: 2 new, 0 resumed, 0 failed
+versions: orb-models 0.4.0 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: ORB v2 FIRE steps<=500 fmax=0.02 FrechetCellFilter
+relaxed 2/2 | failures 0
+s/structure: mean 1.91 | median 1.91 | max 3.10
+converged: 2/2
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\orb-v2\presmoke2-fmax002-run1.jsonl.gz
+```
+
+### 2026-07-03 05:25 UTC — layerB orb score pre-smoke 2 fmax 0.02
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model orb-v2 --preds experiments/layer-b/orb-v2/presmoke2-fmax002-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-orb-v2-presmoke2-fmax002.md
+```
+
+- exit code: **0**  | duration: 21.3s  | raw log: `logs/cmd-20260703-052504.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-orb-v2-presmoke2-fmax002.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+
+  0%|          | 0/2 [00:00<?, ?it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-33636 (BaI3). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+ 50%|█████     | 1/2 [00:00<00:00,  7.97it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-24460 (Er4In5Fe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 2/2 [00:00<00:00, 15.81it/s]
+```
+
+### 2026-07-03 05:25 UTC — layerB orb pre-smoke 20 fmax 0.02 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_orb_relax.py --limit 20 --fmax 0.02 --out experiments/layer-b/orb-v2/presmoke20-fmax002-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 28.8s  | raw log: `logs/cmd-20260703-052545.log`
+
+output tail:
+```
+loaded 20 initial structures in 3.6s
+GPU tensorfloat matmuls precision set to 'high'. This can achieve up to 2x speedup on Nvidia A100 and H100 devices.
+this run: 20 new, 0 resumed, 0 failed
+versions: orb-models 0.4.0 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: ORB v2 FIRE steps<=500 fmax=0.02 FrechetCellFilter
+relaxed 20/20 | failures 0
+s/structure: mean 0.87 | median 0.66 | max 2.65
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\orb-v2\presmoke20-fmax002-run1.jsonl.gz
+```
+
+### 2026-07-03 05:26 UTC — layerB orb score pre-smoke 20 fmax 0.02 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model orb-v2 --preds experiments/layer-b/orb-v2/presmoke20-fmax002-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-orb-v2-presmoke20-fmax002.md
+```
+
+- exit code: **0**  | duration: 21.3s  | raw log: `logs/cmd-20260703-052635.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-32299 (OsAuS2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-24011 (Li4InO5). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28433 (Hf3GaO). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-10472 (PaInRe). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-30414 (NaAu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-17117 (In2Fe3Ru). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 20/20 [00:00<00:00, 139.10it/s]
+```
+
+### 2026-07-03 05:27 UTC — layerB orb pre-smoke 20 fmax 0.02 run2 variance bound
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_orb_relax.py --limit 20 --fmax 0.02 --out experiments/layer-b/orb-v2/presmoke20-fmax002-run2.jsonl.gz
+```
+
+- exit code: **0**  | duration: 28.0s  | raw log: `logs/cmd-20260703-052740.log`
+
+output tail:
+```
+loaded 20 initial structures in 3.5s
+GPU tensorfloat matmuls precision set to 'high'. This can achieve up to 2x speedup on Nvidia A100 and H100 devices.
+this run: 20 new, 0 resumed, 0 failed
+versions: orb-models 0.4.0 | torch 2.11.0+cu128 | numpy 2.4.6 | device cuda (NVIDIA GeForce RTX 4090)
+protocol: ORB v2 FIRE steps<=500 fmax=0.02 FrechetCellFilter
+relaxed 20/20 | failures 0
+s/structure: mean 0.90 | median 0.71 | max 2.89
+converged: 20/20
+wrote C:\Users\07013\Desktop\0702fable\reprolab\experiments\layer-b\orb-v2\presmoke20-fmax002-run2.jsonl.gz
+```
+
+### 2026-07-03 05:28 UTC — layerB orb score pre-smoke 20 fmax 0.02 with variance
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model orb-v2 --preds experiments/layer-b/orb-v2/presmoke20-fmax002-run1.jsonl.gz experiments/layer-b/orb-v2/presmoke20-fmax002-run2.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-orb-v2-presmoke20-fmax002.md
+```
+
+- exit code: **0**  | duration: 21.0s  | raw log: `logs/cmd-20260703-052817.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-32299 (OsAuS2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-24011 (Li4InO5). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-28433 (Hf3GaO). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-10472 (PaInRe). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-30414 (NaAu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-17117 (In2Fe3Ru). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 20/20 [00:00<00:00, 143.74it/s]
+```
+
+### 2026-07-03 05:29 UTC — layerB orb smoke 500 fmax 0.02 run1
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_orb_relax.py --fmax 0.02 --out experiments/layer-b/orb-v2/smoke500-fmax002-run1.jsonl.gz
+```
+
+- exit code: **0**  | duration: 309.0s  | raw log: `logs/cmd-20260703-052910.log`
+
+output tail:
+```
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8643453909141756e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.86306697355392e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.866932194974268e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8596832733789634e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.833399884842866e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8792454553333546e-13
+  return f(*arrays, *other_args, **kwargs)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\scipy\_lib\_util.py:1181: RuntimeWarning: logm result may be inaccurate, approximate err = 2.8959974813323103e-13
+  return f(*arrays, *other_args, **kwargs)
+```
+
+### 2026-07-03 05:34 UTC — layerB orb score smoke500 fmax 0.02 vs published
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model orb-v2 --preds experiments/layer-b/orb-v2/smoke500-fmax002-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-orb-v2-smoke500-fmax002.md
+```
+
+- exit code: **0**  | duration: 21.3s  | raw log: `logs/cmd-20260703-053426.log`
+
+output tail:
+```
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-5675 (Ca6Bi2Os). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-1-9501 (TlCdPt2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-2353 (Al3V3ZnGe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-21973 (V2NiRh2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-2593 (DyAlPt). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-14070 (PrGaRu). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 500/500 [00:00<00:00, 1230.16it/s]
+```
+
+### 2026-07-03 05:35 UTC — layerB orb score pre-smoke 2 fmax 0.05 diagnostic
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model orb-v2 --preds experiments/layer-b/orb-v2/presmoke2-run1.jsonl.gz --out papers/matbench-discovery/metric_check-layer-b-orb-v2-presmoke2-fmax005.md
+```
+
+- exit code: **0**  | duration: 21.4s  | raw log: `logs/cmd-20260703-053505.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\metric_check-layer-b-orb-v2-presmoke2-fmax005.md
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
+  val = self.func(instance)
+
+  0%|          | 0/2 [00:00<?, ?it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-33636 (BaI3). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+ 50%|█████     | 1/2 [00:00<00:00,  7.09it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-24460 (Er4In5Fe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 2/2 [00:00<00:00, 14.18it/s]
+```
+
+### 2026-07-03 05:35 UTC — capture env after ORB Layer B deps
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\capture_env.py
+```
+
+- exit code: **0**  | duration: 0.9s  | raw log: `logs/cmd-20260703-053557.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260703-053558.json
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
+```
+
+### 2026-07-03 05:36 UTC — refresh requirements frozen after ORB deps
+
+```
+$ powershell -NoProfile -Command & 'C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe' -m pip freeze | Set-Content -Encoding ascii 'papers\matbench-discovery\requirements-frozen.txt'
+```
+
+- exit code: **0**  | duration: 1.0s  | raw log: `logs/cmd-20260703-053609.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:37 UTC — verify ORB Layer B scripts py_compile
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py scripts\layer_b_orb_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053740.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:37 UTC — verify ORB Layer B scripts ruff
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py scripts\layer_b_orb_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053745.log`
+
+output tail:
+```
+All checks passed!
+```
+
+### 2026-07-03 05:37 UTC — assemble report after ORB Layer B smoke
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053751.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```
+
+### 2026-07-03 05:38 UTC — assemble report after ORB failure-note date
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053808.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-001-matbench-discovery-audit.md
+```

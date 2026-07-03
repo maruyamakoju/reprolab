@@ -2,8 +2,8 @@
 
 Converts relaxed total energies to e_form_per_atom using the same post-processing
 shape as each upstream model path: CHGNet uses elemental-reference subtraction;
-MACE-MP-0 first applies MP2020 corrections to the ML-relaxed structure, then uses
-the same elemental references. Metric scoring reuses `compare_metrics.py`
+MACE-MP-0 and ORB v2 first apply MP2020 corrections to the ML-relaxed structure,
+then use the same elemental references. Metric scoring reuses `compare_metrics.py`
 functions (build_each_pred, independent_metrics, try_upstream_metrics) unchanged.
 No metric logic is forked.
 
@@ -54,6 +54,20 @@ MODEL_CONFIGS = {
             "Generation protocol per upstream `test_mace_discovery.py` "
             "(MACE-MP-0 checkpoint, FIRE, steps<=500, fmax=0.05, "
             "FrechetCellFilter, float64)."
+        ),
+        apply_mp2020=True,
+    ),
+    "orb-v2": dict(
+        label="ORB v2",
+        energy_col="orb_energy",
+        structure_col="orb_structure",
+        pred_file="models/orb/orbff-v2/2024-10-11-wbm-IS2RE.csv.gz",
+        pub_col="e_form_per_atom_orb",
+        regen_col="e_form_per_atom_orb_regen",
+        protocol=(
+            "Generation protocol per upstream `test_orb_discovery.py` "
+            "(ORB v2 checkpoint, FIRE, steps<=500, FrechetCellFilter; "
+            "fmax recorded in the relaxation run log)."
         ),
         apply_mp2020=True,
     ),

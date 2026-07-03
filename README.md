@@ -10,13 +10,16 @@ bundled WBM ground truth. **All 4/4 models reproduce the official YAML metrics e
 across both audited subsets — every fraction to 3 decimals and every integer
 confusion-matrix count.
 
-**Layer B:** Regenerated predictions from model execution for **two models** on the
+**Layer B:** Regenerated predictions from model execution for **three models** on the
 same deterministic 500-structure WBM subset. CHGNet: 500/500 relaxed, 0 failures,
 9.3 min on one RTX 4090, **median |Δe_form| = 0.03 meV/atom** (p95 = 0.07,
 max = 1.08), **100% stability-classification agreement, zero flips**. MACE-MP-0:
 500/500 relaxed, 0 failures, 10.1 min, **median |Δe_form| = 0.03 meV/atom**,
 **99.6% stability-classification agreement**; the three large MACE outliers are the
-same MP2020 correction-drift structures identified in the ground-truth audit.
+same MP2020 correction-drift structures identified in the ground-truth audit. ORB v2:
+500/500 relaxed, 0 failures, 5.2 min, **median |Δe_form| = 0.05 meV/atom**,
+**100% stability-classification agreement, zero flips** when using the YAML
+`max_force: 0.02` setting.
 
 **Layer C:** Statistical audit of the leaderboard itself (uncertainty is not reported
 upstream). Paired bootstrap (B=2000, exact 32-joint-category multinomial design) puts
@@ -175,6 +178,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       MP2020 correction-version drift already isolated in Layer C; outside those,
       agreement is at CSV-rounding scale. The second flip is a 0.1 meV/atom
       threshold-boundary case (`metric_check-layer-b-mace-mp-0-smoke500.md`).
+- [x] **Layer B third-model smoke passed for ORB v2 at n=500**:
+      500/500 relaxed, 0 failures, 5.2 min on RTX 4090 (mean 0.60 s/structure);
+      median |Δe_form| = 0.05 meV/atom vs published, p95 0.17, max 16.86,
+      100% classification agreement and zero flips. ORB reproduced with the YAML
+      `max_force: 0.02`; the upstream runner default `force_max=0.05` failed the
+      two-structure pre-smoke (`metric_check-layer-b-orb-v2-smoke500-fmax002.md`).
 - [x] External-path self-audit: a fresh clone of this public repo, following the
       steps above verbatim (fresh venv + upstream clone + Figshare download),
       reproduces CHGNet Layer A exactly — 22/22 checks, 0 mismatches (run_log.md)
@@ -182,7 +191,7 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       + ranking significance, threshold sensitivity ±100 meV, cross-model error
       correlation / joint-blind-spot quantification, leaderboard-resolution analysis
       (43/59 adjacent pairs closer than one CI width)
-- [ ] Next: either extend Layer B to ORB v2 or start Paper-002 — pending external
+- [ ] Next: package/update the external report, or start Paper-002 — pending external
       feedback
 
 ## Rules

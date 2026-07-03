@@ -1,6 +1,6 @@
 # ReproLab Paper-001 — Independent Reproducibility Audit of Matbench Discovery
 
-_Generated: 2026-07-03 05:17 UTC_
+_Generated: 2026-07-03 05:38 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_report.py`.
 
@@ -56,12 +56,13 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
 ## Result — Layer B (GPU, prediction regeneration, n=500)
 
 Beyond re-scoring published predictions, we regenerated predictions from scratch for
-**two models** on the same deterministic 500-structure WBM subset (seed-42 sample of
+**three models** on the same deterministic 500-structure WBM subset (seed-42 sample of
 `unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
-relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
+relaxation with the model-specific upstream/YAML protocol (steps≤500,
+FrechetCellFilter; fmax noted per model) →
 formation energy → scored through the *same* Layer A metric path. The CHGNet
 thresholds were pre-registered in `layer_b_plan.md` §7 before the first GPU smoke;
-the MACE-MP-0 extension reused the same subset and acceptance criteria.
+the MACE-MP-0 and ORB v2 extensions reused the same subset and acceptance criteria.
 
 - **CHGNet: 500/500 relaxed, 0 failures** — RTX 4090, mean 1.06 s/structure (median 0.99,
   max 6.16), 9.3 min total GPU; 477/500 converged within the 500-step cap (the
@@ -96,21 +97,39 @@ the MACE-MP-0 extension reused the same subset and acceptance criteria.
   classification metrics match through both implementations (F1 0.655, Precision
   0.538, Recall 0.836, Accuracy 0.882; TP/FP/TN/FN = 56/48/385/11), while MAE/RMSE
   differ by 0.001 due to the correction-drift outliers.
+- **ORB v2: 500/500 relaxed, 0 failures, 500/500 converged** — RTX 4090,
+  mean 0.60 s/structure (median 0.50, max 3.05), 5.2 min total GPU; checkpoint
+  `orb-v2-20241011.ckpt`, `orb-models==0.4.0`, S3 checkpoint URL from the upstream
+  YAML. Normal dependency resolution would downgrade torch/numpy, so we installed
+  ORB without those dependency downgrades and ran against `torch==2.11.0+cu128`.
+- ORB v2 **median |Δe_form| = 0.05 meV/atom vs published** (threshold: ≤10);
+  p95 = 0.17, mean = 0.11, max = 16.86 meV/atom; 99.8% within 10 meV/atom.
+  Stable/unstable classification agreement is **100.0%** with zero flips. Subset
+  classification metrics match through both implementations (F1 0.879, Precision
+  0.892, Recall 0.866, Accuracy 0.968; TP/FP/TN/FN = 58/7/426/9), while MAE differs
+  by 0.001.
+- ORB v2 reproduced only when using the YAML hyperparameter `max_force: 0.02`. The
+  upstream runner's default `force_max=0.05` produced a two-structure pre-smoke
+  failure (Ba2I6 Δe_form = +212.3 meV/atom and a classification flip), while fmax
+  0.02 reproduced the same two structures to ≤0.1 meV/atom and the 20-structure
+  pre-smoke to max 0.12 meV/atom. This is a protocol-ambiguity finding, not a model
+  failure.
 
 **Verdict: the published CHGNet predictions reproduce from model execution** on this
 subset, to well within the published CSV's own rounding scale. **MACE-MP-0 also
 passes the same Layer B smoke criteria**, with the only large deviations tracing to
 the same MP2020 correction-version dependency found independently in the ground-truth
-audit.
+audit. **ORB v2 also passes**, provided the YAML fmax=0.02 setting is used instead
+of the runner's 0.05 default.
 
 ## Scope and limits
 
 Layer A verifies that leaderboard metrics are correctly derived from the *published*
-predictions (4/4 models exact). Layer B regenerates predictions for two models
-(CHGNet and MACE-MP-0) on a 500-structure deterministic subset — a small but valid
-audit of the generation path, not a full leaderboard reproduction. Next steps:
-add ORB v2 or move to another paper. Full-WBM (257k) regeneration is out of scope
-for v0.x.
+predictions (4/4 models exact). Layer B regenerates predictions for three models
+(CHGNet, MACE-MP-0, and ORB v2) on a 500-structure deterministic subset — a small
+but valid audit of the generation path, not a full leaderboard reproduction. Next
+steps: package the external report/update or move to another paper. Full-WBM (257k)
+regeneration is out of scope for v0.x.
 
 
 
@@ -325,9 +344,9 @@ Regenerate CHGNet predictions locally to test the deeper claim:
 
 # Environment
 
-_Captured: 2026-07-03 05:12:22 UTC_
+_Captured: 2026-07-03 05:35:57 UTC_
 
-- **timestamp_utc**: `2026-07-03 05:12:22 UTC`
+- **timestamp_utc**: `2026-07-03 05:35:57 UTC`
 - **platform**: `Windows-10-10.0.26200-SP0`
 - **python_version**: `3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]`
 - **python_executable**: `C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe`
@@ -337,12 +356,20 @@ _Captured: 2026-07-03 05:12:22 UTC_
 ## pip freeze
 
 ```
+absl-py==2.4.0
+annotated-doc==0.0.4
 annotated-types==0.7.0
+anyio==4.14.1
 anywidget==0.11.0
 ase==3.29.0
 asttokens==3.0.1
+attrs==26.1.0
 bibtexparser==1.4.4
+boto3==1.43.40
+botocore==1.43.40
+cached_path==1.8.10
 certifi==2026.6.17
+cffi==2.0.0
 charset-normalizer==3.4.7
 chgnet==0.4.2
 click==8.4.2
@@ -350,9 +377,11 @@ colorama==0.4.6
 comm==0.2.3
 ConfigArgParse==1.7.5
 contourpy==1.3.3
+cryptography==49.0.0
 cycler==0.12.1
 Cython==3.2.8
 decorator==5.3.1
+dm-tree==0.1.10
 e3nn==0.4.4
 executing==2.2.1
 filelock==3.29.0
@@ -360,7 +389,19 @@ fonttools==4.63.0
 fsspec==2026.4.0
 gitdb==4.0.12
 GitPython==3.1.50
+google-api-core==2.31.0
+google-auth==2.55.1
+google-cloud-core==2.6.0
+google-cloud-storage==3.12.0
+google-crc32c==1.8.0
+google-resumable-media==2.10.0
+googleapis-common-protos==1.75.0
+h11==0.16.0
 h5py==3.16.0
+hf-xet==1.5.1
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.21.0
 idna==3.18
 iniconfig==2.3.0
 ipython==9.15.0
@@ -368,6 +409,7 @@ ipython_pygments_lexers==1.1.1
 ipywidgets==8.1.8
 jedi==0.20.0
 Jinja2==3.1.6
+jmespath==1.1.0
 joblib==1.5.3
 jupyterlab_widgets==3.0.16
 kiwisolver==1.5.0
@@ -375,11 +417,13 @@ lightning-utilities==0.15.3
 lmdb==2.2.1
 lxml==6.1.1
 mace-torch==0.3.16
+markdown-it-py==4.2.0
 MarkupSafe==3.0.3
 matbench-discovery==1.3.1
 matplotlib==3.11.0
 matplotlib-inline==0.2.2
 matscipy==1.2.0
+mdurl==0.1.2
 monty==2026.5.18
 moyopy==0.13.0
 mpmath==1.3.0
@@ -389,6 +433,7 @@ numpy==2.4.6
 nvidia-ml-py3==7.352.0
 opt-einsum-fx==0.1.4
 opt_einsum==3.4.0
+orb-models==0.4.0
 orjson==3.11.9
 packaging==26.2
 palettable==3.3.3
@@ -400,29 +445,37 @@ plotly==6.8.0
 pluggy==1.6.0
 prettytable==3.18.0
 prompt_toolkit==3.0.52
+proto-plus==1.28.0
 protobuf==7.35.1
 psutil==7.2.2
 psygnal==0.15.1
 pure_eval==0.2.3
+pyasn1==0.6.3
+pyasn1_modules==0.4.2
+pycparser==3.0
 pydantic==2.13.4
 pydantic_core==2.46.4
 Pygments==2.20.0
 pymatgen==2026.5.4
 pymatgen-core==2026.5.18
 pymatviz==0.18.0
+pynanoflann @ git+https://github.com/dwastberg/pynanoflann@af434039ae14bedcbb838a7808924d6689274168
 pyparsing==3.3.2
 pytest==9.1.1
 python-dateutil==2.9.0.post0
 python_hostlist==2.3.0
 PyYAML==6.0.3
 requests==2.34.2
+rich==13.9.4
 ruamel.yaml==0.18.17
 ruamel.yaml.clib==0.2.15
 ruff==0.15.20
+s3transfer==0.19.0
 scikit-learn==1.9.0
 scipy==1.17.1
 seaborn==0.13.2
 sentry-sdk==2.64.0
+shellingham==1.5.4
 six==1.17.0
 smmap==5.0.3
 spglib==2.7.0
@@ -435,6 +488,7 @@ torch-ema==0.3
 torchmetrics==1.9.0
 tqdm==4.68.3
 traitlets==5.15.1
+typer==0.25.1
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2026.2
@@ -443,6 +497,7 @@ urllib3==2.7.0
 wandb==0.28.0
 wcwidth==0.8.2
 widgetsnbextension==4.0.15
+wrapt==2.2.2
 ```
 
 
@@ -723,6 +778,212 @@ published preds: `models/mace/mace-mp-0/2023-12-11-wbm-IS2RE-FIRE.csv.gz` | rege
 | FP | 48 | 48 | 48 | 48 |
 | TN | 385 | 385 | 385 | 385 |
 | FN | 11 | 11 | 11 | 11 |
+
+
+
+## 4. Metric check — metric_check-layer-b-orb-v2-presmoke2-fmax002
+
+# Metric Check — Layer B: ORB v2 regenerated predictions (n=2)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_orb_discovery.py` (ORB v2 checkpoint, FIRE, steps<=500, fmax=0.05, FrechetCellFilter). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/orb/orbff-v2/2024-10-11-wbm-IS2RE.csv.gz` | regenerated: `experiments/layer-b/orb-v2/presmoke2-fmax002-run1.jsonl.gz`
+
+
+## Per-structure: regenerated vs published e_form (eV/atom)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | 8 | 83 | y | -1.5799 | -1.5800 | -0.1 | S | S | ✓ |
+| wbm-3-24460 | Er4Fe2In5 | 11 | 23 | y | -0.2672 | -0.2672 | -0.0 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 2
+- median |Δ| = **0.04 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.04 | p95 |Δ| = 0.05 | max |Δ| = 0.05 meV/atom
+- within 10 meV/atom: 100.0%
+- classification agreement: **100.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 0 | unstable->stable: 0
+
+## Discovery metrics on this subset via the Layer A path (n=2 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Precision | 1.000 | 1.000 | 1.000 | 1.000 |
+| Recall | 1.000 | 1.000 | 1.000 | 1.000 |
+| Accuracy | 1.000 | 1.000 | 1.000 | 1.000 |
+| MAE | 0.013 | 0.013 | 0.013 | 0.013 |
+| RMSE | 0.014 | 0.014 | 0.014 | 0.014 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 0 | 0 | 0 | 0 |
+| TN | 1 | 1 | 1 | 1 |
+| FN | 0 | 0 | 0 | 0 |
+
+
+
+## 4. Metric check — metric_check-layer-b-orb-v2-presmoke2-fmax005
+
+# Metric Check — Layer B: ORB v2 regenerated predictions (n=2)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_orb_discovery.py` (ORB v2 checkpoint, FIRE, steps<=500, FrechetCellFilter; fmax recorded in the relaxation run log). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/orb/orbff-v2/2024-10-11-wbm-IS2RE.csv.gz` | regenerated: `experiments/layer-b/orb-v2/presmoke2-run1.jsonl.gz`
+
+
+## Per-structure: regenerated vs published e_form (eV/atom)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | 8 | 20 | y | -1.5799 | -1.3676 | +212.3 | S | U | ✗ |
+| wbm-3-24460 | Er4Fe2In5 | 11 | 22 | y | -0.2672 | -0.2657 | +1.5 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 2
+- median |Δ| = **106.89 meV/atom** (threshold: <=10)
+- mean |Δ| = 106.89 | p95 |Δ| = 201.75 | max |Δ| = 212.29 meV/atom
+- within 10 meV/atom: 50.0%
+- classification agreement: **50.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 1 | unstable->stable: 0
+
+## Stable/unstable classification flips
+
+| material_id | formula | published each_pred | regenerated each_pred | Δe_form meV/atom | direction |
+|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | -0.0160 | 0.1960 | +212.3 | stable->unstable |
+
+## Discovery metrics on this subset via the Layer A path (n=2 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | nan | nan | 1.000 | 1.000 |
+| Precision | nan | nan | 1.000 | 1.000 |
+| Recall | 0.000 | 0.000 | 1.000 | 1.000 |
+| Accuracy | 0.500 | 0.500 | 1.000 | 1.000 |
+| MAE | 0.110 | 0.110 | 0.013 | 0.013 |
+| RMSE | 0.143 | 0.143 | 0.014 | 0.014 |
+| TP | 0 | 0 | 1 | 1 |
+| FP | 0 | 0 | 0 | 0 |
+| TN | 1 | 1 | 1 | 1 |
+| FN | 1 | 1 | 0 | 0 |
+
+
+
+## 4. Metric check — metric_check-layer-b-orb-v2-presmoke20-fmax002
+
+# Metric Check — Layer B: ORB v2 regenerated predictions (n=20)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_orb_discovery.py` (ORB v2 checkpoint, FIRE, steps<=500, FrechetCellFilter; fmax recorded in the relaxation run log). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/orb/orbff-v2/2024-10-11-wbm-IS2RE.csv.gz` | regenerated: `experiments/layer-b/orb-v2/presmoke20-fmax002-run1.jsonl.gz`
+
+
+## Per-structure: regenerated vs published e_form (eV/atom)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-33636 | Ba2I6 | 8 | 83 | y | -1.5799 | -1.5800 | -0.1 | S | S | ✓ |
+| wbm-3-24460 | Er4Fe2In5 | 11 | 23 | y | -0.2672 | -0.2672 | -0.0 | U | U | ✓ |
+| wbm-2-29187 | N6Sr2Zn2 | 10 | 36 | y | -0.3102 | -0.3102 | -0.0 | U | U | ✓ |
+| wbm-3-24851 | Fe2Tb1Yb1 | 4 | 7 | y | 0.3480 | 0.3479 | -0.1 | U | U | ✓ |
+| wbm-1-49596 | Er2S6 | 8 | 25 | y | -1.4790 | -1.4791 | -0.1 | U | U | ✓ |
+| wbm-1-38260 | Ca2Fe2O6 | 10 | 76 | y | -2.1469 | -2.1470 | -0.1 | U | U | ✓ |
+| wbm-3-20857 | Cu2Eu2In2 | 6 | 23 | y | -0.2499 | -0.2499 | -0.0 | U | U | ✓ |
+| wbm-2-36510 | Gd1O7Si2Zr1 | 11 | 21 | y | -3.4129 | -3.4129 | +0.0 | U | U | ✓ |
+| wbm-2-31866 | In2Ni2Zn1 | 5 | 16 | y | -0.1390 | -0.1391 | -0.1 | U | U | ✓ |
+| wbm-5-3711 | Ca1Ho1Pb2 | 4 | 0 | y | -0.4132 | -0.4132 | +0.0 | U | U | ✓ |
+| wbm-4-16455 | Cl4H2Mg2 | 8 | 24 | y | -0.9686 | -0.9685 | +0.1 | U | U | ✓ |
+| wbm-4-4335 | B1Ga2Ir2Lu1 | 6 | 9 | y | -0.5033 | -0.5033 | +0.0 | U | U | ✓ |
+| wbm-3-11637 | C2Ge2La4 | 8 | 23 | y | -0.1711 | -0.1712 | -0.1 | U | U | ✓ |
+| wbm-4-32299 | Au1Os1S2 | 4 | 3 | y | -0.2696 | -0.2696 | -0.0 | U | U | ✓ |
+| wbm-2-24011 | In1Li4O5 | 10 | 20 | y | -1.6359 | -1.6360 | -0.1 | U | U | ✓ |
+| wbm-4-28433 | Ga2Hf6O2 | 10 | 13 | y | -1.3962 | -1.3962 | -0.0 | U | U | ✓ |
+| wbm-5-10472 | In2Pa2Re2 | 6 | 4 | y | -0.0208 | -0.0208 | +0.0 | U | U | ✓ |
+| wbm-2-30414 | Au1Na1 | 2 | 16 | y | -0.2719 | -0.2719 | +0.0 | U | U | ✓ |
+| wbm-2-17117 | Fe6In4Ru2 | 12 | 8 | y | 0.1789 | 0.1789 | -0.0 | U | U | ✓ |
+| wbm-1-39713 | Dy2O6Sn2 | 10 | 43 | y | -2.6449 | -2.6450 | -0.1 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 20
+- median |Δ| = **0.04 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.05 | p95 |Δ| = 0.12 | max |Δ| = 0.12 meV/atom
+- within 10 meV/atom: 100.0%
+- classification agreement: **100.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 0 | unstable->stable: 0
+- run1-vs-run2 |ΔE|/atom: median 0.014 / max 0.127 meV/atom (GPU run-to-run variance bound)
+
+## Discovery metrics on this subset via the Layer A path (n=20 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 0.667 | 0.667 | 0.667 | 0.667 |
+| Precision | 1.000 | 1.000 | 1.000 | 1.000 |
+| Recall | 0.500 | 0.500 | 0.500 | 0.500 |
+| Accuracy | 0.950 | 0.950 | 0.950 | 0.950 |
+| MAE | 0.034 | 0.034 | 0.034 | 0.034 |
+| RMSE | 0.063 | 0.063 | 0.063 | 0.063 |
+| TP | 1 | 1 | 1 | 1 |
+| FP | 0 | 0 | 0 | 0 |
+| TN | 18 | 18 | 18 | 18 |
+| FN | 1 | 1 | 1 | 1 |
+
+
+
+## 4. Metric check — metric_check-layer-b-orb-v2-smoke500-fmax002
+
+# Metric Check — Layer B: ORB v2 regenerated predictions (n=500)
+
+Vertical slice: model relaxation -> prediction CSV -> Layer A metric path. Generation protocol per upstream `test_orb_discovery.py` (ORB v2 checkpoint, FIRE, steps<=500, FrechetCellFilter; fmax recorded in the relaxation run log). Scored with `compare_metrics.py` functions unchanged.
+
+published preds: `models/orb/orbff-v2/2024-10-11-wbm-IS2RE.csv.gz` | regenerated: `experiments/layer-b/orb-v2/smoke500-fmax002-run1.jsonl.gz`
+
+
+## Worst 15 structures by |Δ| (full data in experiments/)
+
+| material_id | formula | n_sites | steps | conv | published | regenerated | Δ meV/atom | stable(pub) | stable(regen) | agree |
+|---|---|---|---|---|---|---|---|---|---|---|
+| wbm-3-9104 | B3Cu6Zr3 | 12 | 19 | y | -0.0572 | -0.0741 | -16.9 | U | U | ✓ |
+| wbm-2-19678 | Ba2Ge4Rh2 | 8 | 21 | y | -0.5764 | -0.5751 | +1.3 | U | U | ✓ |
+| wbm-1-32148 | N2O4Sr2V2 | 10 | 28 | y | -2.0686 | -2.0673 | +1.3 | U | U | ✓ |
+| wbm-1-19979 | Ge3Ru6 | 9 | 16 | y | 0.0512 | 0.0501 | -1.1 | U | U | ✓ |
+| wbm-2-25852 | Cr1Mg1Sb1 | 3 | 7 | y | 0.0745 | 0.0753 | +0.8 | U | U | ✓ |
+| wbm-1-50851 | S1Ta1 | 2 | 8 | y | -0.4104 | -0.4109 | -0.5 | U | U | ✓ |
+| wbm-1-36988 | Cs2F2O4Se2 | 10 | 36 | y | -1.9336 | -1.9340 | -0.4 | S | S | ✓ |
+| wbm-2-29024 | Ce2N6Rh2 | 10 | 25 | y | -0.6712 | -0.6709 | +0.3 | U | U | ✓ |
+| wbm-1-30574 | Ho2N4Sr2 | 8 | 17 | y | -1.0411 | -1.0414 | -0.3 | U | U | ✓ |
+| wbm-1-34166 | Ir1Nb1Sb1 | 3 | 3 | y | -0.2915 | -0.2912 | +0.3 | U | U | ✓ |
+| wbm-2-20755 | Ge4Np4Rh4 | 12 | 34 | y | -0.4704 | -0.4701 | +0.3 | S | S | ✓ |
+| wbm-2-7301 | C4Fe2U2 | 8 | 18 | y | -0.0660 | -0.0657 | +0.3 | U | U | ✓ |
+| wbm-2-21952 | H1N1U1 | 3 | 17 | y | -0.6531 | -0.6529 | +0.2 | U | U | ✓ |
+| wbm-2-42779 | Cs2Pd4S6 | 12 | 36 | y | -0.8508 | -0.8510 | -0.2 | U | U | ✓ |
+| wbm-4-31321 | Ir2Rh1Th1 | 4 | 9 | y | -0.6272 | -0.6270 | +0.2 | U | U | ✓ |
+
+## Agreement stats (pre-registered thresholds: median |Δ|<=10 meV/atom, classification agreement >=95%)
+
+- n scored = 500
+- median |Δ| = **0.05 meV/atom** (threshold: <=10)
+- mean |Δ| = 0.11 | p95 |Δ| = 0.17 | max |Δ| = 16.86 meV/atom
+- within 10 meV/atom: 99.8%
+- classification agreement: **100.0%** (threshold: >=95%)
+- flips stable->unstable (pub->regen): 0 | unstable->stable: 0
+
+## Discovery metrics on this subset via the Layer A path (n=500 — subset-level, not leaderboard-comparable)
+
+| metric | regenerated (indep) | regenerated (upstream_fn) | published (indep) | published (upstream_fn) |
+|---|---|---|---|---|
+| F1 | 0.879 | 0.879 | 0.879 | 0.879 |
+| Precision | 0.892 | 0.892 | 0.892 | 0.892 |
+| Recall | 0.866 | 0.866 | 0.866 | 0.866 |
+| Accuracy | 0.968 | 0.968 | 0.968 | 0.968 |
+| MAE | 0.032 | 0.032 | 0.031 | 0.031 |
+| RMSE | 0.072 | 0.072 | 0.072 | 0.072 |
+| TP | 58 | 58 | 58 | 58 |
+| FP | 7 | 7 | 7 | 7 |
+| TN | 426 | 426 | 426 | 426 |
+| FN | 9 | 9 | 9 | 9 |
 
 
 
@@ -1122,8 +1383,14 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   final scorer therefore reconstructs `ComputedStructureEntry`s with the MACE-relaxed
   structures, applies `MaterialsProject2020Compatibility`, and only then converts to
   formation energy.
+- **ORB v2 requires the YAML `max_force: 0.02` setting to reproduce the published
+  CSV.** The upstream runner's function default is `force_max=0.05`, but the model
+  YAML records `max_force: 0.02`. On the first two Layer B subset structures, fmax
+  0.05 produced a false mismatch (Ba2I6 Δe_form = +212.3 meV/atom and a
+  stable→unstable flip), while fmax 0.02 reproduced both structures to ≤0.1
+  meV/atom and the 500-structure smoke to median 0.05 meV/atom with zero flips.
 
-## Findings so far (2026-07-02)
+## Findings so far (through 2026-07-03)
 
 - **[env] PyPI wheel ≠ GitHub HEAD under the same version `1.3.1`.** The installed
   wheel has a *flat* layout (`matbench_discovery/metrics.py`, `preds.py`, `slurm.py`,
@@ -1217,6 +1484,18 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   correction-drift outlier and `wbm-3-56172` is a threshold-boundary case
   (each_pred 0.000→−0.001 eV/atom from Δe_form = −0.1 meV/atom).
 
+- **[interp/env] ORB v2 Layer B reproduces, but only after resolving three protocol
+  and environment ambiguities.** (Found 2026-07-03.) First, `pip install
+  orb-models==0.4.0` tries to downgrade `torch` to 2.2.0 and `numpy` to 1.26.4; to
+  preserve the CUDA torch environment we installed `orb-models==0.4.0 --no-deps`
+  plus runtime dependencies separately. Second, the package default checkpoint URL
+  (`storage.googleapis.com/.../orb-v2-20241011.ckpt`) returned `FileNotFoundError`,
+  while the S3 URL recorded in the upstream YAML loaded successfully. Third, the
+  runner default `force_max=0.05` does not reproduce the published CSV, while the
+  YAML hyperparameter `max_force: 0.02` does. With those choices fixed, ORB v2
+  passed the 500-structure smoke: median |Δe_form| = 0.05 meV/atom, p95 = 0.17,
+  max = 16.86, 99.8% within 10 meV/atom, 100% classification agreement, zero flips.
+
 ## Open discrepancies
 **None (4 of 4 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
 **SevenNet-0**, **MACE-MP-0**, and **ORB v2** on both `unique_prototypes` and
@@ -1232,81 +1511,81 @@ The ORB v2 run (pre-download + compute split) completed with no new blockers. Se
 
 ## 6. Run log (tail)
 
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-1-9501 (TlCdPt2). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-2353 (Al3V3ZnGe2). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-5-21973 (V2NiRh2). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-2-2593 (DyAlPt). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-4-14070 (PrGaRu). Assigning anion correction to only the most electronegative atom.
-  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
-
-100%|██████████| 500/500 [00:00<00:00, 1319.08it/s]
-```
-
-### 2026-07-03 05:16 UTC — verify layer_b_score chgnet compatibility after flip table
-
-```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\layer_b_score.py --model chgnet-0.3.0 --preds experiments/layer-b/chgnet/smoke500-run1.jsonl.gz --out logs/chgnet-score-regression-layer_b_score.md
-```
-
-- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-051650.log`
-
-output tail:
-```
-| Accuracy | 0.866 | 0.866 | 0.866 | 0.866 |
-| MAE | 0.067 | 0.067 | 0.067 | 0.067 |
-| RMSE | 0.104 | 0.104 | 0.104 | 0.104 |
-| TP | 47 | 47 | 47 | 47 |
-| FP | 47 | 47 | 47 | 47 |
-| TN | 386 | 386 | 386 | 386 |
-| FN | 20 | 20 | 20 | 20 |
-
-wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\chgnet-score-regression-layer_b_score.md
-C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ne. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for He. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
 C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\functools.py:1001: UserWarning: No Pauling electronegativity for Ar. Setting to NaN. This has no physical meaning, and is mainly done to avoid errors caused by the code expecting a float.
   val = self.func(instance)
+
+  0%|          | 0/2 [00:00<?, ?it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-33636 (BaI3). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+ 50%|█████     | 1/2 [00:00<00:00,  7.09it/s]C:\Users\07013\Desktop\0702fable\reprolab\.venv\Lib\site-packages\pymatgen\analysis\compatibility\__init__.py:631: UserWarning: Failed to guess oxidation states for Entry wbm-3-24460 (Er4In5Fe2). Assigning anion correction to only the most electronegative atom.
+  adjustments: list[EnergyAdjustment] = self.get_adjustments(entry)
+
+100%|██████████| 2/2 [00:00<00:00, 14.18it/s]
 ```
 
-### 2026-07-03 05:16 UTC — verify final MACE scorer py_compile
+### 2026-07-03 05:35 UTC — capture env after ORB Layer B deps
 
 ```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\capture_env.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051659.log`
+- exit code: **0**  | duration: 0.9s  | raw log: `logs/cmd-20260703-053557.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\logs\env-20260703-053558.json
+wrote C:\Users\07013\Desktop\0702fable\reprolab\papers\matbench-discovery\environment.md
+```
+
+### 2026-07-03 05:36 UTC — refresh requirements frozen after ORB deps
+
+```
+$ powershell -NoProfile -Command & 'C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe' -m pip freeze | Set-Content -Encoding ascii 'papers\matbench-discovery\requirements-frozen.txt'
+```
+
+- exit code: **0**  | duration: 1.0s  | raw log: `logs/cmd-20260703-053609.log`
 
 output tail:
 ```
 
 ```
 
-### 2026-07-03 05:17 UTC — verify final MACE scorer ruff
+### 2026-07-03 05:37 UTC — verify ORB Layer B scripts py_compile
 
 ```
-$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m py_compile scripts\layer_b_score.py scripts\layer_b_mace_relax.py scripts\layer_b_orb_relax.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051703.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053740.log`
+
+output tail:
+```
+
+```
+
+### 2026-07-03 05:37 UTC — verify ORB Layer B scripts ruff
+
+```
+$ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe -m ruff check scripts\layer_b_score.py scripts\layer_b_mace_relax.py scripts\layer_b_orb_relax.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053745.log`
 
 output tail:
 ```
 All checks passed!
 ```
 
-### 2026-07-03 05:17 UTC — assemble report after MACE flip diagnostics
+### 2026-07-03 05:37 UTC — assemble report after ORB Layer B smoke
 
 ```
 $ C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe scripts\make_report.py
 ```
 
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-051707.log`
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-053751.log`
 
 output tail:
 ```

@@ -48,12 +48,13 @@ families and the leaderboard's F1 range from 0.61 (CHGNet) to 0.88 (ORB v2).
 ## Result — Layer B (GPU, prediction regeneration, n=500)
 
 Beyond re-scoring published predictions, we regenerated predictions from scratch for
-**two models** on the same deterministic 500-structure WBM subset (seed-42 sample of
+**three models** on the same deterministic 500-structure WBM subset (seed-42 sample of
 `unique_prototypes`, ids committed in `layer_b_subset.csv`): initial structure → FIRE
-relaxation with the upstream protocol (steps≤500, fmax=0.05, FrechetCellFilter) →
+relaxation with the model-specific upstream/YAML protocol (steps≤500,
+FrechetCellFilter; fmax noted per model) →
 formation energy → scored through the *same* Layer A metric path. The CHGNet
 thresholds were pre-registered in `layer_b_plan.md` §7 before the first GPU smoke;
-the MACE-MP-0 extension reused the same subset and acceptance criteria.
+the MACE-MP-0 and ORB v2 extensions reused the same subset and acceptance criteria.
 
 - **CHGNet: 500/500 relaxed, 0 failures** — RTX 4090, mean 1.06 s/structure (median 0.99,
   max 6.16), 9.3 min total GPU; 477/500 converged within the 500-step cap (the
@@ -88,18 +89,36 @@ the MACE-MP-0 extension reused the same subset and acceptance criteria.
   classification metrics match through both implementations (F1 0.655, Precision
   0.538, Recall 0.836, Accuracy 0.882; TP/FP/TN/FN = 56/48/385/11), while MAE/RMSE
   differ by 0.001 due to the correction-drift outliers.
+- **ORB v2: 500/500 relaxed, 0 failures, 500/500 converged** — RTX 4090,
+  mean 0.60 s/structure (median 0.50, max 3.05), 5.2 min total GPU; checkpoint
+  `orb-v2-20241011.ckpt`, `orb-models==0.4.0`, S3 checkpoint URL from the upstream
+  YAML. Normal dependency resolution would downgrade torch/numpy, so we installed
+  ORB without those dependency downgrades and ran against `torch==2.11.0+cu128`.
+- ORB v2 **median |Δe_form| = 0.05 meV/atom vs published** (threshold: ≤10);
+  p95 = 0.17, mean = 0.11, max = 16.86 meV/atom; 99.8% within 10 meV/atom.
+  Stable/unstable classification agreement is **100.0%** with zero flips. Subset
+  classification metrics match through both implementations (F1 0.879, Precision
+  0.892, Recall 0.866, Accuracy 0.968; TP/FP/TN/FN = 58/7/426/9), while MAE differs
+  by 0.001.
+- ORB v2 reproduced only when using the YAML hyperparameter `max_force: 0.02`. The
+  upstream runner's default `force_max=0.05` produced a two-structure pre-smoke
+  failure (Ba2I6 Δe_form = +212.3 meV/atom and a classification flip), while fmax
+  0.02 reproduced the same two structures to ≤0.1 meV/atom and the 20-structure
+  pre-smoke to max 0.12 meV/atom. This is a protocol-ambiguity finding, not a model
+  failure.
 
 **Verdict: the published CHGNet predictions reproduce from model execution** on this
 subset, to well within the published CSV's own rounding scale. **MACE-MP-0 also
 passes the same Layer B smoke criteria**, with the only large deviations tracing to
 the same MP2020 correction-version dependency found independently in the ground-truth
-audit.
+audit. **ORB v2 also passes**, provided the YAML fmax=0.02 setting is used instead
+of the runner's 0.05 default.
 
 ## Scope and limits
 
 Layer A verifies that leaderboard metrics are correctly derived from the *published*
-predictions (4/4 models exact). Layer B regenerates predictions for two models
-(CHGNet and MACE-MP-0) on a 500-structure deterministic subset — a small but valid
-audit of the generation path, not a full leaderboard reproduction. Next steps:
-add ORB v2 or move to another paper. Full-WBM (257k) regeneration is out of scope
-for v0.x.
+predictions (4/4 models exact). Layer B regenerates predictions for three models
+(CHGNet, MACE-MP-0, and ORB v2) on a 500-structure deterministic subset — a small
+but valid audit of the generation path, not a full leaderboard reproduction. Next
+steps: package the external report/update or move to another paper. Full-WBM (257k)
+regeneration is out of scope for v0.x.

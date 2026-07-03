@@ -1,8 +1,8 @@
 # Environment
 
-_Captured: 2026-07-03 05:12:22 UTC_
+_Captured: 2026-07-03 05:35:57 UTC_
 
-- **timestamp_utc**: `2026-07-03 05:12:22 UTC`
+- **timestamp_utc**: `2026-07-03 05:35:57 UTC`
 - **platform**: `Windows-10-10.0.26200-SP0`
 - **python_version**: `3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]`
 - **python_executable**: `C:\Users\07013\Desktop\0702fable\reprolab\.venv\Scripts\python.exe`
@@ -12,12 +12,20 @@ _Captured: 2026-07-03 05:12:22 UTC_
 ## pip freeze
 
 ```
+absl-py==2.4.0
+annotated-doc==0.0.4
 annotated-types==0.7.0
+anyio==4.14.1
 anywidget==0.11.0
 ase==3.29.0
 asttokens==3.0.1
+attrs==26.1.0
 bibtexparser==1.4.4
+boto3==1.43.40
+botocore==1.43.40
+cached_path==1.8.10
 certifi==2026.6.17
+cffi==2.0.0
 charset-normalizer==3.4.7
 chgnet==0.4.2
 click==8.4.2
@@ -25,9 +33,11 @@ colorama==0.4.6
 comm==0.2.3
 ConfigArgParse==1.7.5
 contourpy==1.3.3
+cryptography==49.0.0
 cycler==0.12.1
 Cython==3.2.8
 decorator==5.3.1
+dm-tree==0.1.10
 e3nn==0.4.4
 executing==2.2.1
 filelock==3.29.0
@@ -35,7 +45,19 @@ fonttools==4.63.0
 fsspec==2026.4.0
 gitdb==4.0.12
 GitPython==3.1.50
+google-api-core==2.31.0
+google-auth==2.55.1
+google-cloud-core==2.6.0
+google-cloud-storage==3.12.0
+google-crc32c==1.8.0
+google-resumable-media==2.10.0
+googleapis-common-protos==1.75.0
+h11==0.16.0
 h5py==3.16.0
+hf-xet==1.5.1
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.21.0
 idna==3.18
 iniconfig==2.3.0
 ipython==9.15.0
@@ -43,6 +65,7 @@ ipython_pygments_lexers==1.1.1
 ipywidgets==8.1.8
 jedi==0.20.0
 Jinja2==3.1.6
+jmespath==1.1.0
 joblib==1.5.3
 jupyterlab_widgets==3.0.16
 kiwisolver==1.5.0
@@ -50,11 +73,13 @@ lightning-utilities==0.15.3
 lmdb==2.2.1
 lxml==6.1.1
 mace-torch==0.3.16
+markdown-it-py==4.2.0
 MarkupSafe==3.0.3
 matbench-discovery==1.3.1
 matplotlib==3.11.0
 matplotlib-inline==0.2.2
 matscipy==1.2.0
+mdurl==0.1.2
 monty==2026.5.18
 moyopy==0.13.0
 mpmath==1.3.0
@@ -64,6 +89,7 @@ numpy==2.4.6
 nvidia-ml-py3==7.352.0
 opt-einsum-fx==0.1.4
 opt_einsum==3.4.0
+orb-models==0.4.0
 orjson==3.11.9
 packaging==26.2
 palettable==3.3.3
@@ -75,29 +101,37 @@ plotly==6.8.0
 pluggy==1.6.0
 prettytable==3.18.0
 prompt_toolkit==3.0.52
+proto-plus==1.28.0
 protobuf==7.35.1
 psutil==7.2.2
 psygnal==0.15.1
 pure_eval==0.2.3
+pyasn1==0.6.3
+pyasn1_modules==0.4.2
+pycparser==3.0
 pydantic==2.13.4
 pydantic_core==2.46.4
 Pygments==2.20.0
 pymatgen==2026.5.4
 pymatgen-core==2026.5.18
 pymatviz==0.18.0
+pynanoflann @ git+https://github.com/dwastberg/pynanoflann@af434039ae14bedcbb838a7808924d6689274168
 pyparsing==3.3.2
 pytest==9.1.1
 python-dateutil==2.9.0.post0
 python_hostlist==2.3.0
 PyYAML==6.0.3
 requests==2.34.2
+rich==13.9.4
 ruamel.yaml==0.18.17
 ruamel.yaml.clib==0.2.15
 ruff==0.15.20
+s3transfer==0.19.0
 scikit-learn==1.9.0
 scipy==1.17.1
 seaborn==0.13.2
 sentry-sdk==2.64.0
+shellingham==1.5.4
 six==1.17.0
 smmap==5.0.3
 spglib==2.7.0
@@ -110,6 +144,7 @@ torch-ema==0.3
 torchmetrics==1.9.0
 tqdm==4.68.3
 traitlets==5.15.1
+typer==0.25.1
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2026.2
@@ -118,4 +153,5 @@ urllib3==2.7.0
 wandb==0.28.0
 wcwidth==0.8.2
 widgetsnbextension==4.0.15
+wrapt==2.2.2
 ```

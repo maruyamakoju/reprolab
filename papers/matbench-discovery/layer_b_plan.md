@@ -1,6 +1,16 @@
 # Layer B Plan — regenerate predictions
 
-Status: **SECOND-MODEL SMOKE PASSED at n=500** (2026-07-03,
+Status: **THIRD-MODEL SMOKE PASSED at n=500** (2026-07-03,
+ORB v2 extension; results in `metric_check-layer-b-orb-v2-smoke500-fmax002.md`).
+ORB v2 relaxed 500/500 structures on RTX 4090, 0 failures, 500/500 converged,
+mean 0.60 s/structure, 5.2 min total GPU. Against the same smoke criteria:
+median |Δe_form| = 0.05 meV/atom (threshold 10), p95 = 0.17, max = 16.86,
+100% classification agreement (threshold 95%), zero flips. ORB v2 reproduced only
+with the YAML `max_force: 0.02` setting; the upstream runner's default
+`force_max=0.05` failed the two-structure pre-smoke with Ba2I6 Δe_form =
++212.3 meV/atom and a classification flip.
+
+Prior status: **SECOND-MODEL SMOKE PASSED at n=500** (2026-07-03,
 MACE-MP-0 extension; results in `metric_check-layer-b-mace-mp-0-smoke500.md`).
 MACE-MP-0 relaxed 500/500 structures on RTX 4090, 0 failures, 500/500 converged,
 mean 1.18 s/structure, 10.1 min total GPU. Against the same smoke criteria:
@@ -23,8 +33,8 @@ subset. Pre-smoke (n=20, two runs) had bounded GPU run-to-run variance at
 ≤0.232 meV/atom, so these deltas are interpretable.
 
 Layer A closed at 4/4 (`v0.1-layer-a`); this plan originally defined the smallest
-vertical slice of Layer B for CHGNet and was then reused for the MACE-MP-0
-second-model extension:
+vertical slice of Layer B for CHGNet and was then reused for the MACE-MP-0 and
+ORB v2 model extensions:
 
 > model relaxation/inference → prediction CSV → the *same* Layer A metric path.
 

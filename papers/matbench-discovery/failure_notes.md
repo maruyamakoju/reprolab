@@ -33,8 +33,14 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   final scorer therefore reconstructs `ComputedStructureEntry`s with the MACE-relaxed
   structures, applies `MaterialsProject2020Compatibility`, and only then converts to
   formation energy.
+- **ORB v2 requires the YAML `max_force: 0.02` setting to reproduce the published
+  CSV.** The upstream runner's function default is `force_max=0.05`, but the model
+  YAML records `max_force: 0.02`. On the first two Layer B subset structures, fmax
+  0.05 produced a false mismatch (Ba2I6 Δe_form = +212.3 meV/atom and a
+  stable→unstable flip), while fmax 0.02 reproduced both structures to ≤0.1
+  meV/atom and the 500-structure smoke to median 0.05 meV/atom with zero flips.
 
-## Findings so far (2026-07-02)
+## Findings so far (through 2026-07-03)
 
 - **[env] PyPI wheel ≠ GitHub HEAD under the same version `1.3.1`.** The installed
   wheel has a *flat* layout (`matbench_discovery/metrics.py`, `preds.py`, `slurm.py`,
@@ -127,6 +133,18 @@ status. A metric that does not reproduce is a *finding*, not a dead end.
   model-relaxation mismatch. Of the two stable/unstable flips, `wbm-2-28782` is the
   correction-drift outlier and `wbm-3-56172` is a threshold-boundary case
   (each_pred 0.000→−0.001 eV/atom from Δe_form = −0.1 meV/atom).
+
+- **[interp/env] ORB v2 Layer B reproduces, but only after resolving three protocol
+  and environment ambiguities.** (Found 2026-07-03.) First, `pip install
+  orb-models==0.4.0` tries to downgrade `torch` to 2.2.0 and `numpy` to 1.26.4; to
+  preserve the CUDA torch environment we installed `orb-models==0.4.0 --no-deps`
+  plus runtime dependencies separately. Second, the package default checkpoint URL
+  (`storage.googleapis.com/.../orb-v2-20241011.ckpt`) returned `FileNotFoundError`,
+  while the S3 URL recorded in the upstream YAML loaded successfully. Third, the
+  runner default `force_max=0.05` does not reproduce the published CSV, while the
+  YAML hyperparameter `max_force: 0.02` does. With those choices fixed, ORB v2
+  passed the 500-structure smoke: median |Δe_form| = 0.05 meV/atom, p95 = 0.17,
+  max = 16.86, 99.8% within 10 meV/atom, 100% classification agreement, zero flips.
 
 ## Open discrepancies
 **None (4 of 4 models).** Layer A reproduced the official YAML exactly for **CHGNet**,
