@@ -47,6 +47,9 @@ submitted random seed.
 - **Layer B candidate triage:** after TPOT-Mat, the best next nontrivial bounded
   CPU replay target is `matbench_v0.1_RFLR` on `matbench_steels`; the best
   low-novelty positive control is `matbench_v0.1_dummy`.
+- **Layer C resolution:** 180 submission-task rows produce 167 adjacent
+  leaderboard pairs. 68 adjacent gaps are no larger than one fold-SE proxy, 87
+  are no larger than two, and 6 are exact ties.
 
 ## Key numbers
 
@@ -64,6 +67,7 @@ submitted random seed.
 | TPOT source replay | 5 steels folds | runnable, non-identical predictions |
 | RFLR source replay | 5 steels folds | max prediction delta `0.0`, max score delta `0.0` |
 | Dummy source replay | 4 composition tasks, 20 folds | 10/10 regression folds exact, 0/10 classification folds exact |
+| Layer C resolution map | 167 adjacent pairs | 68 <= 1 fold-SE proxy, 87 <= 2 |
 
 ## Evidence map
 
@@ -91,6 +95,7 @@ submitted random seed.
 - Layer B replay: `papers/matbench/layer_b_tpot_steels_replay.md`
 - Layer B RFLR replay: `papers/matbench/layer_b_rflr_steels_replay.md`
 - Layer B Dummy replay: `papers/matbench/layer_b_dummy_composition_replay.md`
+- Layer C resolution map: `papers/matbench/layer_c_leaderboard_resolution.md`
 - Classification ROC-AUC issue draft: `reports/paper-003_upstream_issue_draft.md`
 - GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
 - Command log: `papers/matbench/run_log.md`
@@ -104,6 +109,7 @@ submitted random seed.
   - `scripts/matbench_tpot_replay.py`
   - `scripts/matbench_rflr_replay.py`
   - `scripts/matbench_dummy_replay.py`
+  - `scripts/matbench_leaderboard_resolution.py`
   - `scripts/make_matbench_report.py`
 
 ## Claims to avoid
@@ -133,7 +139,8 @@ submitted random seed.
 > `matbench_steels`: TPOT-Mat is executable but non-identical, while RFLR is
 > prediction-identical under scikit-learn 1.2.2. A Dummy positive-control replay
 > is exact for checked regression folds and non-identical for stratified
-> classification folds because the notebook did not persist RNG state.
+> classification folds because the notebook did not persist RNG state. Layer C
+> then finds that 68/167 adjacent leaderboard gaps are within one fold-SE proxy.
 
 ## Next useful moves
 

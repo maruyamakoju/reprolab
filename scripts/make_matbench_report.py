@@ -49,6 +49,7 @@ def main() -> None:
         section("7. Layer B TPOT steels source replay", PAPER / "layer_b_tpot_steels_replay.md"),
         section("7b. Layer B RFLR steels source replay", PAPER / "layer_b_rflr_steels_replay.md"),
         section("7c. Layer B Dummy composition source replay", PAPER / "layer_b_dummy_composition_replay.md"),
+        section("7d. Layer C leaderboard resolution map", PAPER / "layer_c_leaderboard_resolution.md"),
         section("8. Classification ROC-AUC upstream issue draft", ROOT / "reports" / "paper-003_upstream_issue_draft.md"),
         section("8b. GN-OA MAPE upstream issue draft", ROOT / "reports" / "paper-003_gn_oa_mape_issue_draft.md"),
         section("9. Run log (tail)", PAPER / "run_log.md", tail=160),

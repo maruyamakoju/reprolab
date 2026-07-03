@@ -1,6 +1,6 @@
 # Summary - Matbench v0.1 Paper-003 Candidate
 
-Status: candidate selected; Layer A all-submission scan completed; bounded Layer B TPOT, RFLR, and Dummy source replays completed.
+Status: candidate selected; Layer A all-submission scan completed; bounded Layer B source replays and Layer C leaderboard-resolution map completed.
 
 ## Result
 
@@ -111,6 +111,21 @@ refits stochastic estimators without fixing a random seed.
 
 Report: `layer_b_tpot_steels_replay.md`.
 
+## Layer C leaderboard resolution
+
+`scripts/matbench_leaderboard_resolution.py` ranks all 180 submission-task rows by
+the primary stored metric (`mae` for regression, stored `rocauc` for
+classification) and compares each adjacent mean gap with a fold-level standard
+error proxy from the five paired fold-score differences.
+
+Across 167 adjacent leaderboard pairs, 6 are exact ties, 68 have gaps no larger
+than one fold-SE proxy, and 87 have gaps no larger than two fold-SE proxies. This
+is a resolution screen, not a formal significance test. The classification caveat
+remains: stored `rocauc` behaves as thresholded-label AUC / balanced accuracy for
+the checked records.
+
+Layer C report: `layer_c_leaderboard_resolution.md`.
+
 ## Interpretation
 
 This is a positive seed result: the RF baseline's saved predictions, official split
@@ -151,6 +166,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B TPOT steels replay: `layer_b_tpot_steels_replay.md`
 - Layer B RFLR steels replay: `layer_b_rflr_steels_replay.md`
 - Layer B Dummy composition replay: `layer_b_dummy_composition_replay.md`
+- Layer C leaderboard resolution: `layer_c_leaderboard_resolution.md`
 - Classification ROC-AUC issue draft: `../../reports/paper-003_upstream_issue_draft.md`
 - Script: `../../scripts/matbench_score.py`
 - All-submission score scan script: `../../scripts/matbench_all_results_score_scan.py`
@@ -158,6 +174,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer B RFLR replay script: `../../scripts/matbench_rflr_replay.py`
 - Layer B Dummy replay script: `../../scripts/matbench_dummy_replay.py`
 - Layer B triage script: `../../scripts/matbench_layer_b_candidate_triage.py`
+- Layer C resolution script: `../../scripts/matbench_leaderboard_resolution.py`
 - Classification scan script: `../../scripts/matbench_classification_scan.py`
 - Leaderboard metric scan script: `../../scripts/matbench_leaderboard_metric_scan.py`
 - Submission inventory script: `../../scripts/matbench_submission_inventory.py`

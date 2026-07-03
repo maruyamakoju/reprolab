@@ -250,6 +250,23 @@ layer_b_dummy_composition:
   audit_numpy_seed: 0
   interpretation: mean-regression dummy replay is exact, stratified classification replay is non-identical because the notebook did not persist RNG state
 
+layer_c_leaderboard_resolution:
+  status: completed
+  script: scripts/matbench_leaderboard_resolution.py
+  report: papers/matbench/layer_c_leaderboard_resolution.md
+  submission_task_rows_ranked: 180
+  tasks_ranked: 13
+  adjacent_pairs: 167
+  exact_adjacent_ties: 6
+  adjacent_gaps_lte_1_fold_se_proxy: 68
+  adjacent_gaps_lte_2_fold_se_proxy: 87
+  regression_adjacent_pairs: 143
+  classification_adjacent_pairs: 24
+  primary_metric_regression: mae
+  primary_metric_classification: stored rocauc
+  classification_metric_caveat: stored rocauc behaves as thresholded-label AUC / balanced accuracy for checked records
+  interpretation: leaderboard-resolution screen, not a formal significance test
+
 candidate_screen:
   status: selected
   report: papers/matbench/candidate_screen.md
