@@ -1516,3 +1516,150 @@ warning: in the working copy of 'reports/one_page_summary.md', LF will be replac
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
 ```
+
+### 2026-07-03 08:45 UTC — paper003 recompute RF score for medium structure task dielectric
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_dielectric --report papers\matbench\layer_a_rf_structure_medium_dielectric.md
+```
+
+- exit code: **0**  | duration: 5.9s  | raw log: `logs/cmd-20260703-084517-451272.log`
+
+output tail:
+```
+Fetching matbench_dielectric.json.gz from https://ml.materialsproject.org/projects/matbench_dielectric.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_dielectric.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_medium_dielectric.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_dielectric"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB:   0%|          | 0.0/3.608015 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB: 3.608576MB [00:00, 515.46MB/s]
+```
+
+### 2026-07-03 08:45 UTC — paper003 recompute RF scores for elastic structure tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_log_gvrh matbench_log_kvrh --report papers\matbench\layer_a_rf_structure_medium_elastic.md
+```
+
+- exit code: **0**  | duration: 10.8s  | raw log: `logs/cmd-20260703-084532-537007.log`
+
+output tail:
+```
+  "folds_checked": 10,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_medium_elastic.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_log_gvrh",
+    "matbench_log_kvrh"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB:   0%|          | 0.0/4.166214 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB: 4.16768MB [00:00, 520.81MB/s]
+
+Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB:   0%|          | 0.0/4.174386999999999 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB: 4.175872MB [00:00, 596.64MB/s]
+```
+
+### 2026-07-03 08:45 UTC — paper003 recompute RF scores for medium structure tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_dielectric matbench_log_gvrh matbench_log_kvrh --report papers\matbench\layer_a_rf_structure_medium_tasks.md
+```
+
+- exit code: **0**  | duration: 9.4s  | raw log: `logs/cmd-20260703-084550-571465.log`
+
+output tail:
+```
+{
+  "folds_checked": 15,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_medium_tasks.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_dielectric",
+    "matbench_log_gvrh",
+    "matbench_log_kvrh"
+  ]
+}
+```
+
+### 2026-07-03 08:47 UTC — paper003 reassemble report with RF medium structure tasks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-084730-483058.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:47 UTC — paper003 verify RF medium structure docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_structure_medium_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_medium_structure']['folds_checked']==15, meta['layer_a_rf_medium_structure']['max_abs_stored_vs_recomputed_delta']==0.0, 'Fold scores checked: 15' in report, 'checked on 9 tasks and 45 folds' in summary, 'Layer A RF medium-structure-task expansion' in assembled, '9 tasks, 45 folds' in packet, 'All 45 checked folds' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-084742-131283.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 08:47 UTC — paper003 RF medium structure whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084750-194207.log`
+
+output tail:
+```
+papers/matbench/run_log.md:1569: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB: 4.175872MB [00:00, 596.64MB/s]
+reports/paper-003-matbench-audit.md:1312: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB: 3.608576MB [00:00, 515.46MB/s]
+reports/paper-003-matbench-audit.md:1336: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB: 4.16768MB [00:00, 520.81MB/s]
+reports/paper-003-matbench-audit.md:1339: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB: 4.175872MB [00:00, 596.64MB/s]
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:48 UTC — paper003 RF medium structure whitespace check rerun
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084806-240936.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```

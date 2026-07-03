@@ -27,6 +27,13 @@ max stored-vs-recomputed score delta is `0.0`.
 
 Report: `layer_a_rf_structure_small_tasks.md`.
 
+It also covers three medium structure tasks: `matbench_dielectric`,
+`matbench_log_gvrh`, and `matbench_log_kvrh`. Across those 15 folds, the max
+stored-vs-recomputed score delta is `0.0`. In total, the RF baseline has now been
+checked on 9 tasks and 45 folds.
+
+Report: `layer_a_rf_structure_medium_tasks.md`.
+
 ## Layer B source replay
 
 `scripts/matbench_submission_inventory.py` scanned 28 Matbench v0.1 submission
@@ -80,6 +87,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer A seed report: `layer_a_score_recompute.md`
 - RF composition-task report: `layer_a_rf_composition_tasks.md`
 - RF small-structure-task report: `layer_a_rf_structure_small_tasks.md`
+- RF medium-structure-task report: `layer_a_rf_structure_medium_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`

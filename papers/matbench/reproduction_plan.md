@@ -76,6 +76,7 @@ The seed check passed:
 | `matbench_v0.1_rf` | 2 | 10 | 1.110e-16 | `layer_a_score_recompute.md` |
 | `matbench_v0.1_rf` composition tasks | 4 | 20 | 1.110e-16 | `layer_a_rf_composition_tasks.md` |
 | `matbench_v0.1_rf` small structure tasks | 2 | 10 | 0.000e+00 | `layer_a_rf_structure_small_tasks.md` |
+| `matbench_v0.1_rf` medium structure tasks | 3 | 15 | 0.000e+00 | `layer_a_rf_structure_medium_tasks.md` |
 
 The classification predictions in the RF baseline are stored as hard booleans, so
 the stored ROC-AUC equals balanced accuracy for the checked classification task.

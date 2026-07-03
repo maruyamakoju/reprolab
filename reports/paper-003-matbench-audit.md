@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 08:43 UTC_
+_Generated: 2026-07-03 08:47 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -34,6 +34,13 @@ The RF baseline check now also covers two small structure tasks:
 max stored-vs-recomputed score delta is `0.0`.
 
 Report: `layer_a_rf_structure_small_tasks.md`.
+
+It also covers three medium structure tasks: `matbench_dielectric`,
+`matbench_log_gvrh`, and `matbench_log_kvrh`. Across those 15 folds, the max
+stored-vs-recomputed score delta is `0.0`. In total, the RF baseline has now been
+checked on 9 tasks and 45 folds.
+
+Report: `layer_a_rf_structure_medium_tasks.md`.
 
 ## Layer B source replay
 
@@ -88,6 +95,7 @@ reproducible from the Matbench v0.1 scoring order and is documented in
 - Layer A seed report: `layer_a_score_recompute.md`
 - RF composition-task report: `layer_a_rf_composition_tasks.md`
 - RF small-structure-task report: `layer_a_rf_structure_small_tasks.md`
+- RF medium-structure-task report: `layer_a_rf_structure_medium_tasks.md`
 - Classification AUC probe: `classification_auc_probe.md`
 - Classification prediction scan: `classification_prediction_scan.md`
 - Classification leaderboard metric scan: `classification_leaderboard_metric_scan.md`
@@ -191,6 +199,20 @@ layer_a_rf_small_structure:
   tasks:
     - matbench_jdft2d
     - matbench_phonons
+  max_abs_stored_vs_recomputed_delta: 0.0
+
+layer_a_rf_medium_structure:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_structure_medium_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 3
+  folds_checked: 15
+  tasks:
+    - matbench_dielectric
+    - matbench_log_gvrh
+    - matbench_log_kvrh
   max_abs_stored_vs_recomputed_delta: 0.0
 
 classification_auc_probe:
@@ -401,6 +423,7 @@ The seed check passed:
 | `matbench_v0.1_rf` | 2 | 10 | 1.110e-16 | `layer_a_score_recompute.md` |
 | `matbench_v0.1_rf` composition tasks | 4 | 20 | 1.110e-16 | `layer_a_rf_composition_tasks.md` |
 | `matbench_v0.1_rf` small structure tasks | 2 | 10 | 0.000e+00 | `layer_a_rf_structure_small_tasks.md` |
+| `matbench_v0.1_rf` medium structure tasks | 3 | 15 | 0.000e+00 | `layer_a_rf_structure_medium_tasks.md` |
 
 The classification predictions in the RF baseline are stored as hard booleans, so
 the stored ROC-AUC equals balanced accuracy for the checked classification task.
@@ -652,6 +675,65 @@ Report:
 | rmse | 146.276431864 | 172.801458959 | 122.15658115 | 21.4751689658 |
 | mape | 0.118485135116 | 0.134769893668 | 0.104049045388 | 0.00979558791325 |
 | max_error | 1270.68885897 | 2024.7301119 | 861.90049904 | 402.730658047 |
+
+
+
+## 4d. Layer A RF medium-structure-task expansion
+
+# Matbench v0.1 score recomputation
+
+- Results artifact: `vendor/matbench/benchmarks/matbench_v0.1_rf/results.json.gz`
+- Fold scores checked: 15
+- Max absolute stored-vs-recomputed score delta: 0.000e+00
+
+## Fold checks
+
+| Task | Fold | n | Prediction type | Max score delta | Stored rocauc | Probability rocauc |
+|---|---:|---:|---|---:|---:|---:|
+| matbench_dielectric | 0 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 1 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 2 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 3 | 953 | float | 0.000e+00 |  |  |
+| matbench_dielectric | 4 | 952 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 0 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 1 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 2 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 3 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_gvrh | 4 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 0 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 1 | 2198 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 2 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 3 | 2197 | float | 0.000e+00 |  |  |
+| matbench_log_kvrh | 4 | 2197 | float | 0.000e+00 |  |  |
+
+## Recomputed fold aggregates
+
+### matbench_dielectric
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.419578159259 | 0.52198700518 | 0.304162451401 | 0.0750037451263 |
+| rmse | 1.85382481618 | 2.98323049778 | 0.785044337763 | 0.770049375991 |
+| mape | 0.139968218264 | 0.188632999374 | 0.10574510663 | 0.0288667979365 |
+| max_error | 34.8805599225 | 59.1201445981 | 14.5978573183 | 16.9979726853 |
+
+### matbench_log_gvrh
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.103998778594 | 0.106730986524 | 0.102382766772 | 0.00158833792656 |
+| rmse | 0.154040121902 | 0.160123342295 | 0.149548591245 | 0.00365247845886 |
+| mape | 0.0807614737326 | 0.0832065562181 | 0.0776724866644 | 0.0018807671835 |
+| max_error | 1.15770278575 | 1.69423726872 | 0.904052794872 | 0.284521613255 |
+
+### matbench_log_kvrh
+
+| Metric | mean | max | min | std |
+|---|---:|---:|---:|---:|
+| mae | 0.0819825484217 | 0.0862696399472 | 0.0783141445137 | 0.00271972565089 |
+| rmse | 0.145360912566 | 0.150255516099 | 0.138320059166 | 0.00462831988118 |
+| mape | 0.054592530708 | 0.0607661711246 | 0.050921152629 | 0.00348070098442 |
+| max_error | 1.37315631231 | 1.76416363754 | 1.11891531674 | 0.231105610567 |
 
 
 
@@ -1119,153 +1201,6 @@ the classification `rocauc` field.
 
 ## 9. Run log (tail)
 
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 08:02 UTC — paper003 compile Matbench inventory script
-
-```
-$ .venv\Scripts\python.exe -m py_compile scripts\matbench_submission_inventory.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080203-386282.log`
-
-output tail:
-```
-
-```
-
-### 2026-07-03 08:02 UTC — paper003 inventory Matbench source artifacts
-
-```
-$ .venv\Scripts\python.exe scripts\matbench_submission_inventory.py --report papers\matbench\source_artifact_inventory.md
-```
-
-- exit code: **0**  | duration: 4.4s  | raw log: `logs/cmd-20260703-080209-223516.log`
-
-output tail:
-```
-{
-  "dispositions": {
-    "artifact-only or unclear source path": 1,
-    "best bounded replay candidate": 1,
-    "dependency-conflicting AutoML runner": 1,
-    "external/heavy MODNet path": 2,
-    "heavy neural dependency path": 12,
-    "notebook-only source": 9,
-    "source runner present; inspect manually": 2
-  },
-  "report": "papers\\matbench\\source_artifact_inventory.md",
-  "submissions": 28
-}
-```
-
-### 2026-07-03 08:03 UTC — paper003 reassemble report with source inventory
-
-```
-$ .venv\Scripts\python.exe scripts\make_matbench_report.py
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080306-762706.log`
-
-output tail:
-```
-wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
-```
-
-### 2026-07-03 08:03 UTC — paper003 verify source inventory wiring
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; [py_compile.compile(p, doraise=True) for p in ['scripts/matbench_submission_inventory.py','scripts/make_matbench_report.py']]; meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); inventory=Path('papers/matbench/source_artifact_inventory.md').read_text(encoding='utf-8'); report=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['source_artifact_inventory']['submission_directories_scanned']==28, 'Pickle/joblib model artifacts: 1' in inventory, 'Source artifact inventory' in report, 'Source inventory' in packet, 'matbench_submission_inventory.py' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-080314-086322.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True]}
-```
-
-### 2026-07-03 08:03 UTC — paper003 source inventory whitespace check
-
-```
-$ git diff --check
-```
-
-- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-080319-730305.log`
-
-output tail:
-```
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/candidate_screen.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
-```
-
-### 2026-07-03 08:42 UTC — paper003 recompute RF score for small structure task jdft2d
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_jdft2d --report papers\matbench\layer_a_rf_structure_small_jdft2d.md
-```
-
-- exit code: **0**  | duration: 3.3s  | raw log: `logs/cmd-20260703-084229-875302.log`
-
-output tail:
-```
-Fetching matbench_jdft2d.json.gz from https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_jdft2d.json.gz
-{
-  "folds_checked": 5,
-  "max_abs_delta": 0.0,
-  "report": "papers\\matbench\\layer_a_rf_structure_small_jdft2d.md",
-  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
-  "tasks": [
-    "matbench_jdft2d"
-  ]
-}
-
-Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB:   0%|          | 0.0/0.267131 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
-```
-
-### 2026-07-03 08:42 UTC — paper003 recompute RF score for small structure task phonons
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_phonons --report papers\matbench\layer_a_rf_structure_small_phonons.md
-```
-
-- exit code: **0**  | duration: 3.0s  | raw log: `logs/cmd-20260703-084239-464814.log`
-
-output tail:
-```
-Fetching matbench_phonons.json.gz from https://ml.materialsproject.org/projects/matbench_phonons.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_phonons.json.gz
-{
-  "folds_checked": 5,
-  "max_abs_delta": 0.0,
-  "report": "papers\\matbench\\layer_a_rf_structure_small_phonons.md",
-  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
-  "tasks": [
-    "matbench_phonons"
-  ]
-}
-
-Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB:   0%|          | 0.0/0.45967199999999997 [00:00<?, ?MB/s]
-Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
-```
-
-### 2026-07-03 08:42 UTC — paper003 recompute RF scores for small structure tasks
-
-```
-$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_jdft2d matbench_phonons --report papers\matbench\layer_a_rf_structure_small_tasks.md
-```
-
-- exit code: **0**  | duration: 2.5s  | raw log: `logs/cmd-20260703-084248-280472.log`
-
 output tail:
 ```
 {
@@ -1276,6 +1211,153 @@ output tail:
   "tasks": [
     "matbench_jdft2d",
     "matbench_phonons"
+  ]
+}
+```
+
+### 2026-07-03 08:43 UTC — paper003 reassemble report with RF small structure tasks
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.2s  | raw log: `logs/cmd-20260703-084342-361222.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
+```
+
+### 2026-07-03 08:43 UTC — paper003 verify RF small structure task docs
+
+```
+$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); report=Path('papers/matbench/layer_a_rf_structure_small_tasks.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_a_rf_small_structure']['folds_checked']==10, meta['layer_a_rf_small_structure']['max_abs_stored_vs_recomputed_delta']==0.0, 'Fold scores checked: 10' in report, 'layer_a_rf_structure_small_tasks.md' in summary, 'Layer A RF small-structure-task expansion' in assembled, '6 tasks, 30 folds' in packet, 'All 30 checked folds' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-084350-844786.log`
+
+output tail:
+```
+{'checks': [True, True, True, True, True, True, True]}
+```
+
+### 2026-07-03 08:43 UTC — paper003 RF small structure whitespace check
+
+```
+$ git diff --check
+```
+
+- exit code: **2**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084355-339443.log`
+
+output tail:
+```
+papers/matbench/run_log.md:1398: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
+papers/matbench/run_log.md:1423: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+reports/paper-003-matbench-audit.md:1233: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_jdft2d.json.gz in MB: 0.26828799999999997MB [00:00, 123.18MB/s]
+reports/paper-003-matbench-audit.md:1258: trailing whitespace.
++Fetching https://ml.materialsproject.org/projects/matbench_phonons.json.gz in MB: 0.4608MB [00:00, 229.81MB/s]
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:44 UTC — paper003 RF small structure whitespace check rerun
+
+```
+$ git diff --check
+```
+
+- exit code: **0**  | duration: 0.0s  | raw log: `logs/cmd-20260703-084430-014323.log`
+
+output tail:
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/metadata.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/reproduction_plan.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/one_page_summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/make_matbench_report.py', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 08:45 UTC — paper003 recompute RF score for medium structure task dielectric
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_dielectric --report papers\matbench\layer_a_rf_structure_medium_dielectric.md
+```
+
+- exit code: **0**  | duration: 5.9s  | raw log: `logs/cmd-20260703-084517-451272.log`
+
+output tail:
+```
+Fetching matbench_dielectric.json.gz from https://ml.materialsproject.org/projects/matbench_dielectric.json.gz to C:\Users\07013\Desktop\0702fable\reprolab\env\jarvis\Lib\site-packages\matminer\datasets\matbench_dielectric.json.gz
+{
+  "folds_checked": 5,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_medium_dielectric.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_dielectric"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB:   0%|          | 0.0/3.608015 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_dielectric.json.gz in MB: 3.608576MB [00:00, 515.46MB/s]
+```
+
+### 2026-07-03 08:45 UTC — paper003 recompute RF scores for elastic structure tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_log_gvrh matbench_log_kvrh --report papers\matbench\layer_a_rf_structure_medium_elastic.md
+```
+
+- exit code: **0**  | duration: 10.8s  | raw log: `logs/cmd-20260703-084532-537007.log`
+
+output tail:
+```
+  "folds_checked": 10,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_medium_elastic.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_log_gvrh",
+    "matbench_log_kvrh"
+  ]
+}
+
+Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB:   0%|          | 0.0/4.166214 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_log_gvrh.json.gz in MB: 4.16768MB [00:00, 520.81MB/s]
+
+Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB:   0%|          | 0.0/4.174386999999999 [00:00<?, ?MB/s]
+Fetching https://ml.materialsproject.org/projects/matbench_log_kvrh.json.gz in MB: 4.175872MB [00:00, 596.64MB/s]
+```
+
+### 2026-07-03 08:45 UTC — paper003 recompute RF scores for medium structure tasks
+
+```
+$ env\jarvis\Scripts\python.exe scripts\matbench_score.py --results vendor\matbench\benchmarks\matbench_v0.1_rf\results.json.gz --tasks matbench_dielectric matbench_log_gvrh matbench_log_kvrh --report papers\matbench\layer_a_rf_structure_medium_tasks.md
+```
+
+- exit code: **0**  | duration: 9.4s  | raw log: `logs/cmd-20260703-084550-571465.log`
+
+output tail:
+```
+{
+  "folds_checked": 15,
+  "max_abs_delta": 0.0,
+  "report": "papers\\matbench\\layer_a_rf_structure_medium_tasks.md",
+  "results": "vendor\\matbench\\benchmarks\\matbench_v0.1_rf\\results.json.gz",
+  "tasks": [
+    "matbench_dielectric",
+    "matbench_log_gvrh",
+    "matbench_log_kvrh"
   ]
 }
 ```

@@ -84,6 +84,20 @@ layer_a_rf_small_structure:
     - matbench_phonons
   max_abs_stored_vs_recomputed_delta: 0.0
 
+layer_a_rf_medium_structure:
+  status: passed
+  script: scripts/matbench_score.py
+  report: papers/matbench/layer_a_rf_structure_medium_tasks.md
+  environment: env/jarvis
+  submission: matbench_v0.1_rf
+  tasks_checked: 3
+  folds_checked: 15
+  tasks:
+    - matbench_dielectric
+    - matbench_log_gvrh
+    - matbench_log_kvrh
+  max_abs_stored_vs_recomputed_delta: 0.0
+
 classification_auc_probe:
   status: completed
   scan_script: scripts/matbench_classification_scan.py
