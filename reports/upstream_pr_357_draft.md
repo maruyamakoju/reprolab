@@ -15,6 +15,8 @@ Post-submission updates:
 - `0c753e0`: addressed CodeRabbit's caller-surfacing concern by making
   `DataFiles.path` raise `FileNotFoundError` if an attempted download/verification
   still leaves no local file; added a regression test.
+- PR body edited to follow the upstream PR template explicitly, marking
+  model-submission checklist items as N/A because this is a data-integrity fix.
 - Local verification after both updates:
   `ruff check matbench_discovery/remote/fetch.py matbench_discovery/enums.py tests/remote/test_fetch.py tests/test_enums.py`,
   `ruff format --check ...`, and
