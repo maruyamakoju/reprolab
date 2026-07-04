@@ -34,12 +34,15 @@ uncertainty/provenance checks.
 - Matbench issue #137 maintainer response.
 - External feedback from the five tracked contacts.
 - ReproLab tracking issue #1 checklist completion.
+- GN-OA MAPE follow-up quiet-period window:
+  earliest 2026-07-05 23:13 JST, preferred 2026-07-06 23:13 JST.
 
 ## Next action
 
 Send Paper-001-centered outreach using `reports/paper-001_external_email.md` or
 the recipient-specific variants in `reports/paper-001_recipient_outreach.md`.
 Use `reports/send_checklist.md` before sending or posting.
+Use `reports/response_playbook.md` when maintainers respond.
 
 Do not post the GN-OA MAPE issue immediately. Keep it as a separate follow-up
 after either a maintainer response on #137 or a 24-48h quiet period.

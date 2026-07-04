@@ -32,6 +32,8 @@ Date: 2026-07-04
 3. Wait for any first response before posting the GN-OA MAPE issue.
 4. If there is no response after 24-48h, post the GN-OA MAPE issue as a separate,
    narrow follow-up.
+   - Earliest: 2026-07-05 23:13 JST.
+   - Preferred: 2026-07-06 23:13 JST.
 
 ## Guardrails
 
@@ -40,3 +42,4 @@ Date: 2026-07-04
 - Keep positive artifact-reproducibility results first.
 - Treat uncertainty and metric-semantics findings as interpretation/provenance
   issues unless maintainers confirm otherwise.
+- Use `reports/response_playbook.md` for maintainer response handling.

@@ -18,6 +18,7 @@ remaining external handoff steps.
 - [ ] Monitor materialsproject/matbench#137 for maintainer response.
 - [ ] If #137 is quiet for 24-48h, post the GN-OA MAPE follow-up separately using
       `reports/paper-003_gn_oa_mape_issue_body.md`.
+      Earliest: 2026-07-05 23:13 JST. Preferred: 2026-07-06 23:13 JST.
 - [ ] Use Paper-002 JARVIS as supporting evidence after Paper-001 has been shared.
 - [ ] Update `reports/outreach_tracker.md` after each external response.
 
