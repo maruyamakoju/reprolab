@@ -10,8 +10,9 @@ Date: 2026-07-04
    - Lead with the upstream-merged #359 outcome.
 
 2. Paper-003 upstream contact
-   - Add `reports/paper-003_rocauc_issue_137_comment.md` to the existing
-     upstream issue: https://github.com/materialsproject/matbench/issues/137
+   - Done: added `reports/paper-003_rocauc_issue_137_comment.md` to existing
+     upstream issue #137:
+     https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351
    - Keep `reports/paper-003_gn_oa_mape_issue_body.md` as a separate follow-up.
    - Do not open a duplicate `rocauc` issue; #137 already captures the code-level
      concern. The audit contribution is artifact-level evidence and impact size.
@@ -24,7 +25,8 @@ Date: 2026-07-04
 ## Suggested same-day sequence
 
 1. Send Paper-001 email to the five tracked external contacts.
-2. Comment on Matbench issue #137 with the classification `rocauc` audit evidence.
+2. Done: comment on Matbench issue #137 with the classification `rocauc` audit
+   evidence.
 3. Wait for any first response before posting the GN-OA MAPE issue.
 4. If there is no response after 24-48h, post the GN-OA MAPE issue as a separate,
    narrow follow-up.

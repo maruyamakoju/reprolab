@@ -150,10 +150,10 @@ are not because RNG state was not persisted.
 
 ## Next useful moves
 
-1. Add the classification `rocauc` audit evidence to existing Matbench issue #137.
-   Do not open a duplicate issue: #137 already captures the code-level concern.
-   The audit contribution is artifact-level evidence, leaderboard-display impact,
-   and measured probability-AUC gaps.
+1. Classification `rocauc` audit evidence has been added to existing Matbench
+   issue #137:
+   https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351
+   No duplicate issue was opened; #137 already captures the code-level concern.
 2. Share the GN-OA MAPE issue separately as a follow-up, since it is a narrow
    stored-score exception rather than the classification metric behavior.
 3. If maintainers confirm intended behavior, update wording/docs so classification

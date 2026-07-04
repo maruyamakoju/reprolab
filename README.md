@@ -280,9 +280,11 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,
       `reports/paper-003-external_release_packet.md`)
-- [ ] Next: add the Matbench classification `rocauc` audit evidence to existing
-      upstream issue #137 first; keep the GN-OA MAPE exception as a separate
-      follow-up
+- [x] Matbench classification `rocauc` audit evidence added to existing upstream
+      issue #137:
+      https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351
+- [ ] Next: keep the GN-OA MAPE exception as a separate follow-up after first
+      maintainer response / 24-48h
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 

@@ -15,6 +15,7 @@ loop (sent → response → next step). Update the row when anything changes.
 | 2026-07-03 | (3) AI-for-science professor or lab | Email | yes | pending | feedback |
 | 2026-07-03 | (4) materials-AI startup founder / engineer | Email | yes | pending | feedback |
 | 2026-07-03 | (5) VC / technical-diligence AI-science contact | Email | yes | pending | feedback |
+| 2026-07-04 | materialsproject/matbench (upstream) | Comment on existing GitHub issue [#137](https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351) — added Matbench v0.1 artifact evidence that stored classification `rocauc` equals balanced accuracy / thresholded-label AUC | yes | pending | wait for maintainer response; post GN-OA MAPE as separate follow-up after response or 24-48h |
 
 Email template: see `paper-001_external_email.md`. Repo link to include:
 <https://github.com/maruyamakoju/reprolab>

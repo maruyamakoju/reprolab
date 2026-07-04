@@ -1,9 +1,11 @@
 # Matbench upstream issue draft - classification ROC-AUC scoring
 
-Status: superseded as a new-issue draft. Existing upstream issue #137 already
-covers the code-level `rocauc` concern. Use
-`reports/paper-003_rocauc_issue_137_comment.md` as the clean comment body for
-https://github.com/materialsproject/matbench/issues/137.
+Status: posted as a comment on existing upstream issue #137:
+https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351
+
+This new-issue draft is kept as an archive. Existing upstream issue #137 already
+covers the code-level `rocauc` concern, so the audit evidence was posted there
+using `reports/paper-003_rocauc_issue_137_comment.md`.
 
 Target repo: https://github.com/materialsproject/matbench
 
