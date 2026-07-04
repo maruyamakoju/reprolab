@@ -1,6 +1,7 @@
 # Paper-002 JARVIS Upstream Issue Draft
 
-Status: draft only; not posted.
+Status: queued as supporting outreach after Paper-001 and the Paper-003
+classification issue.
 Target repo: https://github.com/usnistgov/jarvis_leaderboard
 Short packet: `reports/paper-002-external_release_packet.md`
 Full report: `reports/paper-002-jarvis-leaderboard-audit.md`
@@ -91,4 +92,5 @@ Thanks for maintaining the benchmark.
 - Link directly to the current commit if a frozen URL is preferred.
 - Keep the title positive: artifact reproducibility first, adjacent-rank note
   second.
-- Do not post until the user explicitly asks to send or approves a recipient.
+- Do not lead with this before Paper-001 external validation; use it as supporting
+  evidence that the audit template generalizes.

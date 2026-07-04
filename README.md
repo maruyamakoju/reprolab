@@ -52,16 +52,20 @@ comparison thresholds were pre-registered before the GPU runs.
 
 - Upstream issue filed with the stale-md5 / unverified-checksum finding:
   [janosh/matbench-discovery#357](https://github.com/janosh/matbench-discovery/issues/357)
-  and fix submitted as
+  and fix merged upstream in
   [PR #359](https://github.com/janosh/matbench-discovery/pull/359)
-  (response pending)
+  on 2026-07-04
 - Upstream issue filed with the ground-truth pymatgen-version-dependence finding:
   [janosh/matbench-discovery#358](https://github.com/janosh/matbench-discovery/issues/358)
-  and docs note submitted as
-  [PR #360](https://github.com/janosh/matbench-discovery/pull/360)
-  (response pending)
+  and provenance documentation was folded into the merged
+  [PR #359](https://github.com/janosh/matbench-discovery/pull/359);
+  the separate docs-only [PR #360](https://github.com/janosh/matbench-discovery/pull/360)
+  was superseded
 - External handoff packet:
   `reports/external_release_packet.md`
+- Release note and external email draft:
+  `reports/paper-001_release_note.md`,
+  `reports/paper-001_external_email.md`
 
 ## Reproducibility findings along the way
 
@@ -276,11 +280,12 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,
       `reports/paper-003-external_release_packet.md`)
-- [ ] Next: decide whether to post the Matbench upstream issue drafts
+- [ ] Next: post/share the Matbench classification `rocauc` issue first; keep the
+      GN-OA MAPE exception as a separate follow-up
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
-Initial target selected while Paper-001 upstream feedback is pending:
+Initial target selected after Paper-001 reached the upstream handoff stage:
 JARVIS-Leaderboard `AI/SinglePropertyPrediction/dft_3d_formation_energy_peratom`.
 The first slice mirrors Paper-001 Layer A: recompute published MAE values directly
 from the public JSON ground truth and CSV prediction zips, before any model execution.
@@ -320,7 +325,7 @@ Artifacts:
 
 ## Paper-003 Candidate — Matbench v0.1
 
-Initial target selected while Paper-001/Paper-002 upstream feedback is pending:
+Initial target selected after Paper-001/Paper-002 reached the external handoff stage:
 Matbench v0.1, using the official repository's committed leaderboard submission
 artifacts. Each submission directory is expected to contain `results.json.gz`,
 `info.json`, and source code or a notebook.
@@ -383,10 +388,12 @@ Artifacts:
 - All-submission score scan: `papers/matbench/layer_a_all_submission_score_scan.md`
 - GN-OA MAPE exception probe: `papers/matbench/layer_a_gn_oa_mape_probe.md`
 - GN-OA MAPE issue draft: `reports/paper-003_gn_oa_mape_issue_draft.md`
+- GN-OA MAPE issue body: `reports/paper-003_gn_oa_mape_issue_body.md`
 - Classification AUC probe: `papers/matbench/classification_auc_probe.md`
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
+- Classification issue body: `reports/paper-003_rocauc_issue_body.md`
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`

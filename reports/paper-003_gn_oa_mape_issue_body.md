@@ -1,15 +1,4 @@
-# Matbench upstream issue draft - GN-OA MAPE exception
-
-Status: ready as a follow-up; use `reports/paper-003_gn_oa_mape_issue_body.md`
-for the clean GitHub issue body.
-
-Target repo: https://github.com/materialsproject/matbench
-
-Suggested title:
-
-> `matbench_v0.1_GN-OA` stored MAPE for `matbench_mp_e_form` appears inconsistent with Matbench MAPE
-
-## Draft body
+# `matbench_v0.1_GN-OA` stored MAPE for `matbench_mp_e_form` appears inconsistent with Matbench MAPE
 
 Hi Matbench maintainers,
 
@@ -24,7 +13,7 @@ The only score-recompute exception I found is narrow: `matbench_v0.1_GN-OA` on
 IDs reproduce MAE, RMSE, and max error exactly or to floating-point precision, so
 this does not look like a prediction-ID alignment problem.
 
-### Observation
+## Observation
 
 Using the Matbench v0.1 MAPE path, which masks targets with
 `abs(y_true) > 1e-5`, the stored and recomputed values differ on all five folds:
@@ -37,7 +26,7 @@ Using the Matbench v0.1 MAPE path, which masks targets with
 | 3 | 11.8881843898 | 0.236287007689 | 11.6518973821 | match |
 | 4 | 12.1946455981 | 0.201616727224 | 11.9930288708 | match |
 
-### Checks that did not explain the stored values
+## Checks that did not explain the stored values
 
 - Recomputing MAE, RMSE, and max error from the same fold predictions matches the
   stored values, which supports the official validation IDs being aligned.
@@ -45,7 +34,7 @@ Using the Matbench v0.1 MAPE path, which masks targets with
   five folds because the `matbench_mp_e_form` test targets contain exact zeros.
 - Sweeping small denominator thresholds did not reproduce the stored MAPE values.
 
-### Suggested handling
+## Suggested handling
 
 Could you confirm whether the stored GN-OA MAPE values for `matbench_mp_e_form`
 were computed with a submission-specific formula, or whether this is a historical
@@ -57,16 +46,9 @@ this one submission/task/metric exception.
 
 Thanks for maintaining the benchmark.
 
-## Local evidence files
+## Evidence files
 
-- `papers/matbench/layer_a_all_submission_score_scan.md`
-- `papers/matbench/layer_a_gn_oa_mape_probe.md`
-- `scripts/matbench_all_results_score_scan.py`
-- `scripts/matbench_score.py`
-
-## Posting notes
-
-- If posting, link the public ReproLab commit containing the scripts/reports.
-- Keep this issue separate from the classification `rocauc` draft unless the user
-  explicitly asks to combine them.
-- Post after the classification `rocauc` issue, not before it.
+- https://github.com/maruyamakoju/reprolab/blob/master/reports/paper-003-matbench-audit.md
+- https://github.com/maruyamakoju/reprolab/blob/master/reports/paper-003-external_release_packet.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/layer_a_all_submission_score_scan.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/layer_a_gn_oa_mape_probe.md

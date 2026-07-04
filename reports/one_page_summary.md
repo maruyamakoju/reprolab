@@ -95,8 +95,10 @@ verification breaks even when the science is sound.
 
 ## Next
 
-External handoff packet is prepared in `reports/external_release_packet.md`. While
-upstream feedback is pending, the same audit template has been applied to
+External handoff packet is prepared in `reports/external_release_packet.md`.
+The upstream checksum/provenance fix from this audit was merged in
+janosh/matbench-discovery#359 on 2026-07-04, closing the two upstream issues filed
+from the audit. The same audit template has also been applied to
 JARVIS-Leaderboard as Paper-002. Its assembled report is
 `reports/paper-002-jarvis-leaderboard-audit.md`, and the short external packet is
 `reports/paper-002-external_release_packet.md`. Paper-003 scouting has started on

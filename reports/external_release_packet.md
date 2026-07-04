@@ -39,6 +39,8 @@ paths.
 
 - Full assembled report: `reports/paper-001-matbench-discovery-audit.md`
 - One-page summary: `reports/one_page_summary.md`
+- Release note: `reports/paper-001_release_note.md`
+- External email draft: `reports/paper-001_external_email.md`
 - Main README / reproduction commands: `README.md`
 - Layer A per-model metric checks:
   - `papers/matbench-discovery/metric_check.md`
@@ -58,10 +60,11 @@ paths.
 ## Upstream status
 
 - Issue #357 reported stale/missing md5 metadata and missing checksum verification.
-- PR #359 implements md5 metadata fixes plus download-time verification.
+- PR #359 was merged upstream on 2026-07-04. It implements md5 metadata fixes
+  plus download-time verification.
 - Issue #358 reported pymatgen-version-dependent WBM ground-truth hull labels.
-- PR #360 adds a docs-only WBM provenance note for the correction-version
-  dependence.
+- The WBM provenance note for the correction-version dependence was folded into
+  merged PR #359. The separate docs-only PR #360 was superseded/closed.
 
 ## Public wording
 
@@ -73,6 +76,8 @@ Suggested short wording:
 > on a deterministic 500-structure WBM subset. The audit also surfaced practical
 > reproducibility issues around Figshare URLs, stale md5 metadata, ORB v2 protocol
 > ambiguity, leaderboard uncertainty, and pymatgen-version-dependent WBM hull labels.
+> The stale/missing checksum metadata and download-time verification fix has now
+> been merged upstream in janosh/matbench-discovery#359.
 
 ## Claims to avoid
 
@@ -88,8 +93,9 @@ Suggested short wording:
 
 ## Next useful moves
 
-1. Wait for upstream responses on PR #359 and PR #360.
-2. If maintainers ask for a narrower patch, trim PR #359 to metadata-only and keep
-   checksum verification as a follow-up.
-3. Start Paper-002 with the same two-layer template: metric recomputation first,
-   then a small model-execution slice only if Layer A is clean.
+1. Treat Paper-001 as the flagship ReproLab proof point: a reproducibility audit
+   that produced an upstream-merged fix.
+2. Share the release note / one-page summary with selected materials-ML and
+   AI-for-science reviewers.
+3. Keep Paper-002 and Paper-003 as supporting evidence that the same audit template
+   generalizes beyond one benchmark.

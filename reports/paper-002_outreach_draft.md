@@ -1,6 +1,6 @@
 # Paper-002 JARVIS Outreach Draft
 
-Status: draft only; not sent.
+Status: queued as supporting outreach after Paper-001 external validation.
 Repo: https://github.com/maruyamakoju/reprolab
 Short packet: `reports/paper-002-external_release_packet.md`
 Full report: `reports/paper-002-jarvis-leaderboard-audit.md`

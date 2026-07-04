@@ -1,15 +1,4 @@
-# Matbench upstream issue draft - classification ROC-AUC scoring
-
-Status: ready to post/share; use `reports/paper-003_rocauc_issue_body.md` for the
-clean GitHub issue body.
-
-Target repo: https://github.com/materialsproject/matbench
-
-Suggested title:
-
-> Classification `rocauc` appears to be computed after float predictions are thresholded
-
-## Draft body
+# Classification `rocauc` appears to be computed after float predictions are thresholded
 
 Hi Matbench maintainers,
 
@@ -22,7 +11,7 @@ While checking classification submissions, I found a ROC-AUC scoring behavior th
 looks worth confirming or documenting for submissions that record float
 predictions.
 
-### Observation
+## Observation
 
 In the current scoring code, classification metrics are ordered as:
 
@@ -39,7 +28,7 @@ original float scores.
 That would make the stored `rocauc` field behave as thresholded-label AUC, which is
 numerically the same as balanced accuracy for binary labels.
 
-### Evidence from public artifacts
+## Evidence from public artifacts
 
 Using the public Matbench v0.1 submission artifacts in a pinned clone
 (`936176db18ca4cd7b38cbd957c017a5bac770c6b`):
@@ -62,7 +51,7 @@ also computed ROC-AUC from the raw float predictions:
 | `matbench_v0.1_modnet_v0.1.12` | `matbench_expt_is_metal` | 0.916052 | 0.972546 | 0.056495 |
 | `matbench_v0.1_modnet_v0.1.12` | `matbench_glass` | 0.960311 | 0.989876 | 0.029565 |
 
-### Minimal code-level cause
+## Minimal code-level cause
 
 If this read is correct, the key point is that the local prediction variable is
 reused across metrics. A minimal forward-looking code fix would be to keep a copy
@@ -78,7 +67,7 @@ if metric == "rocauc" and isinstance(raw_pred_array[0], float):
     computed[metric] = roc_auc_score(homogenized_true_array, raw_pred_array)
 ```
 
-### Suggested handling
+## Suggested handling
 
 I see three possible paths:
 
@@ -98,20 +87,12 @@ Thanks for maintaining the benchmark. The rest of the checked fold-score artifac
 were reproducible exactly, so this issue is specifically about interpretation of
 the classification `rocauc` field.
 
-## Local evidence files
+## Evidence files
 
-- `papers/matbench/classification_auc_probe.md`
-- `papers/matbench/classification_prediction_scan.md`
-- `papers/matbench/classification_leaderboard_metric_scan.md`
-- `papers/matbench/layer_a_modnet_0_1_10_probability_auc_probe.md`
-- `papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md`
-- `scripts/matbench_score.py`
-- `scripts/matbench_classification_scan.py`
-- `scripts/matbench_leaderboard_metric_scan.py`
-
-## Posting notes
-
-- If posting, link the public ReproLab commit containing the scripts/reports.
-- Keep the issue scoped to classification `rocauc`; do not bundle unrelated
-  Matbench v0.1 audit notes.
-- Post this classification issue before the narrower GN-OA MAPE issue.
+- https://github.com/maruyamakoju/reprolab/blob/master/reports/paper-003-matbench-audit.md
+- https://github.com/maruyamakoju/reprolab/blob/master/reports/paper-003-external_release_packet.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/classification_auc_probe.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/classification_prediction_scan.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/classification_leaderboard_metric_scan.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/layer_a_modnet_0_1_10_probability_auc_probe.md
+- https://github.com/maruyamakoju/reprolab/blob/master/papers/matbench/layer_a_modnet_0_1_12_probability_auc_probe.md

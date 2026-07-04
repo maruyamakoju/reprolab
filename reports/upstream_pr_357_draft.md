@@ -1,8 +1,12 @@
 # PR draft — upstream fix for janosh/matbench-discovery#357
 
 **SUBMITTED 2026-07-03 as [PR #359](https://github.com/janosh/matbench-discovery/pull/359)**
-(24–48h rule: no maintainer response on #357 since 2026-07-02, opened politely per
-the decision table). Body below is what was submitted, plus a short courtesy preamble.
+**MERGED 2026-07-04.** PR #359 closed #357 and #358. The separate docs-only
+PR #360 was superseded because its WBM provenance note was folded into #359.
+
+Submission context: after no maintainer response on #357 since 2026-07-02, the PR
+was opened politely under the 24–48h rule in the decision table. Body below is
+what was submitted, plus a short courtesy preamble.
 
 Branch: `maruyamakoju/matbench-discovery:fix-wbm-initial-structures-md5`
 (tip `0c753e0`, based on upstream `eaa7550`; lint-clean under upstream's pinned

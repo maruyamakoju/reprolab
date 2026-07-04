@@ -150,10 +150,12 @@ are not because RNG state was not persisted.
 
 ## Next useful moves
 
-1. Share the classification `rocauc` issue draft with Matbench maintainers after
-   user approval.
-2. Share the GN-OA MAPE issue draft separately after user approval, since it is a
-   narrow stored-score exception rather than the classification metric behavior.
+1. Share the classification `rocauc` issue first. It is the broadest
+   interpretation finding and has the clearest maintainer decision point:
+   document historical thresholded-label AUC behavior, fix future scoring, or
+   point to a different code path.
+2. Share the GN-OA MAPE issue separately as a follow-up, since it is a narrow
+   stored-score exception rather than the classification metric behavior.
 3. If maintainers confirm intended behavior, update wording/docs so classification
    leaderboards do not imply probability ROC-AUC when labels were used.
 4. If deeper Layer B is needed, choose submissions with fixed seeds or saved

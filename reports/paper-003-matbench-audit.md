@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-03 13:50 UTC_
+_Generated: 2026-07-04 13:35 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -2145,7 +2145,8 @@ For these closest adjacent pairs, a CI crossing zero means the five-fold score p
 
 # Matbench upstream issue draft - classification ROC-AUC scoring
 
-Status: draft only; not posted.
+Status: ready to post/share; use `reports/paper-003_rocauc_issue_body.md` for the
+clean GitHub issue body.
 
 Target repo: https://github.com/materialsproject/matbench
 
@@ -2162,8 +2163,9 @@ artifacts. First, the positive result: the stored fold scores I checked are
 internally reproducible from the released `results.json.gz` files, official split
 IDs, and Matminer targets.
 
-While checking classification submissions, I found what looks like an unintended
-ROC-AUC scoring behavior for submissions that record float predictions.
+While checking classification submissions, I found a ROC-AUC scoring behavior that
+looks worth confirming or documenting for submissions that record float
+predictions.
 
 ### Observation
 
@@ -2173,12 +2175,13 @@ In the current scoring code, classification metrics are ordered as:
 CLF_METRICS = ["accuracy", "balanced_accuracy", "f1", "rocauc"]
 ```
 
-In `matbench.data_ops.score_array`, non-ROC classification metrics convert float
-predictions to thresholded labels by reassigning the local `pred_array` variable.
-Because `accuracy` is evaluated before `rocauc`, a later `rocauc` call receives the
-already-thresholded labels rather than the original float scores.
+My read of `matbench.data_ops.score_array` is that non-ROC classification metrics
+can convert float predictions to thresholded labels by reassigning the local
+`pred_array` variable. Because `accuracy` is evaluated before `rocauc`, a later
+`rocauc` call appears to receive the already-thresholded labels rather than the
+original float scores.
 
-That means the stored `rocauc` field can behave as thresholded-label AUC, which is
+That would make the stored `rocauc` field behave as thresholded-label AUC, which is
 numerically the same as balanced accuracy for binary labels.
 
 ### Evidence from public artifacts
@@ -2206,10 +2209,10 @@ also computed ROC-AUC from the raw float predictions:
 
 ### Minimal code-level cause
 
-The key point is that the local prediction variable is reused across metrics. A
-minimal fix would be to keep a copy of the original prediction array for ROC-AUC,
-or compute ROC-AUC from a separate unthresholded variable when the submitted values
-are floats.
+If this read is correct, the key point is that the local prediction variable is
+reused across metrics. A minimal forward-looking code fix would be to keep a copy
+of the original prediction array for ROC-AUC, or compute ROC-AUC from a separate
+unthresholded variable when the submitted values are floats.
 
 Conceptually:
 
@@ -2222,14 +2225,16 @@ if metric == "rocauc" and isinstance(raw_pred_array[0], float):
 
 ### Suggested handling
 
-I see two possible paths:
+I see three possible paths:
 
-1. Fix the scoring code for future submissions and add a release note that historic
+1. Confirm that this is the intended historical behavior and document that
+   Matbench v0.1 classification `rocauc` is thresholded-label AUC for affected
+   float-prediction submissions.
+2. Fix the scoring code for future submissions and add a release note that historic
    Matbench v0.1 classification `rocauc` values were computed from thresholded
    labels when float predictions were submitted.
-2. If the thresholded behavior is intended for Matbench v0.1 historical stability,
-   document that `rocauc` in those artifacts is thresholded-label AUC rather than
-   probability-score ROC-AUC.
+3. If a different code path explains the stored values, point me to it and I will
+   update the audit notes.
 
 I have not opened a PR because the right handling of historical leaderboard values
 is a maintainer policy decision.
@@ -2249,12 +2254,12 @@ the classification `rocauc` field.
 - `scripts/matbench_classification_scan.py`
 - `scripts/matbench_leaderboard_metric_scan.py`
 
-## Guardrails
+## Posting notes
 
-- Do not post until the user explicitly asks.
 - If posting, link the public ReproLab commit containing the scripts/reports.
 - Keep the issue scoped to classification `rocauc`; do not bundle unrelated
   Matbench v0.1 audit notes.
+- Post this classification issue before the narrower GN-OA MAPE issue.
 
 
 
@@ -2262,7 +2267,8 @@ the classification `rocauc` field.
 
 # Matbench upstream issue draft - GN-OA MAPE exception
 
-Status: draft only; not posted.
+Status: ready as a follow-up; use `reports/paper-003_gn_oa_mape_issue_body.md`
+for the clean GitHub issue body.
 
 Target repo: https://github.com/materialsproject/matbench
 
@@ -2325,29 +2331,16 @@ Thanks for maintaining the benchmark.
 - `scripts/matbench_all_results_score_scan.py`
 - `scripts/matbench_score.py`
 
-## Guardrails
+## Posting notes
 
-- Do not post until the user explicitly asks.
 - If posting, link the public ReproLab commit containing the scripts/reports.
 - Keep this issue separate from the classification `rocauc` draft unless the user
   explicitly asks to combine them.
+- Post after the classification `rocauc` issue, not before it.
 
 
 
 ## 9. Run log (tail)
-
-### 2026-07-03 13:45 UTC — paper003 verify Layer C resolution docs
-
-```
-$ .venv\Scripts\python.exe -c from pathlib import Path; import py_compile, sys, yaml; py_compile.compile('scripts/matbench_leaderboard_resolution.py', doraise=True); py_compile.compile('scripts/make_matbench_report.py', doraise=True); meta=yaml.safe_load(Path('papers/matbench/metadata.yaml').read_text(encoding='utf-8')); layer=Path('papers/matbench/layer_c_leaderboard_resolution.md').read_text(encoding='utf-8'); summary=Path('papers/matbench/summary.md').read_text(encoding='utf-8'); assembled=Path('reports/paper-003-matbench-audit.md').read_text(encoding='utf-8'); packet=Path('reports/paper-003-external_release_packet.md').read_text(encoding='utf-8'); readme=Path('README.md').read_text(encoding='utf-8'); checks=[meta['layer_c_leaderboard_resolution']['adjacent_pairs']==167, meta['layer_c_leaderboard_resolution']['adjacent_gaps_lte_1_fold_se_proxy']==68, 'Adjacent gaps <= 1 fold-SE proxy: 68' in layer, 'Layer C leaderboard resolution' in assembled, 'layer_c_leaderboard_resolution.md' in summary, 'Layer C resolution map' in packet, 'layer_c_leaderboard_resolution.md' in readme]; print({'checks': checks}); sys.exit(0 if all(checks) else 1)
-```
-
-- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-134540-965035.log`
-
-output tail:
-```
-{'checks': [True, True, True, True, True, True, True]}
-```
 
 ### 2026-07-03 13:45 UTC — paper003 Layer C resolution whitespace check
 
@@ -2495,5 +2488,18 @@ output tail:
 warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'papers/matbench/summary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'reports/paper-003-external_release_packet.md', LF will be replaced by CRLF the next time Git touches it
+```
+
+### 2026-07-03 13:50 UTC — paper003 final reassemble report after wording sync
+
+```
+$ .venv\Scripts\python.exe scripts\make_matbench_report.py
+```
+
+- exit code: **0**  | duration: 0.1s  | raw log: `logs/cmd-20260703-135031-722587.log`
+
+output tail:
+```
+wrote C:\Users\07013\Desktop\0702fable\reprolab\reports\paper-003-matbench-audit.md
 ```
 
