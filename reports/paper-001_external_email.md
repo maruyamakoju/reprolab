@@ -19,6 +19,7 @@ labels. One concrete outcome is already upstream: the checksum/provenance fix wa
 merged in janosh/matbench-discovery#359 on 2026-07-04.
 
 Repo: https://github.com/maruyamakoju/reprolab
+Release: https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff
 Short release note: `reports/paper-001_release_note.md`
 Full external packet: `reports/external_release_packet.md`
 
@@ -41,6 +42,7 @@ The audit also produced an upstream-merged fix for stale/missing checksum metada
 and download-time verification: janosh/matbench-discovery#359.
 
 Repo: https://github.com/maruyamakoju/reprolab
+Release: https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff
 
 I would appreciate a quick read on whether this audit format is useful for
 AI-for-science benchmark maintainers and reviewers.

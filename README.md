@@ -66,6 +66,8 @@ comparison thresholds were pre-registered before the GPU runs.
 - Release note and external email draft:
   `reports/paper-001_release_note.md`,
   `reports/paper-001_external_email.md`
+- GitHub release:
+  [v0.4-external-handoff](https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff)
 
 ## Reproducibility findings along the way
 

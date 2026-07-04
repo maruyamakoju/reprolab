@@ -10,6 +10,7 @@ loop (sent → response → next step). Update the row when anything changes.
 | 2026-07-02 | janosh/matbench-discovery (upstream) | GitHub issue [#358](https://github.com/janosh/matbench-discovery/issues/358) — ground truth depends on pymatgen version (MP2020 anion-correction drift, demonstrated bidirectionally with a 2023.5.10 control) | yes | closed by #359 | no action; provenance note folded into merged PR |
 | 2026-07-03 | janosh/matbench-discovery (upstream) | PR [#359](https://github.com/janosh/matbench-discovery/pull/359) — fixes 3 stale + 2 missing md5s, adds checksum verification on download; CodeRabbit feedback addressed in follow-up commits (`b50b67b`, `0c753e0`) | yes | merged 2026-07-04 | cite as external validation / upstream impact |
 | 2026-07-03 | janosh/matbench-discovery (upstream) | PR [#360](https://github.com/janosh/matbench-discovery/pull/360) — docs-only WBM ground-truth provenance note for pymatgen MP2020 anion-correction version dependence (follow-up to #358) | yes | superseded by #359 | no action |
+| 2026-07-04 | ReproLab Paper-001 | GitHub release [v0.4-external-handoff](https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff) | yes | published | use release URL in external outreach |
 | 2026-07-03 | (1) Matbench Discovery / materials-ML maintainer or contributor | Email | yes | pending | feedback |
 | 2026-07-03 | (2) MIT materials-ML / scientific-ML PhD or postdoc | Email | yes | pending | feedback |
 | 2026-07-03 | (3) AI-for-science professor or lab | Email | yes | pending | feedback |
