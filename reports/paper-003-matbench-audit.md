@@ -1,6 +1,6 @@
 # ReproLab Paper-003 - Matbench v0.1 Audit
 
-_Generated: 2026-07-04 13:35 UTC_
+_Generated: 2026-07-04 14:12 UTC_
 
 > Auto-assembled from tracked artifacts by `scripts/make_matbench_report.py`.
 
@@ -2145,8 +2145,10 @@ For these closest adjacent pairs, a CI crossing zero means the five-fold score p
 
 # Matbench upstream issue draft - classification ROC-AUC scoring
 
-Status: ready to post/share; use `reports/paper-003_rocauc_issue_body.md` for the
-clean GitHub issue body.
+Status: superseded as a new-issue draft. Existing upstream issue #137 already
+covers the code-level `rocauc` concern. Use
+`reports/paper-003_rocauc_issue_137_comment.md` as the clean comment body for
+https://github.com/materialsproject/matbench/issues/137.
 
 Target repo: https://github.com/materialsproject/matbench
 
@@ -2256,6 +2258,8 @@ the classification `rocauc` field.
 
 ## Posting notes
 
+- Do not open this as a new issue unless maintainers ask for a fresh one.
+- Prefer commenting on existing issue #137 with the audit evidence.
 - If posting, link the public ReproLab commit containing the scripts/reports.
 - Keep the issue scoped to classification `rocauc`; do not bundle unrelated
   Matbench v0.1 audit notes.

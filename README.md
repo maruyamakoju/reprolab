@@ -280,8 +280,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
 - [x] Paper-003 assembled report and external packet added
       (`reports/paper-003-matbench-audit.md`,
       `reports/paper-003-external_release_packet.md`)
-- [ ] Next: post/share the Matbench classification `rocauc` issue first; keep the
-      GN-OA MAPE exception as a separate follow-up
+- [ ] Next: add the Matbench classification `rocauc` audit evidence to existing
+      upstream issue #137 first; keep the GN-OA MAPE exception as a separate
+      follow-up
 
 ## Paper-002 Candidate — JARVIS-Leaderboard
 
@@ -393,7 +394,9 @@ Artifacts:
 - Classification prediction scan: `papers/matbench/classification_prediction_scan.md`
 - Classification leaderboard metric scan:
   `papers/matbench/classification_leaderboard_metric_scan.md`
-- Classification issue body: `reports/paper-003_rocauc_issue_body.md`
+- Classification issue #137 comment body:
+  `reports/paper-003_rocauc_issue_137_comment.md`
+- Classification issue body archive: `reports/paper-003_rocauc_issue_body.md`
 - Source artifact inventory: `papers/matbench/source_artifact_inventory.md`
 - Layer B candidate triage: `papers/matbench/layer_b_candidate_triage.md`
 - Layer B TPOT steels replay: `papers/matbench/layer_b_tpot_steels_replay.md`
