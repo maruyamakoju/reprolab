@@ -1,5 +1,3 @@
-# Comment body for materialsproject/matbench#137
-
 I ran an independent ReproLab audit of the Matbench v0.1 leaderboard artifacts and
 can add artifact-level evidence for this issue.
 
