@@ -37,6 +37,8 @@ janosh/matbench-discovery#359 on 2026-07-04.
 
 - Repo: https://github.com/maruyamakoju/reprolab
 - GitHub release: https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff
+- Current status: https://github.com/maruyamakoju/reprolab/blob/master/reports/current_status.md
+- External handoff tracker: https://github.com/maruyamakoju/reprolab/issues/1
 - Full report: `reports/paper-001-matbench-discovery-audit.md`
 - External packet: `reports/external_release_packet.md`
 - Upstream PR: https://github.com/janosh/matbench-discovery/pull/359

@@ -71,6 +71,8 @@ comparison thresholds were pre-registered before the GPU runs.
   `reports/public_post_draft.md`
 - Current status snapshot:
   `reports/current_status.md`
+- Send checklist:
+  `reports/send_checklist.md`
 - GitHub release:
   [v0.4-external-handoff](https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff)
 

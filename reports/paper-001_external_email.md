@@ -20,8 +20,10 @@ merged in janosh/matbench-discovery#359 on 2026-07-04.
 
 Repo: https://github.com/maruyamakoju/reprolab
 Release: https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff
-Short release note: `reports/paper-001_release_note.md`
-Full external packet: `reports/external_release_packet.md`
+Short release note:
+https://github.com/maruyamakoju/reprolab/blob/master/reports/paper-001_release_note.md
+Full external packet:
+https://github.com/maruyamakoju/reprolab/blob/master/reports/external_release_packet.md
 
 I would value a sanity check on whether this audit format is useful: metric
 recompute first, bounded model-execution replay second, then uncertainty/provenance

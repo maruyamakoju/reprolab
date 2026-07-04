@@ -6,6 +6,9 @@ https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff
 Repo:
 https://github.com/maruyamakoju/reprolab
 
+Current status:
+https://github.com/maruyamakoju/reprolab/blob/master/reports/current_status.md
+
 ## 1. Matbench Discovery / materials-ML maintainer
 
 Subject: Independent Matbench Discovery reproducibility audit

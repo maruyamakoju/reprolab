@@ -13,6 +13,7 @@ remaining external handoff steps.
 
 ## Checklist
 
+- [x] Publish Paper-001 release and update release body with current-status links.
 - [ ] Send Paper-001-centered outreach using `reports/paper-001_recipient_outreach.md`.
 - [ ] Monitor materialsproject/matbench#137 for maintainer response.
 - [ ] If #137 is quiet for 24-48h, post the GN-OA MAPE follow-up separately using
