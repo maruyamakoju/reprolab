@@ -66,6 +66,11 @@ comparison thresholds were pre-registered before the GPU runs.
 - Release note and external email draft:
   `reports/paper-001_release_note.md`,
   `reports/paper-001_external_email.md`
+- Recipient-specific outreach and public post draft:
+  `reports/paper-001_recipient_outreach.md`,
+  `reports/public_post_draft.md`
+- Current status snapshot:
+  `reports/current_status.md`
 - GitHub release:
   [v0.4-external-handoff](https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff)
 
@@ -232,8 +237,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       per-task tables put `mean rocauc` first, and all 27 displayed rows have
       `mean rocauc == mean balanced_accuracy`
       (`papers/matbench/classification_leaderboard_metric_scan.md`)
-- [x] Matbench upstream issue draft prepared for the classification `rocauc`
-      behavior (`reports/paper-003_upstream_issue_draft.md`; draft only, not posted)
+- [x] Matbench classification `rocauc` audit evidence posted to existing upstream
+      issue #137
+      (https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351)
 - [x] Matbench RF composition-task Layer A expanded: 4 tasks, 20 folds, max
       stored-vs-recomputed score delta 1.110e-16
       (`papers/matbench/layer_a_rf_composition_tasks.md`)
@@ -256,8 +262,9 @@ the CHGNet prediction file is downloaded from Figshare on first run.
       (`papers/matbench/layer_a_all_submission_score_scan.md`)
 - [x] Matbench GN-OA MAPE exception isolated: MAE/RMSE/max error match, stored
       MAPE only differs (`papers/matbench/layer_a_gn_oa_mape_probe.md`)
-- [x] Matbench GN-OA MAPE upstream issue draft prepared
-      (`reports/paper-003_gn_oa_mape_issue_draft.md`; draft only, not posted)
+- [x] Matbench GN-OA MAPE upstream follow-up prepared
+      (`reports/paper-003_gn_oa_mape_issue_body.md`; hold for maintainer response
+      or 24-48h quiet period after #137 comment)
 - [x] Matbench bounded Layer B source replay: TPOT-Mat `matbench_steels` notebook
       path runs end-to-end from the submitted pickle and helper, but does not
       regenerate the committed predictions exactly; seed-0 replay mean MAE 79.094
