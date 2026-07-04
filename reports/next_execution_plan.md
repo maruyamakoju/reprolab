@@ -8,6 +8,8 @@ Date: 2026-07-04
    - Use `reports/paper-001_release_note.md` as the public summary.
    - Use `reports/paper-001_external_email.md` for direct outreach.
    - Lead with the upstream-merged #359 outcome.
+   - Track remaining handoff work in
+     https://github.com/maruyamakoju/reprolab/issues/1
 
 2. Paper-003 upstream contact
    - Done: added `reports/paper-003_rocauc_issue_137_comment.md` to existing

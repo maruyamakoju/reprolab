@@ -7,6 +7,7 @@ Date: 2026-07-04
 - Repo: https://github.com/maruyamakoju/reprolab
 - Latest pushed commit: see `git log -1 --oneline`
 - Paper-001 release: https://github.com/maruyamakoju/reprolab/releases/tag/v0.4-external-handoff
+- External handoff tracker: https://github.com/maruyamakoju/reprolab/issues/1
 - Matbench Discovery upstream fix: https://github.com/janosh/matbench-discovery/pull/359
 - Matbench v0.1 ROC-AUC evidence comment:
   https://github.com/materialsproject/matbench/issues/137#issuecomment-4882357351
@@ -32,6 +33,7 @@ uncertainty/provenance checks.
 
 - Matbench issue #137 maintainer response.
 - External feedback from the five tracked contacts.
+- ReproLab tracking issue #1 checklist completion.
 
 ## Next action
 
