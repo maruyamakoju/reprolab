@@ -33,3 +33,6 @@ logs/
 # OS cruft
 Thumbs.db
 .DS_Store
+
+# Preprint build artifacts (tex is the source of truth)
+preprint/*.pdf

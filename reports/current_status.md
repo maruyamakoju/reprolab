@@ -1,6 +1,6 @@
 # Current status
 
-Date: 2026-07-04
+Date: 2026-07-05 (updated 00:xx JST)
 
 ## Public state
 
@@ -39,10 +39,22 @@ uncertainty/provenance checks.
 
 ## Next action
 
-Send Paper-001-centered outreach using `reports/paper-001_external_email.md` or
-the recipient-specific variants in `reports/paper-001_recipient_outreach.md`.
-Use `reports/send_checklist.md` before sending or posting.
-Use `reports/response_playbook.md` when maintainers respond.
+**Do NOT send another email round now.** The five tracked contacts were already
+emailed on Fri 2026-07-03 (see `outreach_tracker.md` rows 1–5). Sending the new
+Paper-001 templates now would be a second contact within 48h with no reply to
+the first. Instead:
 
-Do not post the GN-OA MAPE issue immediately. Keep it as a separate follow-up
-after either a maintainer response on #137 or a 24-48h quiet period.
+1. **Public post** (`reports/public_post_draft.md`) — the one outward action
+   that duplicates nothing. Post 2026-07-05.
+2. **Preprint v0 is drafted**: `preprint/main.tex` (compiles warning-free,
+   ~7 pages). Main work line 07-05→07-08: review text, confirm author line,
+   start arXiv endorsement process. See `preprint/README.md` checklist.
+3. **Email follow-up**: Tue 07-07 / Wed 07-08 JST, short 2–3 line update
+   leading with "the fix was merged upstream (#359)" — news, not a nag. Use
+   `paper-001_external_email.md` content trimmed to follow-up length.
+4. GN-OA MAPE issue: unchanged rule — after a #137 response, or quiet period
+   (earliest 2026-07-05 23:13 JST, preferred 2026-07-06 23:13 JST).
+
+Use `reports/response_playbook.md` when maintainers respond. Check GitHub
+responses every 2–3 days (next: 2026-07-06), not daily — Fri-evening emails +
+weekend silence carry no signal.
