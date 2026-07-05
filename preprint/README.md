@@ -13,6 +13,16 @@ tectonic main.tex
 Compiles warning-free with Tectonic 0.16.9 (plain `pdflatex` also works; no
 BibTeX — references are inline `thebibliography`). Output: `main.pdf` (~7 pages).
 
+The figure `fig_resolution.pdf` is committed as a build asset. To regenerate it
+from the clone (requires `vendor/matbench-discovery` present):
+
+```
+.venv/Scripts/python.exe scripts/make_preprint_fig.py
+```
+
+It reprints the "43 of 59 adjacent pairs below one CI width" count as an
+integrity check — the figure and the Section 5 claim share this one source.
+
 ## Submission checklist (before arXiv)
 
 - [ ] Confirm author name romanization ("Koju Maruyama") and affiliation line.

@@ -34,5 +34,8 @@ logs/
 Thumbs.db
 .DS_Store
 
-# Preprint build artifacts (tex is the source of truth)
-preprint/*.pdf
+# Preprint build output (tex is the source of truth; fig_*.pdf is a build asset)
+preprint/main.pdf
+preprint/*.png
+preprint/main.aux
+preprint/main.log

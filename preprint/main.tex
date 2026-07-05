@@ -7,6 +7,7 @@
 \usepackage[a4paper,margin=2.7cm]{geometry}
 \usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
@@ -269,13 +270,27 @@ CHGNet     & 0.6126 & [0.6087, 0.6165] & 0.0078 & 0.0635 [0.0631, 0.0638] \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\textwidth]{fig_resolution.pdf}
+\caption{Distribution of the 59 adjacent-rank F1 gaps on the full 60-model
+\code{unique\_prototypes} leaderboard (gaps recomputed from the committed model
+YAMLs), against the widest paired-bootstrap 95\% CI width measured among the
+four audited models (0.0078 F1; Table~\ref{tab:ci}). Forty-three of the 59
+gaps --- most of the leaderboard --- fall below one CI width, so neighboring
+ranks are largely within the statistical noise the leaderboard does not
+report.}
+\label{fig:resolution}
+\end{figure}
+
 \paragraph{The audited models are cleanly separated; much of the leaderboard
 is not.} The four audited models' F1 confidence intervals are
 $\pm$0.003--0.004 wide and their six pairwise orderings never flip in 2000
 paired resamples (Table~\ref{tab:ci}). But at the full leaderboard (60 models
 with a \code{unique\_prototypes} F1 at this commit), \textbf{43 of 59
 adjacent-rank gaps are smaller than the widest measured CI width (0.0078
-F1)}; many are 0.000--0.003. The published ordering among neighboring models
+F1)} (Figure~\ref{fig:resolution}); many are 0.000--0.003. The published
+ordering among neighboring models
 is therefore unlikely to be statistically resolvable without paired
 significance testing --- which the per-structure prediction files, to the
 benchmark's credit, make possible. (Caveat: CI width varies by model; a
